@@ -32,6 +32,19 @@
        android:textSize="15sp"
        android:gravity="center"
        />
+    <LinearLayout
+        android:id="@+id/play_via_external_engine_provider_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[⚡]"
+            />
+      </LinearLayout>
     <ImageView
        android:layout_width="80dp"
        android:layout_height="80dp"

@@ -76,6 +76,7 @@ public class StoryDetails extends Activity {
             ((TextView) findViewById(R.id.storyextra0)).setText("Category " + story.getStoryCategory());
             if (!story.isDownloaded(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);
+                findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                 findViewById(R.id.cover).setVisibility(View.GONE);
                 findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
                 ((Button) findViewById(R.id.download_delete)).setText(R.string.download);
@@ -147,6 +148,7 @@ public class StoryDetails extends Activity {
                     }
                 });
 
+                findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play_via_external_engine_provider).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
                         Intent intent = new Intent();
