@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Incant! ⚡⚡</string>
+  <string name="app_name_story_details">Incant! ⚡⚡ &gt; Story Details</string>
+  <string name="app_name_story_download">Incant! ⚡⚡ &gt; Download Story</string>
+  <string name="download">Download</string>
+  <string name="play">Play</string>
+  <string name="delete_story">Delete story</string>
+  <string name="delete_save">Delete save file</string>
+  <string name="scrape">Get more</string>
+  <string name="downloaded_recently">Downloaded %tr</string>
+  <string name="downloaded_at">Downloaded %tD</string>
+  <string name="saved_recently">Saved %tr</string>
+  <string name="saved_at">Saved %tD</string>
+  <string name="play_zcode">[Z-code]</string>
+  <string name="play_glulx">[Glulx]</string>
+  <string name="keyboard">Keyboard</string>
+  <string name="skip">Skip</string>
+  <string name="next">Next</string>
+
+  <string name="name">Name</string>
+  <string name="url">URL</string>
+  <string name="ifarchive">(ifarchive)</string>
+  <string name="zip_entry">ZIP entry</string>
+  <string name="ifarchive_download_url_input_prefix">http://mirror.ifarchive.org/if-archive/games/</string>
+
+  <string name="download_failed">Failed download: %s</string>
+  <string name="download_invalid">Invalid download: %s</string>
+
+  <string name="cover_image">Cover image</string>
+
+  <string name="ifdb_viewgame">http://ifdb.tads.org/viewgame?ifid=%s</string>
+  <string name="ifdb_label">Go to IFDB</string>
+  <string name="ifdb_text">View this story in the Interactive Fiction Database</string>
+  <string name="action_speech_output">Speech Out Enabled</string>
+  <string name="action_speech_input">Speech Input Enabled</string>
+  <string name="action_settings">Settings</string>
+  <string name="action_profile">Profile Performance</string>
+
+  <string name="playWV">Play WebView</string>
+  <string name="action_speech_input_beepmute">Speech In Beep Mute</string>
+</resources>

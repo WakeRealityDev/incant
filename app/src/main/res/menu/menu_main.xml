@@ -1,0 +1,40 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.adminsag.emptyapp0.MainActivity">
+
+    <item
+        android:id="@+id/action_profile"
+        android:orderInCategory="10"
+        android:title="@string/action_profile"
+        android:checkable="true"
+        android:checked="true"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_speech_input"
+        android:orderInCategory="20"
+        android:title="@string/action_speech_input"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_speech_input_beepmute"
+        android:orderInCategory="21"
+        android:title="@string/action_speech_input_beepmute"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_speech_output"
+        android:orderInCategory="30"
+        android:title="@string/action_speech_output"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        android:showAsAction="never" />
+</menu>
