@@ -19,6 +19,7 @@
     <item/>
     <item/>
 
+    <!-- featuring this in screen shots is probably not a good idea given major distributor
     <item>Zork I</item>
     <item>Dave Lebling and Marc Blank</item>
     <item>The Great Underground Empire</item>
@@ -26,6 +27,7 @@
     <item>http://www.infocom-if.org/downloads/zork1.zip</item>
     <item>DATA/ZORK1.DAT</item>
     <item>http://www.infocom-if.org/games/zork1/zork1front_th.jpg</item>
+    -->
 
     <!--
     <item>Zork II</item>
@@ -74,6 +76,14 @@
     <item>A Glulx interpreter unit test</item>
     <item>a unit test that runs through all the Glulx opcodes and features</item>
     <item>http://www.eblong.com/zarf/glulx/glulxercise.ulx</item>
+    <item/>
+    <item/>
+
+    <item>Endless, Nameless</item>
+    <item>Adam Cadre</item>
+    <item>An Interactive Fiction</item>
+    <item>BBS system adventure</item>
+    <item>http://ifarchive.org/if-archive/games/zcode/nameless.z8</item>
     <item/>
     <item/>
 
