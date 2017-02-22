@@ -65,18 +65,18 @@
 	   />
       </TableRow>
 	  <TableRow
-			android:id="@+id/playWV_container"
+			android:id="@+id/play_via_external_engine_provider_container"
 			>
 			<Button
 				android:layout_column="1"
 				android:layout_span="1"
-				android:text="@string/playWV"
-				android:id="@+id/playWV"
+				android:text="@string/play_via_external_engine_provider"
+				android:id="@+id/play_via_external_engine_provider"
 				/>
 			<TextView
 				android:layout_column="2"
 				android:layout_span="1"
-				android:id="@+id/playWV_text"
+				android:id="@+id/play_via_external_engine_provider_text"
 				android:scrollHorizontally="true"
 				android:ellipsize="marquee"
 				/>

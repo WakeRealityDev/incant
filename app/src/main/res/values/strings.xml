@@ -37,6 +37,6 @@
   <string name="action_settings">Settings</string>
   <string name="action_profile">Profile Performance</string>
 
-  <string name="playWV">Via Thunderword</string>
+  <string name="play_via_external_engine_provider">Via Thunderword</string>
   <string name="action_speech_input_beepmute">Speech In Beep Mute</string>
 </resources>

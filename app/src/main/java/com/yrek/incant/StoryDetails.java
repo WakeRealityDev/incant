@@ -147,6 +147,23 @@ public class StoryDetails extends Activity {
                     }
                 });
 
+                findViewById(R.id.play_via_external_engine_provider).setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        Intent intent = new Intent();
+                        // Tell Android to start Thunderword app if not already running.
+                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                        if (story.isZcode(StoryDetails.this)) {
+                            intent.setAction("interactivefiction.engine.zmachine");
+                        } else {
+                            intent.setAction("interactivefiction.engine.glulx");
+                        }
+                        intent.putExtra("path", story.getBlorbFile(StoryDetails.this).getPath());
+                        Log.i(TAG, "path " + story.getBlorbFile(StoryDetails.this).getPath());
+                        intent.putExtra("activity", 1 /* Bidirectional Scrolling Activity */);
+                        sendBroadcast(intent);
+                    }
+                });
+
                 int outEngine = story.isZcode(StoryDetails.this) ? R.string.play_zcode : R.string.play_glulx;
                 ((TextView) findViewById(R.id.play_text)).setText(outEngine);
                 if (story.getCoverImageFile(StoryDetails.this).exists()) {
