@@ -1,26 +1,60 @@
 apply plugin: 'com.android.application'
 
+// externally saved (not in git source control) signing key
+// gradle.properties needs to have defined line:
+//   WakeReality_androidB.signing=/home/adminsag/app_signing/WakeReality_androidB
+if (project.hasProperty("WakeReality_androidB.signing")
+        && new File(project.property("WakeReality_androidB.signing") + ".gradle").exists()) {
+    apply from: project.property("WakeReality_androidB.signing") + ".gradle";
+}
+
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.yrek.incant"
+        applicationId "com.wakereality.incant"
         minSdkVersion 15
         targetSdkVersion 25
 
-        /*
-        android:versionCode="6"
-        android:versionName="0.3.3-SNAPSHOT"
-        */
-        versionCode 6
-        versionName "0.3.3-SNAPSHOT"
+        versionCode 1
+        versionName "0.4.1"
+
+        signingConfig signingConfigs.WakeReality_androidB
     }
 
     buildTypes {
         release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        experimental {
+            applicationIdSuffix ".experimental"
+            versionNameSuffix "-Experimental"
+            minSdkVersion 15
+            signingConfig signingConfigs.WakeReality_androidB
+        }
+        // can't name flavor "test", so "limited release test"
+        limitedtest {
+            applicationIdSuffix ".test"
+            versionNameSuffix "-Test"
+            minSdkVersion 15
+            signingConfig signingConfigs.WakeReality_androidB
+
+            // ToDo: have without minify?
+        }
+        standard {
+            minSdkVersion 15
+            signingConfig signingConfigs.WakeReality_androidB
         }
     }
 }

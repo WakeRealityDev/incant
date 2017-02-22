@@ -1,4 +1,4 @@
 include ':app'
 include 'ifstd'
 
-project(':ifstd').projectDir =   new File('../ifstd_BG0')
+project(':ifstd').projectDir =   new File('../ifstd_WakeReality0')
