@@ -15,6 +15,11 @@ The Android SDK (https://developer.android.com/sdk/index.html) is needed to buil
 Video: http://youtu.be/D6i7c7jdV4Q demonstrating speech in and out.
 
 
+Screenshot
+============
+
+![Screenshot](screenshots/LGLS676/device-2017-02-22-132550.png)
+
 
 App Use
 ===========
