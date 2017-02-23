@@ -36,6 +36,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 
+import com.wakereality.incant.AboutAppActivity;
 import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
 
@@ -574,7 +575,8 @@ public class Incant extends Activity {
 
         switch (id)
         {
-            case R.id.action_settings:
+            case R.id.action_about_app:
+                startActivity(new Intent(Incant.this, AboutAppActivity.class));
                 return true;
             case R.id.action_profile:
                 SettingsCurrent.flipInterpreterProfileEnabled();

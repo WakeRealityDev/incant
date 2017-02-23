@@ -81,6 +81,12 @@
 	 android:value="Incant"
 	 />
     </activity>
+    <activity
+        android:name="com.wakereality.incant.AboutAppActivity"
+        android:label="@string/activity_name_about_app"
+        android:theme="@style/incant_theme"
+        >
+    </activity>
 
         <!--  Selected naming convention is general-purpose and other apps could use it -->
         <receiver android:name="com.wakereality.thunderstrike.sendreceive.InteractiveFictionEnginesMetaBroadcastReceiver">

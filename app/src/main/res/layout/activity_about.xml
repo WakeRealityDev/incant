@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    >
+
+<RelativeLayout
+    android:id="@+id/about_layout_holder0"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    >
+
+    <ImageView
+        android:id="@+id/about_icon1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon"
+        />
+
+    <TextView
+        android:id="@+id/about_version1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/about_icon1"
+        />
+
+    <TextView
+        android:id="@+id/about_this_system1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/about_version1"
+        android:text="Info about memory usage or other technical details"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/about_intro1"
+        android:text="@string/about_intro1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_below="@+id/about_this_system1"
+        />
+
+    <TextView
+        android:id="@+id/about_intro2"
+        android:text="@string/about_intro2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:autoLink="web"
+        android:layout_below="@+id/about_intro1"
+        />
+
+    <!-- autoLink and linksClickable only work if a naked URL, not A HREF -->
+    <TextView
+        android:id="@+id/about_linkbacks1"
+        android:text="about_linkbacks1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/about_intro2"
+        android:autoLink="web"
+        android:linksClickable="true"
+        />
+
+    <TextView
+        android:id="@+id/about_intro3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/about_linkbacks1"
+        android:text="@string/app_intro3"
+        />
+
+    <TextView
+        android:id="@+id/about_linkbacks2"
+        android:text="intro3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/about_intro3"
+        android:autoLink="web"
+        android:linksClickable="true"
+        />
+
+
+</RelativeLayout>
+
+</ScrollView>

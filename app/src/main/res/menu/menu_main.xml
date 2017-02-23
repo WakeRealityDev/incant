@@ -33,8 +33,16 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/action_about_app"
+        android:orderInCategory="90"
+        android:title="@string/action_about_app"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:visible="false" />
 </menu>

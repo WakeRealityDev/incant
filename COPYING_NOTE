@@ -1,0 +1,13 @@
+Regarding:
+  All code added to Incant app and placed on this specific GitHub.com project by Wake Reality, is (c) Copyright 2016-2017 Stephen A. Gutknecht, All Rights Reserved.
+  Code added by Wake Reality to this app (commit 1ba75b15e12036a15c9c34e4c401180d24389ea9 and newer) is available with your choice of two licenses.
+  Licenses granted by Stephen A. Gutknecht on these additions to Incant app:
+    Apache License, Version 2.0
+    GNU GENERAL PUBLIC LICENSE, Version 3
+
+Explanation: The addition of Apache License, Version 2, was to allow you to easily mix with the Google SDK software examples. It should also allow mixing with MIT license of earlier code. NOTE: I am not a lawyer.
+
+It is notable that the original copyright holder / author from 2014, Q P Liu, changed licenses near the very end of the work (commit a80837fe83f27bd2fb841e0159edd57223fbcdd1).
+It may be possible (reminder, I am not a lawyer) to base your own work off specific commits and have your preference of which license is relevant to your own published apps.
+
+In simple clarity: Any work added to this app by Stephen A Gutknecht in 2016-2017, you are free to choose Apache 2 or GPL 3 license, at your discretion.
