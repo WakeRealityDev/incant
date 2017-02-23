@@ -40,7 +40,7 @@ public abstract class Scraper {
         }
         else
         {
-            this.cacheDir = new File("/sdcard/story000/cache");
+            this.cacheDir = new File("/sdcard/Incant_Stories/cache");
             if (! this.cacheDir.exists())
             {
                 this.cacheDir.mkdirs();

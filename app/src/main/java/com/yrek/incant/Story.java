@@ -144,7 +144,7 @@ public class Story implements Serializable {
             return context.getDir("story", Context.MODE_PRIVATE);
         }
         else {
-            return new File("/sdcard/story000/setA");
+            return new File("/sdcard/Incant_Stories/setA");
         }
     }
 

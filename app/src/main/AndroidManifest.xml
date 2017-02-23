@@ -4,7 +4,8 @@
    package="com.yrek.incant"
    >
 
-  <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Download story files -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- speech recognition -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -78,5 +79,23 @@
 	 android:value="Incant"
 	 />
     </activity>
+
+        <!--  Selected naming convention is general-purpose and other apps could use it -->
+        <receiver android:name="com.wakereality.thunderstrike.sendreceive.InteractiveFictionEnginesMetaBroadcastReceiver">
+            <intent-filter>
+                <action android:name="interactivefiction.enginemeta.storyengines" />
+            </intent-filter>
+        </receiver>
+
+        <!-- to allow preference selection of Production app vs. Experimental, listen to both -->
+        <receiver android:name="com.wakereality.thunderstrike.sendreceive.ThunderwordEngineRunningStatusBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.wakereality.thunderword.experimental.enginestatus.RUNNING_STATUS" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.wakereality.thunderword.enginestatus.RUNNING_STATUS" />
+            </intent-filter>
+        </receiver>
+
   </application>
 </manifest>

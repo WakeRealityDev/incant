@@ -58,7 +58,7 @@ public class SettingsCurrent {
     }
 
     public static File getSaveInstanceToDiskFileA() {
-        return new File("/sdcard/story000/pause_save.bin");
+        return new File("/sdcard/Incant_Stories/pause_save.bin");
     }
 
     public static boolean getGameLayoutPaddingA() {

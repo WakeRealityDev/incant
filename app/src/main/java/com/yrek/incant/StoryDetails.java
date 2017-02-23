@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.yrek.incant.glk.GlkActivity;
 
+import java.io.File;
+
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
 
@@ -154,13 +156,24 @@ public class StoryDetails extends Activity {
                         Intent intent = new Intent();
                         // Tell Android to start Thunderword app if not already running.
                         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                        // Inform Engine who to call back
+                        intent.putExtra("sender", BuildConfig.APPLICATION_ID);
                         if (story.isZcode(StoryDetails.this)) {
                             intent.setAction("interactivefiction.engine.zmachine");
                         } else {
                             intent.setAction("interactivefiction.engine.glulx");
                         }
-                        intent.putExtra("path", story.getBlorbFile(StoryDetails.this).getPath());
-                        Log.i(TAG, "path " + story.getBlorbFile(StoryDetails.this).getPath());
+                        // Not all stories come in Blorb packages, check first, but if missing go for the data file.
+                        File exportStoryDataFile = story.getBlorbFile(StoryDetails.this);
+                        if (! exportStoryDataFile.exists()) {
+                            if (story.isZcode(StoryDetails.this)) {
+                                exportStoryDataFile = story.getZcodeFile(StoryDetails.this);
+                            } else {
+                                exportStoryDataFile = story.getGlulxFile(StoryDetails.this);
+                            }
+                        }
+                        intent.putExtra("path", exportStoryDataFile.getPath());
+                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID);
                         intent.putExtra("activity", 1 /* Bidirectional Scrolling Activity */);
                         sendBroadcast(intent);
                     }
