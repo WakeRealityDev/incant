@@ -88,4 +88,20 @@ public class SettingsCurrent {
     public static void flipInterpreterProfileEnabled() {
         interpreterProfileEnabled = ! interpreterProfileEnabled;
     }
+
+    public static void setSpeechEnabled(boolean setSpeechEnabled) {
+        speechEnabled = setSpeechEnabled;
+    }
+
+    public static void setInterpreterProfileEnabled(boolean setInterpreterProfileEnabled) {
+        interpreterProfileEnabled = setInterpreterProfileEnabled;
+    }
+
+    public static void setSpeechRecognizerEnabled(boolean setSpeechRecognizerEnabled) {
+        speechRecognizerEnabled = setSpeechRecognizerEnabled;
+    }
+
+    public static void setSpeechRecognizerMute(boolean setSpeechRecognizerMute) {
+        speechRecognizerMute = setSpeechRecognizerMute;
+    }
 }

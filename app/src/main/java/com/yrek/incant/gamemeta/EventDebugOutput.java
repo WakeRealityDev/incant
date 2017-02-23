@@ -1,7 +1,7 @@
 package com.yrek.incant.gamemeta;
 
 /**
- * Created by adminsag on 10/3/16.
+ * Created by Stephen A. Gutknecht on 10/3/16.
  */
 
 public class EventDebugOutput {

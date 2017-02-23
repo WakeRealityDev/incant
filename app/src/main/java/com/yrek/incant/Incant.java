@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -567,6 +569,9 @@ public class Incant extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        SharedPreferences spref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor sprefEditor = spref.edit();
+
         switch (id)
         {
             case R.id.action_settings:
@@ -574,20 +579,26 @@ public class Incant extends Activity {
             case R.id.action_profile:
                 SettingsCurrent.flipInterpreterProfileEnabled();
                 item.setChecked(SettingsCurrent.getInterpreterProfileEnabled());
-                return true;
+                sprefEditor.putBoolean("profile_enabled", SettingsCurrent.getInterpreterProfileEnabled());
+                break;
             case R.id.action_speech_input:
                 SettingsCurrent.flipSpeechRecognizerEnabled();
                 item.setChecked(SettingsCurrent.getSpeechRecognizerEnabled());
-                return true;
+                sprefEditor.putBoolean("recognition_enabled", SettingsCurrent.getSpeechRecognizerEnabled());
+                break;
             case R.id.action_speech_input_beepmute:
                 SettingsCurrent.flipSpeechRecognizerMute();
                 item.setChecked(SettingsCurrent.getSpeechRecognizerMute());
-                return true;
+                sprefEditor.putBoolean("recognition_mute_enabled", SettingsCurrent.getSpeechRecognizerMute());
+                break;
             case R.id.action_speech_output:
                 SettingsCurrent.flipSpeechEnabled();
                 item.setChecked(SettingsCurrent.getSpeechEnabled());
-                return true;
+                sprefEditor.putBoolean("speech_enabled", SettingsCurrent.getSpeechEnabled());
+                break;
         }
+
+        sprefEditor.commit();
 
         return super.onOptionsItemSelected(item);
     }

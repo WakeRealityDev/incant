@@ -2,7 +2,6 @@ package com.yrek.incant.glk;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,18 +10,13 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.util.Log;
 import android.util.LruCache;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Space;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;

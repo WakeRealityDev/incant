@@ -21,7 +21,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Created by adminsag on 9/21/16.
+ * Created by Stephen A. Gutknecht on 9/21/16.
  */
 public class BundleHelper {
     private String serializeBundle(final Bundle bundle) {

@@ -8,7 +8,7 @@ import com.yrek.incant.Story;
 import java.util.ArrayList;
 
 /**
- * Created by adminsag on 9/14/16.
+ * Created by Stephen A. Gutknecht on 9/14/16.
  */
 public class StoryHelper {
 

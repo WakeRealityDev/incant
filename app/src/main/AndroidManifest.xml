@@ -17,6 +17,8 @@
      android:label="@string/app_name"
      android:icon="@drawable/icon"
      android:allowBackup="true"
+
+     android:name="com.wakereality.incant.IncantApplication"
      >
     <activity
        android:name="Incant"
