@@ -89,6 +89,14 @@
         android:linksClickable="true"
         />
 
+    <TextView
+        android:id="@+id/about_intro4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/about_linkbacks2"
+        android:text="@string/app_intro4"
+        />
 
 </RelativeLayout>
 

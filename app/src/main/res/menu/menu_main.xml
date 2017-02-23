@@ -36,7 +36,6 @@
         android:id="@+id/action_about_app"
         android:orderInCategory="90"
         android:title="@string/action_about_app"
-        android:checkable="true"
         android:showAsAction="never" />
 
     <item
