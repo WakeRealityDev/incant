@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.yrek.incant.glk.GlkActivity;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
@@ -24,6 +25,7 @@ public class StoryDetails extends Activity {
     private TextAppearanceSpan titleStyle;
     private TextAppearanceSpan authorStyle;
     private TextAppearanceSpan headlineStyle;
+    protected static AtomicInteger launchToken = new AtomicInteger(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +158,7 @@ public class StoryDetails extends Activity {
                         Intent intent = new Intent();
                         // Tell Android to start Thunderword app if not already running.
                         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                        // Inform Engine who to call back
+                        // Inform the Engine Provider who to call back.
                         intent.putExtra("sender", BuildConfig.APPLICATION_ID);
                         if (story.isZcode(StoryDetails.this)) {
                             intent.setAction("interactivefiction.engine.zmachine");
@@ -173,8 +175,10 @@ public class StoryDetails extends Activity {
                             }
                         }
                         intent.putExtra("path", exportStoryDataFile.getPath());
-                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID);
+                        int myLaunchToken = launchToken.incrementAndGet();
+                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken);
                         intent.putExtra("activity", 1 /* Bidirectional Scrolling Activity */);
+                        intent.putExtra("launchtoken", "A" + myLaunchToken);
                         sendBroadcast(intent);
                     }
                 });
