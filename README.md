@@ -63,5 +63,9 @@ A suggested developer ToDo list:
 6. Document how to turn it into a 'publish your interactive fiction story as an Android app' like the documentation steps of AndroidIF here: https://github.com/SimonChris/AndroidIF -- both apps are built on MIT license so you can swap code between them.  NOTE: AndroidIF's step 4 isn't needed, Incant runs off-the-shelf Glulx binaries with no special extensions.
 7. The game Six in the room "The Giant Garden Bed" (go north 4 times), the layout of the 3-line status window is broken on a 5" Android phone. Even if you rotate the phone (starting from) Portrait to Landscape, it does not reflow the status window content.
 8. (Menu) option to Mute the beep on speech input may also end up muting the speech output. Needs work.
+9. Saves files to /sdcard/ without use of Android API's. Probably doesn't work well on Android 4.4 for this reason.
+10. Sending story files to Thunderword, add content provider for secure exchange and to avoid /sdcard/ path usage. Suggest library: https://github.com/commonsguy/cwac-provider
+11. Thunderword screen size and layout (Activity) picking user interface.
+12. Some way to pick story files other than download/open (outside app) or internal picking off list. Similarly scan folders / storage for stories.
 
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075

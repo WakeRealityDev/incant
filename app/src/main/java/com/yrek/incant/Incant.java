@@ -59,14 +59,18 @@ public class Incant extends Activity {
     private Handler handler;
     private HandlerThread handlerThread;
     private LruCache<String,Bitmap> coverImageCache;
+    protected SharedPreferences spref;
 
     protected static HashSet<String> downloading = new HashSet<String>();
+    protected static boolean useStyledIntroStrings = true;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        spref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (Build.VERSION.SDK_INT >= 23) {
             getPermissionToUseStorage();
@@ -91,6 +95,14 @@ public class Incant extends Activity {
         downloadTimeStyle = new TextAppearanceSpan(this, R.style.story_download_time);
 
         coverImageCache = new LruCache<String,Bitmap>(10);
+
+        if (useStyledIntroStrings) {
+            // Android does not seem to have a way to getText() directly from XML, so try here in code.
+            ((TextView) findViewById(R.id.main_top_intro_title0)).setText(getText(R.string.main_intro_title0_styled));
+            ((TextView) findViewById(R.id.main_top_intro_message0)).setText(getText(R.string.main_intro_message0_styled));
+            // ((TextView) findViewById(R.id.main_top_intro_message1)).setText(getText(R.string.main_intro_message1_styled));
+            ((TextView) findViewById(R.id.main_top_intro_message1)).setVisibility(View.GONE);
+        }
     }
 
 
@@ -259,6 +271,10 @@ public class Incant extends Activity {
     };
 
     private void refreshStoryList() {
+        if (spref.getBoolean("intro_dismiss", false)) {
+            findViewById(R.id.main_top_intro).setVisibility(View.GONE);
+        }
+
         storyListAdapter.setNotifyOnChange(false);
         storyListAdapter.clear();
         try {
@@ -328,6 +344,13 @@ public class Incant extends Activity {
             sb.append("category " + storyCategory);
         }
         return sb;
+    }
+
+    public void hideIntroMessage(View view) {
+        SharedPreferences.Editor sprefEditor = spref.edit();
+        sprefEditor.putBoolean("intro_dismiss", true);
+        sprefEditor.commit();
+        refreshStoryList();
     }
 
 
@@ -570,7 +593,6 @@ public class Incant extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        SharedPreferences spref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor sprefEditor = spref.edit();
 
         switch (id)

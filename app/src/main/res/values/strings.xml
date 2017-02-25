@@ -51,4 +51,12 @@
   <string name="app_intro3">This app is entire free software and the source code is available on GitHub. You are encouraged to further refine and utilize this app\'s Java source code for Android:</string>
   <string name="about_intro2">This app variation, \'Incant! for Thunderword\', was extended by Wake Reality to serve as a technical demonstration of a third-party story download and launcher app for Thunderword\'s internal Glulx and Z-Machine interpreter engines.</string>
   <string name="app_intro4">Special note about story data files, works of Interactive Fiction: No works are included with the download of this app. Incant!\'s opening menu is only a description and link to the stories off various public websites. Only once a story is picked from the menu is it downloaded live off the internet website. Incant! does not distribute the copyrighted story data files on it\'s own. You can long-press the menu entry to see a link to information about the story author.</string>
+
+  <string name="main_intro_title0">Welcome to Incant! for Thunderword</string>
+  <string name="main_intro_title0_styled">Welcome to <b>Incant! for Thunderword</b></string>
+  <string name="main_intro_message0">You can pick from the list below to download stories, or you can use Chrome / Firefox / Opera / Silk / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!</string>
+  <string name="main_intro_message1">TIP: Long-press entries to access additional options, including Thunderword launch.</string>
+  <string name="main_intro_message0_styled">You can pick from the list below to download stories, or you can use Chrome / Firefox / Opera / Silk / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!  <b>TIP:</b> Long-press entries to access additional options, including <i>Thunderword</i> launch.</string>
+  <string name="main_intro_message1_styled"></string>
+  <string name="main_intro_button_label0">[ Hide this message ]</string>
 </resources>

@@ -5,6 +5,43 @@
    android:layout_width="fill_parent"
    android:layout_height="fill_parent"
    >
+
+  <LinearLayout
+      android:id="@+id/main_top_intro"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="5dp"
+      android:background="#C8E6C9"
+      >
+      <TextView
+          android:id="@+id/main_top_intro_title0"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/main_intro_title0"
+          />
+      <TextView
+          android:id="@+id/main_top_intro_message0"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/main_intro_message0"
+          />
+      <TextView
+          android:id="@+id/main_top_intro_message1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/main_intro_message1"
+          />
+      <TextView
+          android:id="@+id/main_top_intro_button_label0"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="6dp"
+          android:text="@string/main_intro_button_label0"
+          android:onClick="hideIntroMessage"
+          />
+  </LinearLayout>
+
   <ListView
      android:layout_width="fill_parent"
      android:layout_height="fill_parent"
