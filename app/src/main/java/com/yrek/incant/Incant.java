@@ -62,6 +62,7 @@ public class Incant extends Activity {
 
     protected static HashSet<String> downloading = new HashSet<String>();
     protected static boolean useStyledIntroStrings = true;
+    protected boolean showOnScreenListingDebug = false;
 
 
     @Override
@@ -102,6 +103,8 @@ public class Incant extends Activity {
             // ((TextView) findViewById(R.id.main_top_intro_message1)).setText(getText(R.string.main_intro_message1_styled));
             ((TextView) findViewById(R.id.main_top_intro_message1)).setVisibility(View.GONE);
         }
+
+        showOnScreenListingDebug = spref.getBoolean("onscreen_debug", false);
     }
 
 
@@ -337,6 +340,11 @@ public class Incant extends Activity {
     private SpannableStringBuilder makeStoryExtra0(Story story)
     {
         SpannableStringBuilder sb = new SpannableStringBuilder();
+        // Preferences has setting to enable extra debugging content on screen.
+        if (! showOnScreenListingDebug) {
+            return sb;
+        }
+
         int storyCategory = story.getStoryCategory();
         if (storyCategory > 0)
         {
@@ -582,6 +590,7 @@ public class Incant extends Activity {
         menu.getItem(1).setChecked(SettingsCurrent.getSpeechRecognizerEnabled());
         menu.getItem(2).setChecked(SettingsCurrent.getSpeechRecognizerMute());
         menu.getItem(3).setChecked(SettingsCurrent.getSpeechEnabled());
+        menu.getItem(4).setChecked(showOnScreenListingDebug);
         return true;
     }
 
@@ -618,6 +627,11 @@ public class Incant extends Activity {
                 SettingsCurrent.flipSpeechEnabled();
                 item.setChecked(SettingsCurrent.getSpeechEnabled());
                 sprefEditor.putBoolean("speech_enabled", SettingsCurrent.getSpeechEnabled());
+                break;
+            case R.id.action_onscreen_debug:
+                showOnScreenListingDebug = ! showOnScreenListingDebug;
+                sprefEditor.putBoolean("onscreen_debug", showOnScreenListingDebug);
+                recreate();
                 break;
         }
 

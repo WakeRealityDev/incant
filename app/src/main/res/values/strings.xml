@@ -59,4 +59,5 @@
   <string name="main_intro_message0_styled">You can pick from the list below to download stories, or you can use Chrome / Firefox / Opera / Silk / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!  <b>TIP:</b> Long-press entries to access additional options, including <i>Thunderword</i> launch.</string>
   <string name="main_intro_message1_styled"></string>
   <string name="main_intro_button_label0">[ Hide this message ]</string>
+  <string name="action_onscreen_debug">Show Debug</string>
 </resources>

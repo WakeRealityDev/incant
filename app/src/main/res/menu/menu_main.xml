@@ -33,6 +33,13 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/action_onscreen_debug"
+        android:orderInCategory="40"
+        android:title="@string/action_onscreen_debug"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about_app"
         android:orderInCategory="90"
         android:title="@string/action_about_app"
