@@ -28,7 +28,6 @@
     <item>DATA/ZORK1.DAT</item>
     <item>http://www.infocom-if.org/games/zork1/zork1front_th.jpg</item>
 
-    <!--
     <item>Zork II</item>
     <item>Dave Lebling and Marc Blank</item>
     <item>The Wizard of Frobozz</item>
@@ -44,7 +43,6 @@
     <item>http://www.infocom-if.org/downloads/zork3.zip</item>
     <item>DATA/ZORK3.DAT</item>
     <item>http://www.infocom-if.org/games/zork3/zork3front_th.jpg</item>
-    -->
 
     <item>Bronze</item>
     <item>Emily Short</item>
@@ -70,13 +68,6 @@
     <item/>
     <item/>
 
-    <item>Glulxercise</item>
-    <item>Andrew Plotkin</item>
-    <item>A Glulx interpreter unit test</item>
-    <item>a unit test that runs through all the Glulx opcodes and features</item>
-    <item>http://www.eblong.com/zarf/glulx/glulxercise.ulx</item>
-    <item/>
-    <item/>
 
     <item>Endless, Nameless</item>
     <item>Adam Cadre</item>
@@ -86,7 +77,6 @@
     <item/>
     <item/>
 
-    <!--
     <item>Art of Fugue</item>
     <item>Victor Gijsbers, Jimmy Maher, Dorte Lassen and Johan</item>
     <item>Interactive studies in counterpoint</item>
@@ -94,27 +84,6 @@
     <item>http://mirror.ifarchive.org/if-archive/games/glulx/ArtOfFugue.gblorb</item>
     <item/>
     <item/>
-    -->
-
-    <!--
-    <item>Glulxercise</item>
-    <item>Andrew Plotkin</item>
-    <item>A Glulx interpreter unit test</item>
-    <item>a unit test that runs through all the Glulx opcodes and features</item>
-    <item>http://www.eblong.com/zarf/glulx/glulxercise.ulx</item>
-    <item/>
-    <item/>
-
-    <item>Sensory Jam</item>
-    <item>Andrew Plotkin</item>
-    <item>A Quick Glulx Demo</item>
-    <item/>
-    <item>http://www.eblong.com/zarf/glulx/sensory.blb</item>
-    <item/>
-    <item/>
-    -->
-
-
 
     <item>Lost Pig</item>
     <item>Grunk / Admiral Jota</item>
@@ -123,6 +92,48 @@
     <item>http://mirror.ifarchive.org/if-archive/games/zcode/LostPig.zblorb</item>
     <item/>
     <item/>
+
+    <item>City of Secrets</item>
+    <item>Emily Short</item>
+    <item>Espionage/Fantasy, 2003</item>
+    <item>Interactive Fiction Top 50 of all time</item>
+    <item>http://mirror.ifarchive.org/if-archive/games/glulx/CoS.zip</item>
+    <item>CoSv3.blb</item>
+    <item/>
+
+    <item>Anchorhead</item>
+    <item>Michael Gentry</item>
+    <item>Lovecraftian, 1998</item>
+    <item>You take a deep breath of salty air as the first raindrops begin to spatter the pavement, and the swollen, slate-colored clouds that blanket the sky mutter ominous portents amongst themselves over the little coastal town of Anchorhead.</item>
+    <item>http://ifarchive.org/if-archive/games/zcode/anchor.z8</item>
+    <item/>
+    <item/>
+
+    <item>Blue Lacuna</item>
+    <item>Aaron A. Reed</item>
+    <item>The Great Underground Empire</item>
+    <item>You have always been different. One in a trillion have your gift, your curse: to move between worlds, never settling, always alone. To Wayfare. Yet there are others like you, and something stronger than coincidence binds you together, bumps your lives against each other like charged particles. </item>
+    <item>http://blue-lacuna.textories.com/release/BlueLacuna-r4.zip</item>
+    <item>BlueLacuna-r4.gblorb</item>
+    <item></item>
+
+    <item>Glulxercise</item>
+    <item>Andrew Plotkin</item>
+    <item>A Glulx interpreter unit test</item>
+    <item>a unit test that runs through all the Glulx opcodes and features</item>
+    <item>http://www.eblong.com/zarf/glulx/glulxercise.ulx</item>
+    <item/>
+    <item/>
+
+    <!--
+    <item>Sensory Jam</item>
+    <item>Andrew Plotkin</item>
+    <item>A Quick Glulx Demo</item>
+    <item/>
+    <item>http://www.eblong.com/zarf/glulx/sensory.blb</item>
+    <item/>
+    <item/>
+    -->
 
   </string-array>
 
