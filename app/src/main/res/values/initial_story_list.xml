@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string-array name="initial_story_list">
+  <string-array name="initial_story_list" formatted="false">
     <!-- Each story has 7 items:
          * title
          * author
@@ -116,6 +116,22 @@
     <item>http://blue-lacuna.textories.com/release/BlueLacuna-r4.zip</item>
     <item>BlueLacuna-r4.gblorb</item>
     <item></item>
+
+    <item>Slouching Towards Bedlam</item>
+    <item>Star Foster and Daniel Ravipinto</item>
+    <item>Steampunk, 2003; Inform 7 10th Anniversary release</item>
+    <item>In the beginning was the Word, and it was hungry. Enter a steampunk adventure set in a London that might have been. The year is 1885. Bedlam Hospital still stands in Moorsfield, a decaying shell used to house the poor and the hopeless. Steam-driven mechanical wonders roam the streets. Gear-wheeled analytical engines spin out reams of thought onto punched paper tapes. And in the darkness - in the alleys and the side shops - hide secrets.</item>
+    <item formatted="false">http://www.peccable.com/if/slouching-10/src/Slouching%20Towards%20Bedlam.gblorb</item>
+    <item/>
+    <item/>
+
+    <item>Coloratura</item>
+    <item>Lynnea Glasser</item>
+    <item>Horror, 2013</item>
+    <item>Stolen away by apathetic Blind Ones, your only desire is to return to your Cellarium and the Song of the Universe. They should understand. You shall make them to understand.</item>
+    <item>http://mirror.ifarchive.org/if-archive/games/competition2013/glulx/coloratura/Coloratura.gblorb</item>
+    <item/>
+    <item/>
 
     <item>Glulxercise</item>
     <item>Andrew Plotkin</item>
