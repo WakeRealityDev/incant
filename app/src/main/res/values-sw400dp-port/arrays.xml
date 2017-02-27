@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- for medium-width screens, 400dp, use larger strings -->
+
+    <!-- Value 0 means headless, and we aren't going to give the user that choice in this app's GUI. -->
+    <string-array name="thunderword_activity_names">
+        <item>Bi-direct scroll</item>
+        <item>Scrolling</item>
+        <item>Flexible ??</item>
+        <item>Two-Window</item>
+        <item>5 (future)</item>
+        <item>6 (future)</item>
+        <item>7 (future)</item>
+        <item>8 (future)</item>
+    </string-array>
+
+</resources>

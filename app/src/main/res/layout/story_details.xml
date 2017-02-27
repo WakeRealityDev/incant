@@ -96,7 +96,7 @@
 					android:layout_toRightOf="@id/external_provider_activity"
 					android:layout_alignBaseline="@+id/external_provider_activity"
 					android:paddingLeft="4dp"
-					android:text="Activity"
+					android:text="@string/external_provider_activity_label"
 					/>
 				<CheckBox android:id="@+id/external_provider_noprompt"
 						  android:layout_width="wrap_content"

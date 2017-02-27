@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- for medium-width screens, 400dp, use larger strings -->
+
+  <string name="play_via_external_engine_provider">Via Thunderword</string>
+  <string name="external_provider_noprompt">Interrupt</string>
+
+  <string name="external_provider_activity_label"></string>
+
+</resources>
