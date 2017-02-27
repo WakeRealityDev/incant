@@ -42,6 +42,31 @@
           />
   </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/main_top_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:background="#FFCDD2"
+        >
+        <TextView
+            android:id="@+id/main_top_error_storagepermission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_top_error_storagepermission"
+            />
+
+        <TextView
+            android:id="@+id/main_top_error_storage_try"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="@string/main_top_error_storage_try"
+            android:onClick="storageTryAgainClick"
+            />
+    </LinearLayout>
+
   <ListView
      android:layout_width="fill_parent"
      android:layout_height="fill_parent"

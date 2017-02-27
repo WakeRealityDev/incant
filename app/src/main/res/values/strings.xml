@@ -54,13 +54,15 @@
 
   <string name="main_intro_title0">Welcome to Incant! for Thunderword</string>
   <string name="main_intro_title0_styled">Welcome to <b>Incant! for Thunderword</b></string>
-  <string name="main_intro_message0">You can pick from the list below to download stories, or you can use Chrome / Firefox / Opera / Silk / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!</string>
+  <string name="main_intro_message0">Pick from the list to download stories, or you can use Chrome / Firefox / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!</string>
   <string name="main_intro_message1">TIP: Long-press entries to access additional options, including Thunderword launch.</string>
-  <string name="main_intro_message0_styled">You can pick from the list below to download stories, or you can use Chrome / Firefox / Opera / Silk / other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!  <b>TIP:</b> Long-press entries to access additional options, including <i>Thunderword</i> launch.</string>
+  <string name="main_intro_message0_styled">Pick from the list to download stories, or you can use Chrome / Firefox /  other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!  <b>TIP:</b> Long-press entries to access additional options, including <i>Thunderword</i> launch.</string>
   <string name="main_intro_message1_styled"></string>
   <string name="main_intro_button_label0">[ Hide this message ]</string>
   <string name="action_onscreen_debug">Show Debug</string>
 
   <string name="external_provider_noprompt">Interrupt story</string>
   <string name="external_provider_activity_label">Activity</string>
+  <string name="main_top_error_storagepermission">Incant! needs public write storage permission to download stories and launch Thunderword.</string>
+  <string name="main_top_error_storage_try">[ Try Again ]</string>
 </resources>

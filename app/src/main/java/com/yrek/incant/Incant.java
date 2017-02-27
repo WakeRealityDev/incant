@@ -63,6 +63,7 @@ public class Incant extends Activity {
     protected static HashSet<String> downloading = new HashSet<String>();
     protected static boolean useStyledIntroStrings = true;
     protected boolean showOnScreenListingDebug = false;
+    private static boolean storagePermissionReady = true;
 
 
     @Override
@@ -72,7 +73,9 @@ public class Incant extends Activity {
 
         spref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        // User can revoke permissions even after agreeing to install app.
         if (Build.VERSION.SDK_INT >= 23) {
+            storagePermissionReady = false;
             getPermissionToUseStorage();
         }
         getPermissionToUseSpeechListener();
@@ -130,6 +133,8 @@ public class Incant extends Activity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
+            storagePermissionReady = false;
+
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -139,6 +144,9 @@ public class Incant extends Activity {
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 
+                ActivityCompat.requestPermissions(this,
+                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                        WRITE_STORAGE_PERMISSIONS_REQUEST);
             } else {
 
                 // No explanation needed, we can request the permission.
@@ -147,6 +155,8 @@ public class Incant extends Activity {
                         WRITE_STORAGE_PERMISSIONS_REQUEST);
 
             }
+        } else {
+            storagePermissionReady = true;
         }
     }
 
@@ -224,6 +234,8 @@ public class Incant extends Activity {
                             Toast.LENGTH_SHORT).show();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    storagePermissionReady = true;
+                    refreshStoryList();
 
                 } else {
                     Toast.makeText(this, "Write Storage permission denied",
@@ -275,6 +287,9 @@ public class Incant extends Activity {
     private void refreshStoryList() {
         if (spref.getBoolean("intro_dismiss", false)) {
             findViewById(R.id.main_top_intro).setVisibility(View.GONE);
+        }
+        if (storagePermissionReady) {
+            findViewById(R.id.main_top_error).setVisibility(View.GONE);
         }
 
         storyListAdapter.setNotifyOnChange(false);
@@ -358,6 +373,10 @@ public class Incant extends Activity {
         sprefEditor.putBoolean("intro_dismiss", true);
         sprefEditor.commit();
         refreshStoryList();
+    }
+
+    public void storageTryAgainClick(View view) {
+        getPermissionToUseStorage();
     }
 
 
