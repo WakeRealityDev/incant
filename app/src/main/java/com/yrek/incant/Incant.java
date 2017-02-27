@@ -76,7 +76,7 @@ public class Incant extends Activity {
         // User can revoke permissions even after agreeing to install app.
         if (Build.VERSION.SDK_INT >= 23) {
             storagePermissionReady = false;
-            getPermissionToUseStorage();
+            confirmPermissionToUseStorage();
         }
         getPermissionToUseSpeechListener();
         // getPermissionToUseWindow();
@@ -129,7 +129,7 @@ public class Incant extends Activity {
     private static final int SYSTEM_OVERLAY_WINDOW_PERMISSION_REQUEST = 4;
 
 
-    public void getPermissionToUseStorage() {
+    public void confirmPermissionToUseStorage() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -376,7 +376,7 @@ public class Incant extends Activity {
     }
 
     public void storageTryAgainClick(View view) {
-        getPermissionToUseStorage();
+        confirmPermissionToUseStorage();
     }
 
 
