@@ -2,14 +2,18 @@ package com.yrek.incant;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,8 @@ public class StoryDetails extends Activity {
     private TextAppearanceSpan titleStyle;
     private TextAppearanceSpan authorStyle;
     private TextAppearanceSpan headlineStyle;
+    private boolean launchInterruptStory = true;
+    protected int selectedLaunchActivity = 0;
     protected static AtomicInteger launchToken = new AtomicInteger(0);
 
     @Override
@@ -176,10 +182,29 @@ public class StoryDetails extends Activity {
                         }
                         intent.putExtra("path", exportStoryDataFile.getPath());
                         int myLaunchToken = launchToken.incrementAndGet();
-                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken);
-                        intent.putExtra("activity", 1 /* Bidirectional Scrolling Activity */);
+                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity);
+                        // Set default value.
+                        if (selectedLaunchActivity == 0) {
+                            selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
+                        }
+                        intent.putExtra("activitycode", selectedLaunchActivity);
+                        intent.putExtra("interrupt", launchInterruptStory);
                         intent.putExtra("launchtoken", "A" + myLaunchToken);
                         sendBroadcast(intent);
+                    }
+                });
+
+                final TypedArray selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
+
+                ((Spinner) findViewById(R.id.external_provider_activity)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        selectedLaunchActivity = selectedActivityValues.getInt(position, -1);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        selectedLaunchActivity = 0;
                     }
                 });
 
@@ -259,5 +284,9 @@ public class StoryDetails extends Activity {
         }
         sb.setSpan(authorStyle, start, sb.length(), 0);
         return sb;
+    }
+
+    public void onProviderInterruptClicked(View view) {
+        launchInterruptStory = ((CheckBox) view).isChecked();
     }
 }

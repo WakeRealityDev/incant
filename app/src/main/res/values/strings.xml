@@ -60,4 +60,5 @@
   <string name="main_intro_message1_styled"></string>
   <string name="main_intro_button_label0">[ Hide this message ]</string>
   <string name="action_onscreen_debug">Show Debug</string>
+  <string name="external_provider_noprompt">Interrupt story</string>
 </resources>

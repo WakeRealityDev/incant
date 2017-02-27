@@ -78,13 +78,40 @@
 				android:text="@string/play_via_external_engine_provider"
 				android:id="@+id/play_via_external_engine_provider"
 				/>
-			<TextView
-				android:layout_column="2"
-				android:layout_span="1"
-				android:id="@+id/play_via_external_engine_provider_text"
-				android:scrollHorizontally="true"
-				android:ellipsize="marquee"
-				/>
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				>
+				<Spinner
+					android:id="@+id/external_provider_activity"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:entries="@array/thunderword_activity_names"
+					android:entryValues="@array/thunderword_activity_values"
+					/>
+				<TextView
+					android:id="@+id/external_provider_activity_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_toRightOf="@id/external_provider_activity"
+					android:layout_alignBaseline="@+id/external_provider_activity"
+					android:paddingLeft="4dp"
+					android:text="Activity"
+					/>
+				<CheckBox android:id="@+id/external_provider_noprompt"
+						  android:layout_width="wrap_content"
+						  android:layout_height="wrap_content"
+						  android:layout_marginLeft="4dp"
+						  android:paddingLeft="2dp"
+						  android:paddingRight="3dp"
+						  android:text="@string/external_provider_noprompt"
+						  android:background="#E8FFFF"
+						  android:layout_toRightOf="@+id/external_provider_activity_label"
+						  android:layout_alignBaseline="@+id/external_provider_activity"
+						  android:onClick="onProviderInterruptClicked"
+						  android:checked="true"
+					/>
+			</RelativeLayout>
 	  </TableRow>
       <TableRow>
 			<RelativeLayout
