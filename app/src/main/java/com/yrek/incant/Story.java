@@ -287,7 +287,7 @@ public class Story implements Serializable {
     protected boolean download(Context context, InputStream inputStream) throws IOException {
         boolean downloaded = false;
         getDir(context).mkdir();
-        File tmpFile = File.createTempFile("tmp","tmp", getDir(context));
+        File tmpFile = File.createTempFile("tmp", ".tmp", getDir(context));
         String freshHashA = "";
         try {
             int magic;
@@ -327,7 +327,7 @@ public class Story implements Serializable {
             }
 
             if (magic == MAGIC_FILE_ZIP0 && zipEntry != null) {
-                File tmpEntry = File.createTempFile("tmp","tmp",getDir(context));
+                File tmpEntry = File.createTempFile("tmp", ".zip", getDir(context));
                 try {
                     magic = unzipTo(context, tmpFile, tmpEntry);
                     tmpEntry.renameTo(tmpFile);

@@ -226,6 +226,7 @@ public class StoryDetails extends Activity {
                     }
                 });
                 ((TextView) findViewById(R.id.download_delete_text)).setText(Incant.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, story.getStoryFile(StoryDetails.this).lastModified()));
+                Log.d(TAG, "[storyDetail] lastModified " + story.getStoryFile(StoryDetails.this).lastModified() + " file " + story.getStoryFile(StoryDetails.this).getPath());
                 if (!story.getSaveFile(StoryDetails.this).exists()) {
                     findViewById(R.id.save_container).setVisibility(View.GONE);
                 } else {

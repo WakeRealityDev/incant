@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 
@@ -363,7 +364,11 @@ public class Incant extends Activity {
         int storyCategory = story.getStoryCategory();
         if (storyCategory > 0)
         {
-            sb.append("category " + storyCategory);
+            sb.append("Category " + storyCategory );
+            URL downloadURL = story.getDownloadURL(this);
+            if (downloadURL != null) {
+                sb.append("\nURL " + downloadURL);
+            }
         }
         return sb;
     }

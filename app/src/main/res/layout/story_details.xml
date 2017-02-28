@@ -189,6 +189,7 @@
        android:id="@+id/download_text"
        android:scrollHorizontally="true"
        android:ellipsize="marquee"
+	   android:textIsSelectable="true"
        />
   </LinearLayout>
 

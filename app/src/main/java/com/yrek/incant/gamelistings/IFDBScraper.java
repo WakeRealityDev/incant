@@ -67,9 +67,9 @@ public class IFDBScraper extends Scraper {
                     Log.d(TAG,"name="+name+",author="+author+",url="+url+",extraURL="+extraURL+",zipFile="+zipFile+",format="+format);
                     try {
                         if (name == null) {
-                        } else if (url != null && url.matches(".*\\.(z[1-8]|zblorb|ulx|blb|gblorb)")) {
+                        } else if (url != null && url.matches(patternMatchA)) {
                             writeStory(out, name, author, url, null, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
-                        } else if (zipFile != null && zipFile.matches(".*\\.(z[1-8]|zblorb|ulx|blb|gblorb)")) {
+                        } else if (zipFile != null && zipFile.matches(patternMatchA)) {
                             writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
                         }
                         else
@@ -80,6 +80,8 @@ public class IFDBScraper extends Scraper {
                         Log.wtf(TAG,e);
                     }
                 }
+
+                public static final String patternMatchA = ".*\\.(z[1-8]|zblorb|zlb|ulx|blorb|blb|gblorb|glb)";
 
                 @Override public void element(String path, String value) {
                     if (value.trim().length() == 0) {
@@ -93,18 +95,18 @@ public class IFDBScraper extends Scraper {
                     } else if ("autoinstall/download/game/format/id".equals(path)) {
                         format = value;
                     } else if ("autoinstall/download/game/compression/primaryfile".equals(path)) {
-                        if (url != null && url.matches(".*\\.(zip|ZIP)") && value.matches(".*\\.(z[1-8]|zblorb|ulx|blb|gblorb)")) {
+                        if (url != null && url.matches(".*\\.(zip|ZIP)") && value.matches(patternMatchA)) {
                             extraURL = url;
                             zipFile = value;
                         }
                     } else if ("autoinstall/download/extra/href".equals(path)) {
-                        if (url == null && value.matches(".*\\.(z[1-8]|zblorb|ulx|blb|gblorb)")) {
+                        if (url == null && value.matches(patternMatchA)) {
                             url = value;
                         } else if (zipFile == null) {
                             extraURL = value;
                         }
                     } else if ("autoinstall/download/extra/compression/primaryfile".equals(path)) {
-                        if (extraURL != null && extraURL.matches(".*\\.(zip|ZIP)") && value.matches(".*\\.(z[1-8]|zblorb|ulx|blb|gblorb)")) {
+                        if (extraURL != null && extraURL.matches(".*\\.(zip|ZIP)") && value.matches(patternMatchA)) {
                             zipFile = value;
                         }
                     }
