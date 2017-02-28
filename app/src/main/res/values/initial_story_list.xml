@@ -197,6 +197,21 @@
     <item></item>
     <item></item>
 
+
+    <item>The Hitchhiker\'s Guide to the Galaxy</item>
+    <item>Douglas Adams and Steve Meretzky</item>
+    <item>Don\'t Panic!</item>
+    <item>Relax, because everything you need to know about playing The Hitchhiker\'s Guide to the Galaxy is contained in the pages of this manual. In this story, you will be Arthur Dent, a rather ordinary earth creature who gets swept up in a whirlwind of interstellar adventures almost beyond comprehension. </item>
+    <!--
+    <item>http://www.myabandonware.com/media/files/games/t/the-hitchhikers-guide-to-the-galaxy.zip</item>
+    <item>hitchhikers-guide-to-the-galaxy/HITCHHIK.DAT</item>
+    <item>http://ifdb.tads.org/showimage?id=0%3A43</item>
+    -->
+    <item>http://www.douglasadams.com/creations/hhgg.z3</item>
+    <item></item>
+    <item>http://ifdb.tads.org/showimage?id=0%3A43</item>
+
+
     <item>Glulxercise</item>
     <item>Andrew Plotkin</item>
     <item>A Glulx interpreter unit test</item>
