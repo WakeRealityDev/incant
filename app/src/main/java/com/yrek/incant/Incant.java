@@ -78,7 +78,7 @@ public class Incant extends Activity {
             storagePermissionReady = false;
             confirmPermissionToUseStorage();
         }
-        getPermissionToUseSpeechListener();
+        confirmPermissionToUseSpeechListener();
         // getPermissionToUseWindow();
 
         // We may need to create paths
@@ -160,7 +160,7 @@ public class Incant extends Activity {
         }
     }
 
-    public void getPermissionToUseSpeechListener() {
+    public void confirmPermissionToUseSpeechListener() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
@@ -368,7 +368,7 @@ public class Incant extends Activity {
         return sb;
     }
 
-    public void hideIntroMessage(View view) {
+    public void hideIntroMessageClick(View view) {
         SharedPreferences.Editor sprefEditor = spref.edit();
         sprefEditor.putBoolean("intro_dismiss", true);
         sprefEditor.commit();
@@ -633,6 +633,7 @@ public class Incant extends Activity {
                 sprefEditor.putBoolean("profile_enabled", SettingsCurrent.getInterpreterProfileEnabled());
                 break;
             case R.id.action_speech_input:
+                confirmPermissionToUseSpeechListener();
                 SettingsCurrent.flipSpeechRecognizerEnabled();
                 item.setChecked(SettingsCurrent.getSpeechRecognizerEnabled());
                 sprefEditor.putBoolean("recognition_enabled", SettingsCurrent.getSpeechRecognizerEnabled());

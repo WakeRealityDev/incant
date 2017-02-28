@@ -149,6 +149,30 @@
     <item>moonwatch.blb</item>
     <item formatted="false">http://ifdb.tads.org/showimage?id=0%3A145</item>
 
+    <item>Make It Good</item>
+    <item>Jon Ingold</item>
+    <item>An Interactive Detective Story, 2009</item>
+    <item>The call comes through. Of all the dicks; you get the call, sitting in the front seat of your car, hands shaking on the steering wheel. An urgent call; but all you were thinking of was the bottle in the liquor store and so that\'s where you went first. Now you\'re pulled up outside the house. The rear mirror\'s showing two steely eyes. You adjust your hat, stiffen up your collar and grab your badge off the dash. Here goes. You\'ve one last chance so…</item>
+    <item>http://mirror.ifarchive.org/if-archive/games/zcode/MakeItGood.zblorb</item>
+    <item></item>
+    <item></item>
+
+    <item>Ether</item>
+    <item>MathBrush (Brian Rushton)</item>
+    <item>Science fiction, 2015</item>
+    <item>A game about a flying cephalopod and its airy world. This short adventure recreates the feel of exploring a world in a graphical game, and uses a 9x9x9 cubical grid. Navigate the world in 26 directions as you collect items and use the properties of your environment to unlock their power. An in-game walkthrough is included, as are instructions for those new to parser interactive fiction, where you type in commands.</item>
+    <item>http://ifarchive.org/if-archive/games/competition2015/Ether/Ether.gblorb</item>
+    <item></item>
+    <item></item>
+
+    <item>Color the Truth</item>
+    <item>MathBrush (Brian Rushton)</item>
+    <item>Mystery, 2016</item>
+    <item>Rosalita Morales is dead, and you have to figure out who did it. The four people closest to her had the motive and the means: her partner, her secretary, her ex-husband, and her sister. Re-live their memories of Rosalita\'s last days to discover what really happened. But be careful: Everyone has something to hide, and everyone will Color the Truth. Color the Truth is conversation-based murder mystery game that takes roughly 2 hours to finish. It is designed to be accessible to players who have never tried parser games, and comes with adaptive hints accessible by typing HINT.</item>
+    <item>http://mirror.ifarchive.org/if-archive/games/glulx/Color_the_Truth.gblorb</item>
+    <item></item>
+    <item></item>
+
     <item>Glulxercise</item>
     <item>Andrew Plotkin</item>
     <item>A Glulx interpreter unit test</item>

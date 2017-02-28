@@ -38,7 +38,7 @@
           android:layout_height="wrap_content"
           android:padding="6dp"
           android:text="@string/main_intro_button_label0"
-          android:onClick="hideIntroMessage"
+          android:onClick="hideIntroMessageClick"
           />
   </LinearLayout>
 
