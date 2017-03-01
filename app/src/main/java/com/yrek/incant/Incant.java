@@ -70,6 +70,9 @@ public class Incant extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        queryEngineProviders();
+
         setContentView(R.layout.main);
 
         spref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -111,6 +114,15 @@ public class Incant extends Activity {
         showOnScreenListingDebug = spref.getBoolean("onscreen_debug", false);
     }
 
+
+    public void queryEngineProviders() {
+        // Query for Interactive Fiction engine providers.
+        Intent intent = new Intent();
+        // Tell Android to start Thunderword app if not already running.
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setAction("interactivefiction.enginemeta.runstory");
+        getApplicationContext().sendBroadcast(intent);
+    }
 
     public void createDiskPathsOnce()
     {
@@ -291,6 +303,10 @@ public class Incant extends Activity {
         }
         if (storagePermissionReady) {
             findViewById(R.id.main_top_error).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.main_top_error).setVisibility(View.VISIBLE);
+            // Skip doing the listing, more obvious that permissions are troubled.
+            return;
         }
 
         storyListAdapter.setNotifyOnChange(false);

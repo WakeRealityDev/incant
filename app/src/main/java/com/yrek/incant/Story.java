@@ -286,7 +286,7 @@ public class Story implements Serializable {
 
     protected boolean download(Context context, InputStream inputStream) throws IOException {
         boolean downloaded = false;
-        getDir(context).mkdir();
+        getDir(context).mkdirs();
         File tmpFile = File.createTempFile("tmp", ".tmp", getDir(context));
         String freshHashA = "";
         try {

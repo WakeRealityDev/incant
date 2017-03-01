@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.incant.glk.GlkActivity;
 
 import java.io.File;
@@ -243,6 +244,15 @@ public class StoryDetails extends Activity {
                 // Show the storage path
                 findViewById(R.id.download_text).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.download_text)).setText(story.getDir(StoryDetails.this).toString());
+
+                // Show the Engine Provider (Thunderword) status.
+                if (EchoSpot.currentEngineProvider != null) {
+                    findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
+                    findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
+                    ((TextView) findViewById(R.id.engine_provider_status)).setText("Interactive Fiction engine provider detected: " + EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality."));
+                } else {
+                    findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
+                }
             }
             final String ifid = story.getIFID(StoryDetails.this);
             if (ifid == null) {

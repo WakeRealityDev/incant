@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.wakereality.thunderstrike.EchoSpot;
+import com.wakereality.thunderstrike.dataexchange.EngineProvider;
+import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Arrays;
 
 /**
@@ -21,11 +27,16 @@ public class InteractiveFictionEnginesMetaBroadcastReceiver extends BroadcastRec
     public void onReceive(Context context, Intent intent) {
         switch (intent.getAction()) {
             case "interactivefiction.enginemeta.storyengines":
-                String sender = intent.getStringExtra("sender");
-                int senderVersionCode = intent.getIntExtra("sender_versioncode", -1);
-                String[] enginesAvailable = intent.getStringArrayExtra("engines_available");
+                EngineProvider engineProvider = new EngineProvider();
+                engineProvider.providerAppPackage = intent.getStringExtra("sender");
+                engineProvider.providerAppVersionCode = intent.getIntExtra("sender_versioncode", -1);
+                engineProvider.providerEnginesAvailable = intent.getStringArrayExtra("engines_available");
 
-                Log.i("IFEngineMeta", "sender " + sender + " versionCode " + senderVersionCode + " engines: " + Arrays.toString(enginesAvailable));
+                EchoSpot.currentEngineProvider = engineProvider;
+
+                EventBus.getDefault().post(new EventEngineProviderChange(engineProvider));
+
+                Log.i("IFEngineMeta", "[engineProvider] app responded: " + engineProvider.toString());
                 break;
             default:
                 Log.w("IFEngineMeta", "unmatched action: " + intent.getAction());

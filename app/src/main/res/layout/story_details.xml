@@ -173,12 +173,22 @@
       </TableRow>
     </TableLayout>
 
-    <TextView
+	  <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:id="@+id/description"
        />
-	<TextView
+
+	  <View
+		  android:layout_width="match_parent"
+		  android:layout_height="2dp"
+		  android:layout_marginTop="3dp"
+		  android:layout_marginBottom="3dp"
+		  android:background="#FFE082"
+		  android:visibility="visible"
+		  />
+
+	  <TextView
 	   android:layout_width="match_parent"
 	   android:layout_height="wrap_content"
 	   android:id="@+id/storyextra0"
@@ -191,6 +201,14 @@
        android:ellipsize="marquee"
 	   android:textIsSelectable="true"
        />
+	  <TextView
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:id="@+id/engine_provider_status"
+		  android:scrollHorizontally="true"
+		  android:ellipsize="marquee"
+		  android:textIsSelectable="true"
+		  />
   </LinearLayout>
 
 </com.yrek.incant.SubactivityView>
