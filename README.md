@@ -23,8 +23,7 @@ Screenshot
 
 App Use
 ===========
-1. Long press on game listing entry to get details of the game and option to delete.
-
+1. Long press on game listing entry to get details of the game and option to delete the story download.
 
 Once you start a game
 
@@ -52,20 +51,23 @@ Search the code for "SettingsCurrent.getGameLayoutInputColorA()" to find where t
 You could try a Bluetooth or USB keyboard out to see how well the app works with your game data before putting labor into improving the layout.
 
 
-
 A suggested developer ToDo list:
 ==================================
-1. Add a welcome screen, brief help/about screen,
+Developers are welcome to hack on this.
+
+1. Add a welcome screen, brief help/about screen. (PARTIALLY done, now has a welcome message at top of list)
 2. rework the keyboard input so it's more friendly. Right now it's kind of klunky because if the story wants you to press space you have to enter a [space] then press [return] to get it into the Glulx interpreter.  For some games, you need to be able to actually put [return] into the Glulx engine - "In Bronze I couldn't activate a help menu item because pressing enter didn't send the enter to the game."
 3. A file picker so people could browse files and load games that they wish instead of the current live-download only model.
-4. Menu working but not saved, must be set each app start. Persist.
+~~4. Menu working but not saved, must be set each app start. Persist.~~ DONE!
 5. Extensively test it and identify what works and what does not, what Glk features are missing, etc.
 6. Document how to turn it into a 'publish your interactive fiction story as an Android app' like the documentation steps of AndroidIF here: https://github.com/SimonChris/AndroidIF -- both apps are built on MIT license so you can swap code between them.  NOTE: AndroidIF's step 4 isn't needed, Incant runs off-the-shelf Glulx binaries with no special extensions.
 7. The game Six in the room "The Giant Garden Bed" (go north 4 times), the layout of the 3-line status window is broken on a 5" Android phone. Even if you rotate the phone (starting from) Portrait to Landscape, it does not reflow the status window content.
 8. (Menu) option to Mute the beep on speech input may also end up muting the speech output. Needs work.
 9. Saves files to /sdcard/ without use of Android API's. Probably doesn't work well on Android 4.4 for this reason.
 10. Sending story files to Thunderword, add content provider for secure exchange and to avoid /sdcard/ path usage. Suggest library: https://github.com/commonsguy/cwac-provider
-11. Thunderword screen size and layout (Activity) picking user interface.
+11. Thunderword screen size ~~and layout (Activity) picking~~ (DONE) for user interface.
 12. Some way to pick story files other than download/open (outside app) or internal picking off list. Similarly scan folders / storage for stories.
+13. Incant does not preserve the file extensions when downloading off it's list, so it makes sharing the downloaded stories nearly impossible to find for outside apps searching the storage.
+
 
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075
