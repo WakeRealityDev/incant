@@ -85,6 +85,7 @@ public class StoryDetails extends Activity {
             ((TextView) findViewById(R.id.author)).setText(makeAuthor());
             ((TextView) findViewById(R.id.description)).setText(story.getDescription(StoryDetails.this));
             ((TextView) findViewById(R.id.storyextra0)).setText("Category " + story.getStoryCategory());
+            ((TextView) findViewById(R.id.story_hash_info)).setText("MD5: " + story.getHash());
             if (!story.isDownloaded(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);

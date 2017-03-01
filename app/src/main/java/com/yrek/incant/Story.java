@@ -529,7 +529,7 @@ public class Story implements Serializable {
 
     protected void writeBlorbChunk(Context context, Blorb.Chunk chunk, File file) throws IOException {
         getDir(context).mkdir();
-        File tmpFile = File.createTempFile("tmp","tmp",getDir(context));
+        File tmpFile = File.createTempFile("tmp", "tmp" ,getDir(context));
         try {
             FileOutputStream out = null;
             try {
@@ -576,6 +576,13 @@ public class Story implements Serializable {
         return title;
     }
 
+    /*
+    MD5 hash
+     */
+    public String getHash() {
+        return hashA;
+    }
+
     private class Metadata implements XMLScraper.Handler {
         String ifid;
         String author;
@@ -615,7 +622,7 @@ public class Story implements Serializable {
 
     protected void writeMetadata(Context context, File file) throws IOException {
         getDir(context).mkdir();
-        File tmpFile = File.createTempFile("tmp","tmp",getDir(context));
+        File tmpFile = File.createTempFile("tmp", "xmp", getDir(context));
         try {
             FileOutputStream out = null;
             try {
