@@ -209,6 +209,38 @@
 		  android:ellipsize="marquee"
 		  android:textIsSelectable="true"
 		  />
+
+	  <LinearLayout
+		  android:id="@+id/engine_provider_suggestion"
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:orientation="vertical"
+		  android:visibility="gone"
+		  >
+
+		  <View
+			  android:layout_width="match_parent"
+			  android:layout_height="2dp"
+			  android:layout_marginTop="2dp"
+			  android:layout_marginBottom="2dp"
+			  android:background="#FFE082"
+			  android:visibility="visible"
+			  />
+
+		  <TextView
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:text="Thunderword or other engine provider apps have not been detected on your Android system. For additional compatibility and faster perofrmance with some fiction stories, we invite you to install Thunderword app on your system and new options will appear to launch this story to the partner app. Thunderword app pre-release link:"
+			  />
+		  <!-- ToDo: substitute Amazon app store / F-Droid if Google Play store is not installed on device? -->
+		  <TextView
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:text="https://play.google.com/apps/testing/com.wakereality.thunderword.experimental"
+			  android:autoLink="web"
+			  android:linksClickable="true"
+			  />
+	  </LinearLayout>
   </LinearLayout>
 
 </com.yrek.incant.SubactivityView>

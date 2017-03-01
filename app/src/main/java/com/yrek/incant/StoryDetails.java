@@ -249,9 +249,12 @@ public class StoryDetails extends Activity {
                 if (EchoSpot.currentEngineProvider != null) {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
+                    findViewById(R.id.engine_provider_suggestion).setVisibility(View.GONE);
                     ((TextView) findViewById(R.id.engine_provider_status)).setText("Interactive Fiction engine provider detected: " + EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality."));
                 } else {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
+                    findViewById(R.id.engine_provider_status).setVisibility(View.GONE);
+                    findViewById(R.id.engine_provider_suggestion).setVisibility(View.VISIBLE);
                 }
             }
             final String ifid = story.getIFID(StoryDetails.this);
