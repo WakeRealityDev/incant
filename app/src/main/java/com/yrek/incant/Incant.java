@@ -37,8 +37,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.wakereality.incant.AboutAppActivity;
+import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class Incant extends Activity {
     private static final String TAG = Incant.class.getSimpleName();
@@ -70,8 +75,6 @@ public class Incant extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        queryEngineProviders();
 
         setContentView(R.layout.main);
 
@@ -115,7 +118,7 @@ public class Incant extends Activity {
     }
 
 
-    public void queryEngineProviders() {
+    public void queryRemoteStoryEngineProviders() {
         // Query for Interactive Fiction engine providers.
         Intent intent = new Intent();
         // Tell Android to start Thunderword app if not already running.
@@ -286,8 +289,23 @@ public class Incant extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Try to be ready for events incoming before triggering any remote Thunderword activity.
+        if (! EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
+        queryRemoteStoryEngineProviders();
         refreshStoryList();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
 
     private final Runnable refreshStoryList = new Runnable() {
         @Override
@@ -680,4 +698,21 @@ public class Incant extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    /*
+    ================================================================================================
+    SECTION: Incoming background events from BroadcastReceivers and Services
+    These Events serve to allow thread choices of execution and to determine if the app is on-screen
+        If the app is not on screen, this Activity will be closed and the Events will silently
+        be dropped as there are no registered receivers.
+    */
+
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventEngineProviderChange event) {
+        Log.i(TAG, "EventEngineProviderChange, updating refreshStoryList()");
+        refreshStoryList();
+    }
+
 }
