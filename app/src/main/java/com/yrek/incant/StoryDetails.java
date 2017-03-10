@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.phrase.Phrase;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.incant.glk.GlkActivity;
 
@@ -251,7 +252,10 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_suggestion).setVisibility(View.GONE);
-                    ((TextView) findViewById(R.id.engine_provider_status)).setText("Interactive Fiction engine provider detected: " + EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality."));
+                    ((TextView) findViewById(R.id.engine_provider_status)).setText(Phrase.from(getResources(), R.string.engine_provider_detected_named)
+                            .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality.") )
+                            .format()
+                        );
                 } else {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.GONE);
