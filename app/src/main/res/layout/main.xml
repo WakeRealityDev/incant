@@ -38,7 +38,6 @@
           android:layout_height="wrap_content"
           android:padding="6dp"
           android:text="@string/main_intro_button_label0"
-          android:onClick="hideIntroMessageClick"
           />
   </LinearLayout>
 
@@ -63,7 +62,6 @@
             android:layout_height="wrap_content"
             android:padding="6dp"
             android:text="@string/main_top_error_storage_try"
-            android:onClick="storageTryAgainClick"
             />
     </LinearLayout>
 

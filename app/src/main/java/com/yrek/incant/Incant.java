@@ -106,6 +106,20 @@ public class Incant extends Activity {
 
         coverImageCache = new LruCache<String,Bitmap>(10);
 
+        findViewById(R.id.main_top_intro_button_label0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideIntroMessageClick(v);
+            }
+        });
+
+        findViewById(R.id.main_top_error_storage_try).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                storageTryAgainClick(v);
+            }
+        });
+
         if (useStyledIntroStrings) {
             // Android does not seem to have a way to getText() directly from XML, so try here in code.
             ((TextView) findViewById(R.id.main_top_intro_title0)).setText(getText(R.string.main_intro_title0_styled));
