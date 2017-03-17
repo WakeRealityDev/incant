@@ -67,5 +67,6 @@
   <string name="main_top_error_storage_try">[ Try Again ]</string>
 
   <!-- uses Square library Phrase -->
-  <string name="engine_provider_detected_named">Interactive Fiction engine provider detected: <b>{engine}</b></string>
+  <string name="engine_provider_detected_named">Interactive Fiction engine provider: <b>{engine}</b>{extra_a}</string>
+  <string name="engine_provider_detected_extra"> [{quantity} detected]</string>
 </resources>

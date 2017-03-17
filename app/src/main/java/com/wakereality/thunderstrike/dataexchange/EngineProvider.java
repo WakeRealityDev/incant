@@ -10,6 +10,7 @@ public class EngineProvider {
     public String providerAppPackage = null;
     public int providerAppVersionCode = -1;
     public String[] providerEnginesAvailable = {};
+    public String[] providerStoriesBuiltIn = {};
 
     @Override
     public String toString() {

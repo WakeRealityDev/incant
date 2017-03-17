@@ -19,9 +19,11 @@ import android.widget.Toast;
 
 import com.squareup.phrase.Phrase;
 import com.wakereality.thunderstrike.EchoSpot;
+import com.wakereality.thunderstrike.dataexchange.EngineProvider;
 import com.yrek.incant.glk.GlkActivity;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoryDetails extends Activity {
@@ -51,6 +53,17 @@ public class StoryDetails extends Activity {
     protected void onResume() {
         super.onResume();
         setView.run();
+    }
+
+    public static void animateClickedView(final View view) {
+        // Poor man's animation to show visual feedback of click.
+        view.setAlpha(0.2f);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setAlpha(1.0f);
+            }
+        }, 1200L);
     }
 
     public final Runnable setView = new Runnable() {
@@ -252,10 +265,7 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_suggestion).setVisibility(View.GONE);
-                    ((TextView) findViewById(R.id.engine_provider_status)).setText(Phrase.from(getResources(), R.string.engine_provider_detected_named)
-                            .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality.") )
-                            .format()
-                        );
+                    redrawEngineProvider();
                 } else {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.GONE);
@@ -275,6 +285,55 @@ public class StoryDetails extends Activity {
             }
         }
     };
+
+    private void redrawEngineProvider() {
+        CharSequence extraA = "";
+        if (EchoSpot.detectedEngineProviders.size() > 0) {
+            // Phrase library seems to drop the leading space that is in the string resource, so add it back here.
+            extraA = " " + Phrase.from(getResources(), R.string.engine_provider_detected_extra).put("quantity", EchoSpot.detectedEngineProviders.size()).format();
+            // show current index.
+            if (EchoSpot.detectedEngineProviders.size() > 1) {
+                extraA = extraA + "/" + EchoSpot.currentEngineProviderIndex;
+            }
+            ;
+        }
+
+        TextView engineProviderStatus = (TextView) findViewById(R.id.engine_provider_status);
+        engineProviderStatus.setText(Phrase.from(getResources(), R.string.engine_provider_detected_named)
+                .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality.") )
+                .put("extra_a", extraA )
+                .format()
+        );
+        engineProviderStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                            /*
+                            Kind of a mess, but don't want to assign number ID to engines, they are strings and want to allow any value.
+                            Does java have a data structure one can put(StringName, latestValue) over and over and index back out for picking?
+                            I suppose the other option is that every time a new provider is detected build a list of string key indexes into an array and assign an index integer here
+                               on this client app side?
+                             */
+                int newIndex = EchoSpot.currentEngineProviderIndex + 1;
+                if (newIndex >= EchoSpot.detectedEngineProviders.size()) {
+                    // wrap back to zero
+                    newIndex = 0;
+                }
+                EchoSpot.currentEngineProviderIndex = newIndex;
+                int onLoopIndex = 0;
+                for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
+                    EchoSpot.currentEngineProvider = entry.getValue();
+                    if (onLoopIndex == newIndex) {
+                        break;
+                    }
+                    onLoopIndex++;
+                }
+                // ToDo: save to shared preferences?
+                // redraw
+                redrawEngineProvider();
+                animateClickedView(v);
+            }
+        });
+    }
 
     private SpannableStringBuilder makeName() {
         SpannableStringBuilder sb = new SpannableStringBuilder();

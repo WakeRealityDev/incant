@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Incant! EX ⚡⚡</string>
+  <string name="app_name_story_details">Incant! EX ⚡⚡ &gt; Story Details</string>
+  <string name="app_name_story_download">Incant! EX ⚡⚡ &gt; Download Story</string>
+  <string name="activity_name_about_app">Incant! EX ⚡⚡ &gt; About App</string>
+  <string name="action_about_app">About Incant! EX ⚡⚡</string>
+</resources>
