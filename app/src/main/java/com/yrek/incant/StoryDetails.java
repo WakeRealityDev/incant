@@ -20,7 +20,12 @@ import android.widget.Toast;
 import com.squareup.phrase.Phrase;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineProvider;
+import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.incant.glk.GlkActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.Map;
@@ -52,7 +57,18 @@ public class StoryDetails extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (! EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         setView.run();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     public static void animateClickedView(final View view) {
@@ -180,8 +196,21 @@ public class StoryDetails extends Activity {
                         Intent intent = new Intent();
                         // Tell Android to start Thunderword app if not already running.
                         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+
                         // Inform the Engine Provider who to call back.
                         intent.putExtra("sender", BuildConfig.APPLICATION_ID);
+
+                        String targetPackage = "";
+                        // Send to specific selected Engine Provider.
+                        if (EchoSpot.currentEngineProvider != null) {
+                            intent.setPackage(EchoSpot.currentEngineProvider.providerAppPackage);
+                            targetPackage = EchoSpot.currentEngineProvider.providerAppPackage;
+                        }
+
+                        long launchWhen = System.currentTimeMillis();
+                        intent.putExtra("sentwhen", launchWhen);
+
+
                         if (story.isZcode(StoryDetails.this)) {
                             intent.setAction("interactivefiction.engine.zmachine");
                         } else {
@@ -198,7 +227,7 @@ public class StoryDetails extends Activity {
                         }
                         intent.putExtra("path", exportStoryDataFile.getPath());
                         int myLaunchToken = launchToken.incrementAndGet();
-                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity);
+                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
                         // Set default value.
                         if (selectedLaunchActivity == 0) {
                             selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
@@ -366,5 +395,15 @@ public class StoryDetails extends Activity {
 
     public void onProviderInterruptClicked(View view) {
         launchInterruptStory = ((CheckBox) view).isChecked();
+    }
+
+
+    /*
+    Main thread to touch GUI.
+     */
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventEngineProviderChange event) {
+        redrawEngineProvider();
     }
 }
