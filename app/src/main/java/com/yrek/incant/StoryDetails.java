@@ -323,8 +323,7 @@ public class StoryDetails extends Activity {
             // show current index.
             if (EchoSpot.detectedEngineProviders.size() > 1) {
                 extraA = extraA + "/" + EchoSpot.currentEngineProviderIndex;
-            }
-            ;
+            };
         }
 
         TextView engineProviderStatus = (TextView) findViewById(R.id.engine_provider_status);
@@ -333,35 +332,40 @@ public class StoryDetails extends Activity {
                 .put("extra_a", extraA )
                 .format()
         );
-        engineProviderStatus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        // Switch providers with touch if multiple available
+        // ToDo: make this smarter about not picking the one that is already visible on first touch.
+        if (EchoSpot.detectedEngineProviders.size() > 1) {
+            engineProviderStatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                             /*
                             Kind of a mess, but don't want to assign number ID to engines, they are strings and want to allow any value.
                             Does java have a data structure one can put(StringName, latestValue) over and over and index back out for picking?
                             I suppose the other option is that every time a new provider is detected build a list of string key indexes into an array and assign an index integer here
                                on this client app side?
                              */
-                int newIndex = EchoSpot.currentEngineProviderIndex + 1;
-                if (newIndex >= EchoSpot.detectedEngineProviders.size()) {
-                    // wrap back to zero
-                    newIndex = 0;
-                }
-                EchoSpot.currentEngineProviderIndex = newIndex;
-                int onLoopIndex = 0;
-                for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
-                    EchoSpot.currentEngineProvider = entry.getValue();
-                    if (onLoopIndex == newIndex) {
-                        break;
+                    int newIndex = EchoSpot.currentEngineProviderIndex + 1;
+                    if (newIndex >= EchoSpot.detectedEngineProviders.size()) {
+                        // wrap back to zero
+                        newIndex = 0;
                     }
-                    onLoopIndex++;
+                    EchoSpot.currentEngineProviderIndex = newIndex;
+                    int onLoopIndex = 0;
+                    for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
+                        EchoSpot.currentEngineProvider = entry.getValue();
+                        if (onLoopIndex == newIndex) {
+                            break;
+                        }
+                        onLoopIndex++;
+                    }
+                    // ToDo: save to shared preferences?
+                    // redraw
+                    redrawEngineProvider();
+                    animateClickedView(v);
                 }
-                // ToDo: save to shared preferences?
-                // redraw
-                redrawEngineProvider();
-                animateClickedView(v);
-            }
-        });
+            });
+        }
     }
 
     private SpannableStringBuilder makeName() {

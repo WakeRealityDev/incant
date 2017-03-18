@@ -224,6 +224,7 @@
 		  android:layout_width="match_parent"
 		  android:layout_height="wrap_content"
 		  android:orientation="vertical"
+		  android:layout_marginBottom="6dp"
 		  android:visibility="gone"
 		  >
 
@@ -239,13 +240,13 @@
 		  <TextView
 			  android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"
-			  android:text="Thunderword or other engine provider apps have not been detected on your Android system. For additional compatibility and faster perofrmance with some fiction stories, we invite you to install Thunderword app on your system and new options will appear to launch this story to the partner app. Thunderword app pre-release link:"
+			  android:text="@string/engine_none_detected_invite"
 			  />
-		  <!-- ToDo: substitute Amazon app store / F-Droid if Google Play store is not installed on device? -->
+		  <!-- ToDo: substitute Amazon app store / F-Droid if Google Play store is not installed on device? Or a dialog to show multiple choices to encourage open source participation and F-Droid? -->
 		  <TextView
 			  android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"
-			  android:text="https://play.google.com/apps/testing/com.wakereality.thunderword.experimental"
+			  android:text="@string/engine_provider_store_link0"
 			  android:autoLink="web"
 			  android:linksClickable="true"
 			  />
