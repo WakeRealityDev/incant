@@ -336,6 +336,7 @@ public class StoryDetails extends Activity {
         // Switch providers with touch if multiple available
         // ToDo: make this smarter about not picking the one that is already visible on first touch.
         if (EchoSpot.detectedEngineProviders.size() > 1) {
+            Log.v("StoryDetails", "[engineProviderPick] onClick assign, on index " + EchoSpot.currentEngineProviderIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
             engineProviderStatus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -347,6 +348,8 @@ public class StoryDetails extends Activity {
                         // wrap back to zero
                         newIndex = 0;
                     }
+
+                    Log.v("StoryDetails", "[engineProviderPick] click, on index " + EchoSpot.currentEngineProviderIndex + " to " + newIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
 
                     // Match index up to entry.
                     int onLoopIndex = 0;

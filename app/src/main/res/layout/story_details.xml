@@ -206,9 +206,6 @@
 		  android:layout_width="match_parent"
 		  android:layout_height="wrap_content"
 		  android:id="@+id/engine_provider_status"
-		  android:scrollHorizontally="true"
-		  android:ellipsize="marquee"
-		  android:textIsSelectable="true"
 		  />
 	  <TextView
 		  android:layout_width="match_parent"
