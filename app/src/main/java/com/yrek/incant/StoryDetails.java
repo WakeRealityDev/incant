@@ -339,26 +339,27 @@ public class StoryDetails extends Activity {
             engineProviderStatus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                            /*
-                            Kind of a mess, but don't want to assign number ID to engines, they are strings and want to allow any value.
-                            Does java have a data structure one can put(StringName, latestValue) over and over and index back out for picking?
-                            I suppose the other option is that every time a new provider is detected build a list of string key indexes into an array and assign an index integer here
-                               on this client app side?
-                             */
+                    /*
+                    Don't want to assign number ID to engines, they are strings and want to allow any value.
+                     */
                     int newIndex = EchoSpot.currentEngineProviderIndex + 1;
                     if (newIndex >= EchoSpot.detectedEngineProviders.size()) {
                         // wrap back to zero
                         newIndex = 0;
                     }
-                    EchoSpot.currentEngineProviderIndex = newIndex;
+
+                    // Match index up to entry.
                     int onLoopIndex = 0;
                     for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
-                        EchoSpot.currentEngineProvider = entry.getValue();
                         if (onLoopIndex == newIndex) {
+                            EchoSpot.currentEngineProvider = entry.getValue();
+                            Log.w("StoryDetails", "[engineProviderPick] current changed from index " + EchoSpot.currentEngineProviderIndex + " to " + newIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
+                            EchoSpot.currentEngineProviderIndex = newIndex;
                             break;
                         }
                         onLoopIndex++;
                     }
+
                     // ToDo: save to shared preferences?
                     // redraw
                     redrawEngineProvider();

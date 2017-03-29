@@ -37,9 +37,28 @@ public class InteractiveFictionEnginesMetaBroadcastReceiver extends BroadcastRec
                 intent.getStringArrayExtra("stories_built_in_description_EN");
                 intent.getIntArrayExtra("stories_built_in_engine_code");
 
-                // LIFO logic for setting current provider. User controls can pick.
-                EchoSpot.currentEngineProvider = engineProvider;
                 EchoSpot.detectedEngineProviders.put(engineProvider.providerAppPackage, engineProvider);
+
+                if (EchoSpot.currentEngineProvider == null) {
+                    // FIFO logic for setting current provider. User controls can pick.
+                    // This is the first detected, prime the value
+                    EchoSpot.currentEngineProvider = engineProvider;
+                    EchoSpot.currentEngineProviderIndex = 0;
+
+                    Log.w("IFEngineMeta", "[engineProviderPick] FIRST provider detected, setting default for current " + EchoSpot.currentEngineProviderIndex + " size " + EchoSpot.detectedEngineProviders.size() + " " + engineProvider.providerAppPackage + " v" + engineProvider.providerAppVersionCode);
+                } else {
+                    // do nothing and just stay on current provider?
+                    Log.w("IFEngineMeta", "[engineProviderPick] additional provider detected (or refresh), KEEPING current index " + EchoSpot.currentEngineProviderIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size() + " incoming: " + engineProvider.providerAppPackage + " v" + engineProvider.providerAppVersionCode);
+                    /*
+                    for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
+                        if (onLoopIndex == newIndex) {
+                            EchoSpot.currentEngineProvider = entry.getValue();
+                            break;
+                        }
+                        onLoopIndex++;
+                    }
+                    */
+                }
 
                 EventBus.getDefault().post(new EventEngineProviderChange(engineProvider));
 
