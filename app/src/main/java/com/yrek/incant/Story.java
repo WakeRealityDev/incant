@@ -303,14 +303,16 @@ public class Story implements Serializable {
     public static int MAGIC_FILE_BLORB = 0x464f524d;
     public static int MAGIC_FILE_TADS = 1412640105;
 
+    // ToDo: make setting / preference for user.
     public static boolean keepDownloadFiles = true;
 
     protected boolean download(Context context, InputStream inputStream) throws IOException {
         boolean downloaded = false;
         getDir(context).mkdirs();
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
-        String storyNameSanitized = getName(context).replace(" ", "_");
+        String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
         String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+        File endingRenamedTargetFile = null;
         File downloadTargetFile;
         if (!keepDownloadFiles) {
             downloadTargetFile = File.createTempFile("Incant__" +storyNameSanitized + "__", fileExtension, getDir(context));
@@ -359,15 +361,24 @@ public class Story implements Serializable {
                 if (zipEntry == null) {
                     Log.w(TAG, "magic says .zip file, but no target provided. unZip failed on file " + downloadTargetFile);
                 } else {
-                    File tmpEntry = File.createTempFile("tmp", ".zip", getDir(context));
+                    File tmpEntry = File.createTempFile("tmp", ".zipentry", getDir(context));
                     try {
-                        magic = unzipTo(context, downloadTargetFile, tmpEntry);
-                        tmpEntry.renameTo(downloadTargetFile);
+                        // Replace magic with the internal file magic.
+                        magic = unzipTo(context, downloadTargetFile, tmpEntry, zipEntry);
+                        // tmpEntry.renameTo(downloadTargetFile);
+                        fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(zipEntry);
+                        storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+                        Log.d(TAG, "zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " totalname: " + storyNameTotal);
+
+                        // We no longer want the shell, the zip, but the nut inside the shell.
+                        downloadTargetFile = tmpEntry;
                     } catch (Exception e) {
                         Log.w(TAG, "unZip failed on file " + downloadTargetFile, e);
                     } finally {
                         if (tmpEntry.exists()) {
-                            tmpEntry.delete();
+                            if (!keepDownloadFiles) {
+                                tmpEntry.delete();
+                            }
                         }
                     }
                 }
@@ -376,16 +387,17 @@ public class Story implements Serializable {
             if (magic == MAGIC_FILE_GLULX0) {
                 downloadTargetFile.renameTo(getGlulxFile(context));
                 downloaded = true;
+                endingRenamedTargetFile = getGlulxFile(context);
             } else if ((magic >> 24) >= 3 && (magic >> 24) <= 8) {
                 downloadTargetFile.renameTo(getZcodeFile(context));
                 downloaded = true;
+                endingRenamedTargetFile = getZcodeFile(context);
             } else if (magic == MAGIC_FILE_BLORB) {
-                if (!keepDownloadFiles) {
-                    downloadTargetFile.renameTo(getBlorbFile(context));
-                }
+                downloadTargetFile.renameTo(getBlorbFile(context));
+                endingRenamedTargetFile = getBlorbFile(context);
                 Blorb blorb = null;
                 try {
-                    blorb = Blorb.from(downloadTargetFile);
+                    blorb = Blorb.from(endingRenamedTargetFile);
                     int coverImage = -1;
                     for (Blorb.Chunk chunk : blorb.chunks()) {
                         switch (chunk.getId()) {
@@ -417,7 +429,7 @@ public class Story implements Serializable {
                         }
                     }
 
-                    boolean isGlulxStory = false;
+                    int isZCodeGlulxStory = 0;
                     for (Blorb.Resource res : blorb.resources()) {
                         Blorb.Chunk chunk = res.getChunk();
                         if (chunk == null) {
@@ -426,10 +438,11 @@ public class Story implements Serializable {
                         switch (res.getUsage()) {
                         case Blorb.Exec:
                             if (chunk.getId() == Blorb.ZCOD) {
+                                isZCodeGlulxStory = 1;
                                 writeBlorbChunk(context, chunk, getZcodeFile(context));
                                 downloaded = true;
                             } else if (chunk.getId() == Blorb.GLUL) {
-                                isGlulxStory = true;
+                                isZCodeGlulxStory = 2;
                                 writeBlorbChunk(context, chunk, getGlulxFile(context));
                                 downloaded = true;
                             }
@@ -443,11 +456,22 @@ public class Story implements Serializable {
                         }
                     }
                     if (keepDownloadFiles) {
-                        boolean goodFileCopy = FileCopy.copyFile(downloadTargetFile, new File(getDownloadKeepDir(context), storyNameTotal));
-                        if (!goodFileCopy) {
-                            Log.e(TAG, "file copy failed for duplicate " + downloadTargetFile);
+                        if (fileExtension.equals(".blorb")) {
+                            // Salvage precise extension out of generic blorb?
+                            switch (isZCodeGlulxStory) {
+                                case 0:
+                                    // do nothing, we only know it is blorb
+                                    break;
+                                case 1:
+                                    fileExtension = ".zblorb";
+                                    storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+                                    break;
+                                case 2:
+                                    fileExtension = ".gblorb";
+                                    storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+                                    break;
+                            }
                         }
-                        downloadTargetFile.renameTo(getBlorbFile(context, name /*, isGlulxStory */));
                     }
                 } finally {
                     if (blorb != null) {
@@ -459,7 +483,7 @@ public class Story implements Serializable {
             }
             else
             {
-                Log.w(TAG, "download unmatched magic " + magic);
+                Log.w(TAG, "[storyFileShare] download unmatched magic " + magic);
             }
         } finally {
             if (downloadTargetFile.exists()) {
@@ -467,6 +491,18 @@ public class Story implements Serializable {
                     downloadTargetFile.delete();
                 }
             }
+
+            if (downloaded) {
+                boolean goodFileCopy = FileCopy.copyFile(endingRenamedTargetFile, new File(getDownloadKeepDir(context), storyNameTotal));
+                if (!goodFileCopy) {
+                    Log.e(TAG, "[storyFileShare] file copy failed for duplicate " + downloadTargetFile);
+                } else {
+                    Log.d(TAG, "[storyFileShare] file copy for duplicate to share " + downloadTargetFile);
+                }
+            } else {
+                Log.w(TAG, "[storyFileShare] downloaded false");
+            }
+
             if (!downloaded) {
                 delete(context);
             }
@@ -492,11 +528,11 @@ public class Story implements Serializable {
         return downloaded;
     }
 
-    protected int unzipTo(Context context, File zipFile, File file) throws IOException {
+    protected int unzipTo(Context context, File zipFile, File file, String zipPayloadDesiredFilename) throws IOException {
         InputStream in = null;
         try {
             ZipFile zf = new ZipFile(zipFile);
-            in = zf.getInputStream(zf.getEntry(zipEntry));
+            in = zf.getInputStream(zf.getEntry(zipPayloadDesiredFilename));
             FileOutputStream out = null;
             int magic = 0;
             try {

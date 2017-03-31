@@ -30,11 +30,21 @@ public class StoryHelper {
         stories.add(story);
     }
 
-    public static String getUsefulFileExtensionFromURL(URL inUrl){
+
+    public static String getUsefulFileExtensionFromURL(URL inUrl) {
         if (inUrl == null)
             return "tmp";
 
-        String simpleString = inUrl.toString().toLowerCase(Locale.US);
+        String simpleString = inUrl.toString();
+        return getUsefulFileExtensionFromURL(simpleString);
+    }
+
+    public static String getUsefulFileExtensionFromURL(String inUrl) {
+        if (inUrl == null)
+            return "tmp";
+
+        String simpleString = inUrl.toLowerCase(Locale.US);
+
         if (simpleString.endsWith(".zblorb")) {
             return "zblorb";
         } else if (simpleString.endsWith(".gblorb")) {
