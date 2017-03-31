@@ -1,6 +1,7 @@
 package com.yrek.incant;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -493,11 +494,21 @@ public class Story implements Serializable {
             }
 
             if (downloaded) {
-                boolean goodFileCopy = FileCopy.copyFile(endingRenamedTargetFile, new File(getDownloadKeepDir(context), storyNameTotal));
+                File keepFile = new File(getDownloadKeepDir(context), storyNameTotal);
+                boolean goodFileCopy = FileCopy.copyFile(endingRenamedTargetFile, keepFile);
                 if (!goodFileCopy) {
                     Log.e(TAG, "[storyFileShare] file copy failed for duplicate " + downloadTargetFile);
                 } else {
                     Log.d(TAG, "[storyFileShare] file copy for duplicate to share " + downloadTargetFile);
+                    // Notify all interested apps that there is a new file to add to their records.
+                    Intent shareDownloadIntent = new Intent();
+                    // Tell Android to start Thunderword app if not already running.
+                    shareDownloadIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    shareDownloadIntent.setAction("interactivefiction.enginemeta.storydownloaded");
+                    shareDownloadIntent.putExtra("sentwhen", System.currentTimeMillis());
+                    shareDownloadIntent.putExtra("sender", BuildConfig.APPLICATION_ID);
+                    shareDownloadIntent.putExtra("file", keepFile);
+                    context.sendBroadcast(shareDownloadIntent);
                 }
             } else {
                 Log.w(TAG, "[storyFileShare] downloaded false");
