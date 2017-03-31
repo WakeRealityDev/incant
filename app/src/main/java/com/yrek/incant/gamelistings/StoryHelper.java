@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.yrek.incant.Story;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Stephen A. Gutknecht on 9/14/16.
@@ -26,6 +28,32 @@ public class StoryHelper {
         }
         story.setListingExtras(category0);
         stories.add(story);
+    }
+
+    public static String getUsefulFileExtensionFromURL(URL inUrl){
+        if (inUrl == null)
+            return "tmp";
+
+        String simpleString = inUrl.toString().toLowerCase(Locale.US);
+        if (simpleString.endsWith(".zblorb")) {
+            return "zblorb";
+        } else if (simpleString.endsWith(".gblorb")) {
+            return "gblorb";
+        } else if (simpleString.endsWith(".ulx")) {
+            return "ulx";
+        } else if (simpleString.endsWith(".z5")) {
+            return "z5";
+        } else if (simpleString.endsWith(".z3")) {
+            return "z3";
+        } else if (simpleString.endsWith(".z8")) {
+            return "z8";
+        } else if (simpleString.endsWith(".blb")) {
+            return "blorb";
+        } else if (simpleString.endsWith(".zip")) {
+            return "zip";
+        }
+
+        return "unknown";
     }
 }
 

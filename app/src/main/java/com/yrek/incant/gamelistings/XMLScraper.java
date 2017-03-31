@@ -1,5 +1,8 @@
 package com.yrek.incant.gamelistings;
 
+import android.util.Log;
+import android.util.Xml;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -65,7 +68,30 @@ public class XMLScraper {
         InputStream in = null;
         try {
             in = new URL(url).openStream();
-            parser.parse(in, defaultHandler);
+            boolean retry = false;
+            try {
+                android.util.Xml.parse(in, Xml.Encoding.UTF_8, defaultHandler);
+            } catch (Exception e) {
+                Log.w("[XMLParseA] XMLScraper", "failed url " + url, e);
+                retry = true;
+            }
+
+            if (retry) {
+                in.close();
+                in = new URL(url).openStream();
+                retry = false;
+                try {
+                    android.util.Xml.parse(in, Xml.Encoding.ISO_8859_1, defaultHandler);
+                    Log.w("XMLScraper", "[XMLParseA] retry worked! url " + url);
+                } catch (Exception e) {
+                    Log.w("XMLScraper", "[XMLParseA] failed 2nd method url " + url, e);
+                    retry = true;
+                }
+            }
+
+
+            // Exception problems on unicode links such as http://ifdb.tads.org/dladviser?xml&os=MacOSX&id=4z9yijaspsxbhfep
+            // parser.parse(in, defaultHandler);
         } finally {
             if (in != null) {
                 in.close();
