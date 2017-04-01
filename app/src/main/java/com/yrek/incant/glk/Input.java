@@ -73,15 +73,15 @@ public class Input {
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
             speechRecognizer.setRecognitionListener(recognitionListener);
             recognizerReady = true;
-            usingKeyboard = false;
-            usingKeyboardDone = false;
-            doingInput = false;
-            waitingForEvent = false;
         }
         else
         {
             recognitionAvailable = false;
         }
+        usingKeyboard = false;
+        usingKeyboardDone = false;
+        doingInput = false;
+        waitingForEvent = false;
     }
 
     public void onStop() {
@@ -92,11 +92,11 @@ public class Input {
     }
 
     public int getCharInput(long timeout) throws InterruptedException {
-        Log.d(TAG,"start getCharInput");
+        Log.d(TAG, "[singleChar] start getCharInput");
         usingKeyboard = false;
         usingKeyboardDone = false;
         recognizeSpeech(timeout);
-        Log.d(TAG,"getCharInput:"+inputCharResults);
+        Log.d(TAG, "[singleChar] getCharInput: " + inputCharResults);
         return inputCharResults;
     }
 
@@ -185,7 +185,7 @@ public class Input {
     }
 
     private void recognizeSpeech(long timeout) throws InterruptedException {
-        Log.d(TAG,"recognizeSpeech:timeout="+timeout);
+        Log.d(TAG, "recognizeSpeech:timeout="+timeout);
 
         if (SettingsCurrent.getSpeechRecognizerMute())
         {

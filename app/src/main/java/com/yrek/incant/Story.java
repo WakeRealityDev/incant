@@ -501,6 +501,7 @@ public class Story implements Serializable {
                 } else {
                     Log.d(TAG, "[storyFileShare] file copy for duplicate to share " + downloadTargetFile);
                     // Notify all interested apps that there is a new file to add to their records.
+                    //  NOTE: For Thunderword, an alternate to sending this broadcast action ("interactivefiction.enginemeta.storydownloaded") is to send a command-code OUTSIDE_APP_NOTIFIED_NEW_STORY_FILE_DOWNLOAD = 96000
                     Intent shareDownloadIntent = new Intent();
                     // Tell Android to start Thunderword app if not already running.
                     shareDownloadIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);

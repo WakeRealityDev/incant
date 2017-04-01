@@ -29,8 +29,9 @@
        android:layout_height="80dp"
        android:id="@+id/play"
        android:text="@string/play"
-       android:textSize="15sp"
+       android:textSize="16sp"
        android:gravity="center"
+       android:background="#C5E1A5"
        />
     <LinearLayout
         android:id="@+id/play_via_external_engine_provider_container"
