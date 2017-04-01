@@ -56,7 +56,7 @@ A suggested developer ToDo list:
 Developers are welcome to hack on this.
 
 1. Add a welcome screen, brief help/about screen. (PARTIALLY done, now has a welcome message at top of list)
-2. rework the keyboard input so it's more friendly. Right now it's kind of klunky because if the story wants you to press space you have to enter a [space] then press [return] to get it into the Glulx interpreter.  For some games, you need to be able to actually put [return] into the Glulx engine - "In Bronze I couldn't activate a help menu item because pressing enter didn't send the enter to the game."
+2. rework the keyboard input so it's more friendly. ~~Right now it's kind of klunky because if the story wants you to press space you have to enter a [space] then press [return] to get it into the Glulx interpreter.~~  For some games, you need to be able to actually put [return] into the Glulx engine - "In Bronze I couldn't activate a help menu item because pressing enter didn't send the enter to the game."
 3. A file picker so people could browse files and load games that they wish instead of the current live-download only model.
 ~~4. Menu working but not saved, must be set each app start. Persist.~~ DONE!
 5. Extensively test it and identify what works and what does not, what Glk features are missing, etc.
@@ -67,7 +67,7 @@ Developers are welcome to hack on this.
 10. Sending story files to Thunderword, add content provider for secure exchange and to avoid /sdcard/ path usage. Suggest library: https://github.com/commonsguy/cwac-provider
 11. Thunderword screen size ~~and layout (Activity) picking~~ (DONE) for user interface.
 12. Some way to pick story files other than download/open (outside app) or internal picking off list. Similarly scan folders / storage for stories.
-13. Incant does not preserve the file extensions when downloading off it's list, so it makes sharing the downloaded stories nearly impossible to find for outside apps searching the storage.
+13. ~~Incant does not preserve the file extensions when downloading off it's list, so it makes sharing the downloaded stories nearly impossible to find for outside apps searching the storage.~~ Copy is made in a Keep folder.
 
 
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075
