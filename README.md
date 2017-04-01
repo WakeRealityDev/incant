@@ -30,7 +30,8 @@ Once you start a game
 Incant is built for speech interface, so non-speech isn't always intuitive.
 
 1. At the very bottom right there is a dim [Keyboard] button to activate. Sometimes it disappears, but press around bottom right.
-2. Prompts to [press space] in Six and other games require you to do [space] then [enter]. Just an artifact of it being created for speech recognition and some work could be done to make this easier on players.
+
+From review of the source code, there are special phrases recognized: "enter", "enter ", "open keyboard", "delete word", "space", "backspace".
 
 
 The Game Six shows off features

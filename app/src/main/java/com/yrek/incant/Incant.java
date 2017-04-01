@@ -122,10 +122,14 @@ public class Incant extends Activity {
 
         if (useStyledIntroStrings) {
             // Android does not seem to have a way to getText() directly from XML, so try here in code.
-            ((TextView) findViewById(R.id.main_top_intro_title0)).setText(getText(R.string.main_intro_title0_styled));
-            ((TextView) findViewById(R.id.main_top_intro_message0)).setText(getText(R.string.main_intro_message0_styled));
-            // ((TextView) findViewById(R.id.main_top_intro_message1)).setText(getText(R.string.main_intro_message1_styled));
-            ((TextView) findViewById(R.id.main_top_intro_message1)).setVisibility(View.GONE);
+            TextView main_top_intro_title0 = (TextView) findViewById(R.id.main_top_intro_title0);
+            main_top_intro_title0.setText(getText(R.string.main_intro_title0_styled));
+            // Android does not seem to have a way to word-wrap two textviews next to each other, so just append to the same textview and it will word-wrap to fit screen width.
+            main_top_intro_title0.append(". ");
+            main_top_intro_title0.append(getText(R.string.main_intro_message0_styled));
+
+            findViewById(R.id.main_top_intro_message0).setVisibility(View.GONE);
+            findViewById(R.id.main_top_intro_message1).setVisibility(View.GONE);
         }
 
         showOnScreenListingDebug = spref.getBoolean("onscreen_debug", false);
