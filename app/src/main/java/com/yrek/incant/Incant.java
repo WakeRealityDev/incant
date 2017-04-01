@@ -470,6 +470,29 @@ public class Incant extends Activity {
         }
 
 
+        public class ListingViewHolder {
+            public TextView name;
+            public TextView author;
+            public TextView description;
+            public TextView storyExtra0;
+
+            public void populateFromContainer(ViewGroup container) {
+                name = (TextView) container.findViewById(R.id.name);
+                author = (TextView) container.findViewById(R.id.author);
+                description = (TextView) container.findViewById(R.id.description);
+                storyExtra0 = (TextView) container.findViewById(R.id.storyextra0);
+            }
+
+            public void clearAllViews() {
+                name.setText("");
+                author.setText("");
+                description.setText("");
+                storyExtra0.setText("");
+            }
+        }
+
+        ListingViewHolder scrapeMoreViewHolder = new ListingViewHolder();
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final Story story = getItem(position);
@@ -486,6 +509,8 @@ public class Incant extends Activity {
             final View info = convertView.findViewById(R.id.info);
             cover.setTag(null);
             progressBar.setVisibility(View.GONE);
+            final View finalConvertView1 = convertView;
+
             if (story == null) {
                 info.setVisibility(View.GONE);
                 play.setVisibility(View.GONE);
@@ -506,7 +531,6 @@ public class Incant extends Activity {
                         download.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                         download.setText(R.string.scrape);
-                        final View finalConvertView1 = convertView;
                         convertView.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(View v) {
                                 Log.d(TAG, "[downloadStory] OnClick SPOT_B (scrape fetch)");
@@ -515,10 +539,10 @@ public class Incant extends Activity {
                                 progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
                                 info.setVisibility(View.VISIBLE);
                                 // Idea: could use EventBus to update these with each web fetch
-                                ((TextView) finalConvertView1.findViewById(R.id.name)).setText("Searching for more stories...");
-                                ((TextView) finalConvertView1.findViewById(R.id.author)).setText("");
-                                ((TextView) finalConvertView1.findViewById(R.id.description)).setText("");
-                                ((TextView) finalConvertView1.findViewById(R.id.storyextra0)).setText("");
+                                scrapeMoreViewHolder.populateFromContainer((ViewGroup) finalConvertView1);
+                                scrapeMoreViewHolder.clearAllViews();
+                                scrapeMoreViewHolder.name.setText("Searching for more stories...");
+
                                 synchronized (downloading) {
                                     downloading.add("");
                                     setDownloadingObserver();
@@ -545,10 +569,12 @@ public class Incant extends Activity {
                 }
             } else {
                 info.setVisibility(View.VISIBLE);
-                ((TextView) convertView.findViewById(R.id.name)).setText(makeName(story));
-                ((TextView) convertView.findViewById(R.id.author)).setText(makeAuthor(story));
-                ((TextView) convertView.findViewById(R.id.description)).setText(makeDescription(story));
-                ((TextView) convertView.findViewById(R.id.storyextra0)).setText(makeStoryExtra0(story));
+                ListingViewHolder listingViewHolder = new ListingViewHolder();
+                listingViewHolder.populateFromContainer((ViewGroup) finalConvertView1);
+                listingViewHolder.name.setText(makeName(story));
+                listingViewHolder.author.setText(makeAuthor(story));
+                listingViewHolder.description.setText(makeDescription(story));
+                listingViewHolder.storyExtra0.setText(makeStoryExtra0(story));
                 convertView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override public boolean onLongClick(View v) {
                         Log.d(TAG, "OnLongClick SPOT_A");

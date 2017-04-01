@@ -53,6 +53,7 @@ public class IFDBScraper extends Scraper {
                 String extraURL;
                 String zipFile;
                 String format;
+                String stars;
 
                 @Override public void startDocument() {
                     name = null;
@@ -61,12 +62,14 @@ public class IFDBScraper extends Scraper {
                     extraURL = null;
                     zipFile = null;
                     format = null;
+                    stars = null;
                 }
 
                 @Override public void endDocument() {
-                    Log.d(TAG,"[cacheFile] name="+name+",author="+author+",url="+url+",extraURL="+extraURL+",zipFile="+zipFile+",format="+format);
+                    Log.d(TAG,"[IFDBScraper][cacheFile] name="+name+",author="+author+",url="+url+",extraURL="+extraURL+",zipFile="+zipFile+",format="+format+",stars="+stars);
                     try {
                         if (name == null) {
+                            Log.d(TAG, "[IFDBScraper][skipScrape] name=null url " + url);
                         } else if (url != null && url.matches(patternMatchA)) {
                             writeStory(out, name, author, url, null, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
                         } else if (zipFile != null && zipFile.matches(patternMatchA)) {
@@ -74,7 +77,7 @@ public class IFDBScraper extends Scraper {
                         }
                         else
                         {
-                            Log.d(TAG, "skip url " + url);
+                            Log.d(TAG, "[IFDBScraper][skipScrape] url " + url);
                         }
                     } catch (Exception e) {
                         Log.wtf(TAG,e);
