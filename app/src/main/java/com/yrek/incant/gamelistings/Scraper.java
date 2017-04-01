@@ -74,7 +74,9 @@ public abstract class Scraper {
                         Log.w(TAG, "MalformedURLException a:" + imageURLdata, e);
                     }
                 }
-                Story newStory = new Story(name, author.length() == 0 ? null : author, null, null, zzzz, zipFile.length() == 0 ? null : zipFile, imageUrl);
+                String cleanedUpName = name.trim().replace("_", " ");
+                Log.d(TAG, "[storyName] setting name from XML '" + name + "'" + " to '" + cleanedUpName + "'");
+                Story newStory = new Story(cleanedUpName, author.length() == 0 ? null : author, null, null, zzzz, zipFile.length() == 0 ? null : zipFile, imageUrl);
                 StoryHelper.addStory(context, newStory, stories, addCategory);
             }
         } catch (FileNotFoundException e) {
@@ -84,6 +86,7 @@ public abstract class Scraper {
             Log.w(TAG, "EOFException");
         } catch (MalformedURLException e) {
             // This entry seems to trigger: http://www.allthingsjacq.com/IntroComp15/
+            // ToDo: this logic aborts the entire loop if one goes bad? move exception earlier?
             Log.w(TAG, "MalformedURLException", e);
         } finally {
             if (in != null) {

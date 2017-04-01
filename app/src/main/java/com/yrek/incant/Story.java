@@ -66,20 +66,20 @@ public class Story implements Serializable {
         {
             if (title.length() > 0)
             {
-                // Log.v(TAG, "Story getName changing: " + name + " to: " + title);
+                Log.v(TAG, "[storyName] Story getName changing: " + name + " to: " + title);
                 return title;
             }
             else
             {
-                // Log.w(TAG, "Story getName notitle: " + name);
+                Log.w(TAG, "[storyName] Story getName notitle: " + name);
                 Metadata m = getMetadata(context);
                 if (m != null) {
-                    // Log.d(TAG, "getName " + name + " m.title " + m.title);
+                    Log.d(TAG, "[storyName] getName " + name + " m.title " + m.title);
                     return m.title;
                 }
                 else
                 {
-                    // Log.w(TAG, "Story getName no title no metadata: " + name);
+                    Log.w(TAG, "[storyName] Story getName no title no metadata: " + name);
                 }
             }
         }
