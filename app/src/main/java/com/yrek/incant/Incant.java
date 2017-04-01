@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -491,7 +492,7 @@ public class Incant extends Activity {
                 cover.setVisibility(View.GONE);
                 convertView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override public boolean onLongClick(View v) {
-                        Log.d(TAG, "OnLongClick SPOT_B");
+                        Log.d(TAG, "[downloadStory] OnLongClick SPOT_B");
                         startActivity(new Intent(Incant.this, StoryDownload.class));
                         return true;
                     }
@@ -507,14 +508,14 @@ public class Incant extends Activity {
                         download.setText(R.string.scrape);
                         convertView.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(View v) {
-                                Log.d(TAG, "OnClick SPOT_B");
+                                Log.d(TAG, "[downloadStory] OnClick SPOT_B");
                                 download.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.VISIBLE);
                                 synchronized (downloading) {
                                     downloading.add("");
                                     setDownloadingObserver();
                                 }
-                                new Thread() {
+                                Thread downloadWorker = new Thread() {
                                     @Override public void run() {
                                         try {
                                             storyLister.scrape();
@@ -526,7 +527,10 @@ public class Incant extends Activity {
                                             downloading.notifyAll();
                                         }
                                     }
-                                }.start();
+                                };
+                                downloadWorker.setName("DownloadWorker");
+                                downloadWorker.start();
+
                             }
                         });
                     }
@@ -599,11 +603,13 @@ public class Incant extends Activity {
                         } else {
                             download.setVisibility(View.VISIBLE);
                             download.setText(R.string.download);
+                            final View finalConvertView = convertView;
                             convertView.setOnClickListener(new View.OnClickListener() {
                                 @Override public void onClick(final View v) {
-                                    Log.d(TAG, "OnClick SPOT_D download");
+                                    Log.d(TAG, "[downloadStory] OnClick SPOT_D download");
                                     download.setVisibility(View.GONE);
                                     progressBar.setVisibility(View.VISIBLE);
+                                    progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
                                     synchronized (downloading) {
                                         downloading.add(storyName);
                                         setDownloadingObserver();
