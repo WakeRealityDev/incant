@@ -42,6 +42,8 @@
   <string name="action_settings">Settings</string>
   <string name="action_profile">Profile Performance</string>
   <string name="action_speech_input_beepmute">Speech In Beep Mute</string>
+  <string name="action_onscreen_debug">Show Debug</string>
+  <string name="action_glk_auto_enter_char_input">Auto enter char</string>
 
   <string name="play_via_external_engine_provider">Via Thunderword</string>
   <string name="app_website_link0">http://www.WakeReality.com</string>
@@ -59,7 +61,6 @@
   <string name="main_intro_message0_styled">Pick from the list to download stories, or you can use Chrome / Firefox /  other web browsers to download and open story files. This is open source, free software, published on GitHub.com. Thank you!  <b>TIP:</b> Long-press entries to access additional options, including <i>Thunderword</i> launch.</string>
   <string name="main_intro_message1_styled"></string>
   <string name="main_intro_button_label0">[ Hide this message ]</string>
-  <string name="action_onscreen_debug">Show Debug</string>
 
   <string name="external_provider_noprompt">Interrupt story</string>
   <string name="external_provider_activity_label">Activity</string>
@@ -72,5 +73,4 @@
   <!-- uses Square library Phrase -->
   <string name="engine_provider_detected_named">Interactive Fiction engine provider: <b>{engine}</b>{extra_a}</string>
   <string name="engine_provider_detected_extra"> [{quantity} detected]</string>
-  <string name="action_glk_auto_enter_char_input">Auto enter char</string>
 </resources>
