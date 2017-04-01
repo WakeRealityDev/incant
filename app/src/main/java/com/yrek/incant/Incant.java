@@ -663,6 +663,7 @@ public class Incant extends Activity {
         menu.getItem(2).setChecked(SettingsCurrent.getSpeechRecognizerMute());
         menu.getItem(3).setChecked(SettingsCurrent.getSpeechEnabled());
         menu.getItem(4).setChecked(showOnScreenListingDebug);
+        menu.getItem(5).setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
         return true;
     }
 
@@ -705,6 +706,11 @@ public class Incant extends Activity {
                 showOnScreenListingDebug = ! showOnScreenListingDebug;
                 sprefEditor.putBoolean("onscreen_debug", showOnScreenListingDebug);
                 recreate();
+                break;
+            case R.id.action_glk_auto_enter_char_input:
+                SettingsCurrent.flipEnableAutoEnterOnGlkCharInput();
+                item.setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
+                sprefEditor.putBoolean("glk_auto_enter_char", SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
                 break;
         }
 

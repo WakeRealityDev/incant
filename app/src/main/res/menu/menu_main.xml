@@ -40,6 +40,13 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/action_glk_auto_enter_char_input"
+        android:orderInCategory="50"
+        android:title="@string/action_glk_auto_enter_char_input"
+        android:checkable="true"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about_app"
         android:orderInCategory="90"
         android:title="@string/action_about_app"

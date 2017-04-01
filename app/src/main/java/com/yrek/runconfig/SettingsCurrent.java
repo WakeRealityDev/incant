@@ -41,6 +41,7 @@ public class SettingsCurrent {
     private static boolean speechEnabled = false;
     private static boolean speechRecognizerMute = false;
     private static boolean interpreterProfileEnabled = true;
+    private static boolean enableAutoEnterOnGlkCharInput = true;
 
     public static boolean getSpeechRecognizerEnabled() {
         return speechRecognizerEnabled;
@@ -81,6 +82,10 @@ public class SettingsCurrent {
         speechRecognizerMute = ! speechRecognizerMute;
     }
 
+    public static void flipEnableAutoEnterOnGlkCharInput() {
+        enableAutoEnterOnGlkCharInput = ! enableAutoEnterOnGlkCharInput;
+    }
+
     public static boolean getInterpreterProfileEnabled() {
         return interpreterProfileEnabled;
     }
@@ -103,5 +108,9 @@ public class SettingsCurrent {
 
     public static void setSpeechRecognizerMute(boolean setSpeechRecognizerMute) {
         speechRecognizerMute = setSpeechRecognizerMute;
+    }
+
+    public static boolean getEnableAutoEnterOnGlkCharInput() {
+        return enableAutoEnterOnGlkCharInput;
     }
 }

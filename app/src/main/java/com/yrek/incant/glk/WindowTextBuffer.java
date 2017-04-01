@@ -189,7 +189,9 @@ class WindowTextBuffer extends Window {
         } else if (charEventRequested) {
             activity.hideProgressBar();
             activity.speech.resetSkip();
+            Log.i(TAG, "[storyInput][singleChar] calling getCharInput with timeout " + timeout);
             int ch = activity.input.getCharInput(timeout);
+            Log.i(TAG, "[storyInput][singleChar] after getCharInput got " + ch);
             if (ch == 0) {
                 return null;
             }

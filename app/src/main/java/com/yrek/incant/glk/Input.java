@@ -9,6 +9,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -91,25 +92,82 @@ public class Input {
         }
     }
 
+    protected String singleChar = "";
+
     public int getCharInput(long timeout) throws InterruptedException {
-        Log.d(TAG, "[singleChar] start getCharInput");
+        Log.d(TAG, "[storyInput][singleChar] start getCharInput");
+
+        singleChar = "";
+        TextWatcher singleKeystrokeWatcher = null;
+        if (! SettingsCurrent.getSpeechRecognizerEnabled()) {
+            if (SettingsCurrent.getEnableAutoEnterOnGlkCharInput()) {
+                singleKeystrokeWatcher = new TextWatcher() {
+                    boolean simulateEnterOnce = false;
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        Log.d(TAG, "[storyInput][singleChar] afterTextChanged starting");
+                        singleChar = s.toString();
+                        switch (1) {
+                            case 0:
+                                Log.d(TAG, "[storyInput][singleChar] afterTextChanged calling recognitionListener notify() '" + singleChar + "'");
+                                synchronized (recognitionListener) {
+                                    usingKeyboardDone = true;
+                                    recognitionListener.notify();
+                                }
+                                Log.d(TAG, "[storyInput][singleChar] afterTextChanged after call recognitionListener notify()");
+                                break;
+                            case 1:
+                                if (!simulateEnterOnce) {
+                                    if (!singleChar.isEmpty()) {
+                                        Log.d(TAG, "[storyInput][singleChar] afterTextChanged simulating enter press '" + singleChar + "'");
+                                        simulateEnterOnce = true;
+                                        KeyEvent enterEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0, 0);
+                                        enterEvent.dispatch(editText);
+                                    } else {
+                                        Log.d(TAG, "[storyInput][singleChar] afterTextChanged got empty, doing nothing.");
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                };
+                Log.v(TAG, "[storyInput][singleChar] adding addTextChangedListener");
+                editText.addTextChangedListener(singleKeystrokeWatcher);
+            }
+        }
+
         usingKeyboard = false;
         usingKeyboardDone = false;
         recognizeSpeech(timeout);
-        Log.d(TAG, "[singleChar] getCharInput: " + inputCharResults);
+
+        if (singleKeystrokeWatcher != null) {
+            editText.removeTextChangedListener(singleKeystrokeWatcher);
+        }
+
+        Log.d(TAG, "[storyInput][singleChar] getCharInput: " + inputCharResults);
         return inputCharResults;
     }
 
     public String getInput(long timeout) throws InterruptedException {
-        Log.d(TAG,"start getInput");
+        Log.d(TAG,"[storyInput] start getInput");
         usingKeyboard = false;
         usingKeyboardDone = false;
         recognizeSpeech(timeout);
-        Log.d(TAG,"getInput:"+inputLineResults);
+        Log.d(TAG,"[storyInput] getInput:"+inputLineResults);
         return inputLineResults;
     }
 
     public void waitForEvent(long timeout) throws InterruptedException {
+        Log.d(TAG,"[storyInput] start waitForEvent");
         synchronized (recognitionListener) {
             waitingForEvent = true;
             if (timeout > 0) {
@@ -119,9 +177,11 @@ public class Input {
             }
             waitingForEvent = false;
         }
+        Log.d(TAG,"[storyInput] end waitForEvent");
     }
 
     public void cancelInput() {
+        Log.d(TAG,"[storyInput] start cancelInput");
         synchronized (recognitionListener) {
             if (doingInput || waitingForEvent) {
                 inputCanceled = true;
@@ -132,6 +192,7 @@ public class Input {
 
     // Must be called in UI thread.
     public boolean pasteInput(CharSequence text) {
+        Log.d(TAG,"[storyInput] start pasteInput");
         synchronized (recognitionListener) {
             if (!doingInput) {
                 return false;
@@ -168,8 +229,10 @@ public class Input {
 
     // Must be called in UI thread.
     public boolean enter() {
+        Log.d(TAG,"[storyInput] start enter");
         synchronized (recognitionListener) {
             if (!doingInput || !usingKeyboard || usingKeyboardDone) {
+                Log.i(TAG, "[storyInput] enter() returning false");
                 return false;
             }
             inputLineResults = editText.getText().toString();
@@ -180,16 +243,19 @@ public class Input {
                 usingKeyboardDone = true;
                 recognitionListener.notify();
             }
+            Log.i(TAG, "[storyInput] enter() returning true");
             return true;
         }
     }
 
     private void recognizeSpeech(long timeout) throws InterruptedException {
-        Log.d(TAG, "recognizeSpeech:timeout="+timeout);
+        String tracePathA = "";
+        Log.d(TAG, "[storyInput] recognizeSpeech:timeout="+timeout);
 
         if (SettingsCurrent.getSpeechRecognizerMute())
         {
-            Log.w(TAG, "Muting STREAM_MUSIC so beep doesn't happen on speech recognition");
+            tracePathA += "A";
+            Log.w(TAG, "[storyInput] Muting STREAM_MUSIC so beep doesn't happen on speech recognition");
             // http://stackoverflow.com/questions/21701432/continues-speech-recognition-beep-sound-after-google-search-update
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -199,63 +265,95 @@ public class Input {
             }
         }
         long timeoutTime = System.currentTimeMillis() + timeout;
+        tracePathA += "B";
         synchronized (recognitionListener) {
             inputLineResults = null;
             inputCharResults = 0;
             doingInput = true;
             inputCanceled = false;
             if (speechRecognizer != null) {
+                tracePathA += "C";
                 editText.post(showKeyboardButton);
-                Log.d(TAG,"speech waiting for recognizerReady 1");
+                Log.d(TAG,"[storyInput] speech waiting for recognizerReady 1");
                 while (!recognizerReady) {
                     if (timeout <= 0) {
+                        tracePathA += "z";
                         recognitionListener.wait();
                     } else {
+                        tracePathA += "y";
                         long waitTime = timeoutTime - System.currentTimeMillis();
                         if (waitTime <= 0) {
                             editText.post(endInput);
                             doingInput = false;
+                            Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                             return;
                         }
                         recognitionListener.wait(waitTime);
                     }
                 }
             } else {
+                tracePathA += "D";
+                Log.d(TAG, "[storyInput] speechRecognizer null, telling editText to enableKeyboard");
                 editText.post(enableKeyboard);
             }
+
             for (;;) {
+                tracePathA += "E";
                 recognizerReady = false;
                 recognitionResults = null;
                 if (speechRecognizer != null) {
+                    tracePathA += "F";
+                    Log.v(TAG, "[storyInput] speechRecognizer startRecognizing");
                     editText.post(startRecognizing);
                 }
-                Log.d(TAG,"speech waiting for recognizerReady 2");
+
+                Log.d(TAG,"[storyInput] speech waiting for recognizerReady 2");
                 while (!recognizerReady) {
+                    tracePathA += "G";
                     if (timeout <= 0) {
+                        tracePathA += "a";
+                        Log.v(TAG,"[storyInput] recognitionListener.wait() call, tracePathA: " + tracePathA);
                         recognitionListener.wait();
+                        Log.v(TAG,"[storyInput] recognitionListener.wait() returned '" + singleChar + "'");
+                        if (! singleChar.isEmpty()) {
+                            inputCanceled = true;
+                        }
                     } else {
+                        tracePathA += "b";
                         long waitTime = timeoutTime - System.currentTimeMillis();
                         if (waitTime <= 0) {
+                            tracePathA += "c";
                             editText.post(endInput);
                             doingInput = false;
+                            Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                             return;
                         }
+                        tracePathA += "d";
                         recognitionListener.wait(waitTime);
+
                     }
                     if (usingKeyboard && usingKeyboardDone) {
+                        tracePathA += "f";
                         doingInput = false;
+                        Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                         return;
                     }
                     if (inputCanceled) {
+                        tracePathA += "G";
                         editText.post(endInput);
                         doingInput = false;
+                        Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                         return;
                     }
                 }
+
+                tracePathA += "H";
                 if (recognitionResults != null) {
+                    tracePathA += "I";
                     inputLineResults = SpeechMunger.chooseInput(recognitionResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
                     inputCharResults = SpeechMunger.chooseCharacterInput(recognitionResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
                     if (usingKeyboard) {
+                        tracePathA += "J";
                         final String text = inputLineResults;
                         if ("backspace".equals(text)) {
                             editText.post(new Runnable() {
@@ -293,6 +391,7 @@ public class Input {
                             if (inputLineResults.length () > 0) {
                                 doingInput = false;
                                 editText.post(endInput);
+                                Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                                 return;
                             }
                             editText.post(new Runnable() {
@@ -308,12 +407,15 @@ public class Input {
                             });
                         }
                     } else if ("open keyboard".equals(inputLineResults)) {
+                        tracePathA += "K";
                         usingKeyboard = true;
                         usingKeyboardDone = false;
                         editText.post(enableKeyboard);
                     } else {
+                        tracePathA += "L";
                         doingInput = false;
                         editText.post(hideKeyboardButton);
+                        Log.i(TAG, "[storyInput] tracePathA " + tracePathA);
                         return;
                     }
                 }
@@ -350,18 +452,19 @@ public class Input {
 
         @Override
         public void onEndOfSpeech() {
+            Log.v(TAG, "[storyInput] RecognitionListener onEndOfSpeech");
         }
 
         @Override
         public void onError(int error) {
-            if ( SettingsDebug.speechRecognition) {
-                Log.w(TAG, "RecognitionListener onError:error=" + error);
+            if (SettingsDebug.speechRecognition) {
+                Log.w(TAG, "[storyInput] RecognitionListener onError:error=" + error);
             }
             synchronized (this) {
                 switch (error)
                 {
                     case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                        Log.w(TAG,"RecognitionListener ERROR_INSUFFICIENT_PERMISSIONS");
+                        Log.w(TAG,"[storyInput] RecognitionListener ERROR_INSUFFICIENT_PERMISSIONS");
                         recognitionResults = null;
                         recognizerReady = false;
                         break;
@@ -381,6 +484,7 @@ public class Input {
 
         @Override
         public void onPartialResults(Bundle partialResults) {
+            Log.v(TAG, "[storyInput] RecognitionListener onPartialResults");
         }
 
         @Override
@@ -390,7 +494,7 @@ public class Input {
         @Override
         public void onResults(Bundle results) {
             recognitionResults = results;
-            Log.d(TAG,"RecognitionListener onResults:"+results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
+            Log.d(TAG,"[storyInput] RecognitionListener onResults:"+results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
             synchronized (this) {
                 recognizerReady = true;
                 this.notify();
@@ -474,6 +578,7 @@ public class Input {
                 usingKeyboardDone = true;
                 recognitionListener.notify();
             }
+            // ToDo: what is this? Decrypting what from input?
             if (egg != null) {
                 try {
                     Cipher cipher = Cipher.getInstance("DES");

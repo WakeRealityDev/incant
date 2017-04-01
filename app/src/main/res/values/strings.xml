@@ -72,4 +72,5 @@
   <!-- uses Square library Phrase -->
   <string name="engine_provider_detected_named">Interactive Fiction engine provider: <b>{engine}</b>{extra_a}</string>
   <string name="engine_provider_detected_extra"> [{quantity} detected]</string>
+  <string name="action_glk_auto_enter_char_input">Auto enter char</string>
 </resources>
