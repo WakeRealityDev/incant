@@ -483,7 +483,7 @@ public class Incant extends Activity {
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.progressbar);
             final ImageView cover = (ImageView) convertView.findViewById(R.id.cover);
 
-            View info = convertView.findViewById(R.id.info);
+            final View info = convertView.findViewById(R.id.info);
             cover.setTag(null);
             progressBar.setVisibility(View.GONE);
             if (story == null) {
@@ -506,11 +506,19 @@ public class Incant extends Activity {
                         download.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                         download.setText(R.string.scrape);
+                        final View finalConvertView1 = convertView;
                         convertView.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(View v) {
-                                Log.d(TAG, "[downloadStory] OnClick SPOT_B");
+                                Log.d(TAG, "[downloadStory] OnClick SPOT_B (scrape fetch)");
                                 download.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.VISIBLE);
+                                progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
+                                info.setVisibility(View.VISIBLE);
+                                // Idea: could use EventBus to update these with each web fetch
+                                ((TextView) finalConvertView1.findViewById(R.id.name)).setText("Searching for more stories...");
+                                ((TextView) finalConvertView1.findViewById(R.id.author)).setText("");
+                                ((TextView) finalConvertView1.findViewById(R.id.description)).setText("");
+                                ((TextView) finalConvertView1.findViewById(R.id.storyextra0)).setText("");
                                 synchronized (downloading) {
                                     downloading.add("");
                                     setDownloadingObserver();

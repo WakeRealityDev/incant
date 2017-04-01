@@ -100,7 +100,7 @@ public class Story implements Serializable {
         try {
             new XMLScraper(m).scrape(getMetadataFile(context));
             metadata = m;
-            Log.d(TAG, "new metadata author " + m.author + " title " + m.title);
+            Log.d(TAG, "[xmlScrape] just got new metadata author " + m.author + " title " + m.title);
         } catch (Exception e) {
             Log.e(TAG ,"Exception on scrape metadata", e);
         }
@@ -115,7 +115,7 @@ public class Story implements Serializable {
     public String getAuthor(Context context) {
         Metadata m = getMetadata(context);
         if (m != null) {
-            // Log.d(TAG, "getAuthor " + author + " m.author " + m.author);
+            Log.d(TAG, "[xmlScrape][metaData] got null metadata, getAuthor " + author + " m.author " + m.author);
             return m.author;
         }
         else
@@ -712,9 +712,20 @@ public class Story implements Serializable {
                 ifid = value;
             } else if ("ifindex/story/bibliographic/title".equals(path)) {
                 title = value;
+            } else {
+                // Log.w(TAG, "[xmlScrape] unmatched path " + path);
+            }
+
+            if (path.equals("ifindex")) {
+                Log.v(TAG, "[xmlScrape] so-far " + toCollected());
             }
         }
+
+        public String toCollected() {
+            return "a=" + author + " h=" + headline + " d=" + description + " i=" + ifid + " t=" + title;
+        }
     }
+
 
     protected void writeMetadata(Context context, File file) throws IOException {
         getDir(context).mkdir();

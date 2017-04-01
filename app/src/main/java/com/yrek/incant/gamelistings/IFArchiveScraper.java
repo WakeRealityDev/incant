@@ -36,16 +36,16 @@ public class IFArchiveScraper extends Scraper {
         Log.i(TAG, "IFArchive scrapeURL " + scrapeURL);
         scrapeURL(scrapeURL, new PageScraper() {
             @Override public void scrape(String line) throws IOException {
-                Log.d(TAG, "IFArchive scrapeURL " + scrapeURL + " length " + line.length() + " " + line);
+                Log.d(TAG, "[cacheFile] IFArchive scrapeURL " + scrapeURL + " length " + line.length() + " " + line);
                 Matcher m = ifarchivePattern.matcher(line);
                 while (m.find()) {
-                    Log.i(TAG, "IFArchive MATCH scrapeURL " + scrapeURL + " length " + line.length() + " " + line + " 5:" + m.group(5) + " 2:" + m.group(2));
+                    Log.i(TAG, "[cacheFile] IFArchive MATCH scrapeURL " + scrapeURL + " length " + line.length() + " " + line + " 5:" + m.group(5) + " 2:" + m.group(2));
                     writeStory(out, m.group(5), "", downloadURL + m.group(2), "", null);
                 }
 
                 Matcher mA = ifarchivePatternA.matcher(line);
                 while (mA.find()) {
-                    Log.i(TAG, "IFArchive MATCHA scrapeURL " + scrapeURL + " length " + line.length() + " " + line + " 2:" +  mA.group(2) + " 3: " + mA.group(3));
+                    Log.i(TAG, "[cacheFile] IFArchive MATCHA scrapeURL " + scrapeURL + " length " + line.length() + " " + line + " 2:" +  mA.group(2) + " 3: " + mA.group(3));
                     writeStory(out, mA.group(3), "", downloadURL + mA.group(2), "", null);
                 }
             }

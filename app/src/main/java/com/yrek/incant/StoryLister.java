@@ -25,10 +25,17 @@ class StoryLister {
 
     StoryLister(Context context) {
         this.context = context;
-        this.scrapers = new Scraper[] {
-            new IFDBScraper(context),
-            new IFArchiveScraper(context),
-        };
+        // IFArchive scraping is more primitive, as we have only filenames and some folder-context of category.
+        if (SettingsCurrent.getScrapeIFArchive()) {
+            this.scrapers = new Scraper[]{
+                    new IFDBScraper(context),
+                    new IFArchiveScraper(context),
+            };
+        } else {
+            this.scrapers = new Scraper[]{
+                    new IFDBScraper(context),
+            };
+        }
     }
 
     public List<Story> getStories(Comparator<Story> sort) throws IOException {

@@ -64,7 +64,7 @@ public class IFDBScraper extends Scraper {
                 }
 
                 @Override public void endDocument() {
-                    Log.d(TAG,"name="+name+",author="+author+",url="+url+",extraURL="+extraURL+",zipFile="+zipFile+",format="+format);
+                    Log.d(TAG,"[cacheFile] name="+name+",author="+author+",url="+url+",extraURL="+extraURL+",zipFile="+zipFile+",format="+format);
                     try {
                         if (name == null) {
                         } else if (url != null && url.matches(patternMatchA)) {
@@ -121,7 +121,7 @@ public class IFDBScraper extends Scraper {
                     xmlScraper.scrape(a);
                 } catch (Exception e) {
                     // example of failure: http://ifdb.tads.org/dladviser?xml&os=MacOSX&id=9v92p0cv9q48wyk2
-                    Log.wtf(TAG, "parse fail on URL storyID " + storyID + " " + a, e);
+                    Log.wtf(TAG, "[IFDBparse] parse fail on URL storyID " + storyID + " " + a, e);
                 }
             }
         } catch (Exception e) {

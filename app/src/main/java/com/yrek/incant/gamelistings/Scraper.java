@@ -75,7 +75,7 @@ public abstract class Scraper {
                     }
                 }
                 String cleanedUpName = name.trim().replace("_", " ");
-                Log.d(TAG, "[storyName] setting name from XML '" + name + "'" + " to '" + cleanedUpName + "'");
+                Log.d(TAG, "[storyName][cacheFile] setting name from cacheFile '" + name + "'" + " to '" + cleanedUpName + "'");
                 Story newStory = new Story(cleanedUpName, author.length() == 0 ? null : author, null, null, zzzz, zipFile.length() == 0 ? null : zipFile, imageUrl);
                 StoryHelper.addStory(context, newStory, stories, addCategory);
             }
@@ -97,7 +97,7 @@ public abstract class Scraper {
 
     public void scrape() throws IOException {
         if (cacheFile.lastModified() + cacheTimeout > System.currentTimeMillis()) {
-            Log.i(TAG, "cacheFile good " + cacheFile);
+            Log.i(TAG, "[cacheFile] cacheFile good " + cacheFile);
             if (SettingsCurrent.getDownloadSkipCachefile()) {
                 return;
             }
@@ -108,16 +108,16 @@ public abstract class Scraper {
             FileOutputStream out = null;
             try {
                 out = new FileOutputStream(tmpFile);
-                Log.d(TAG, "scrape:tmpFile " + tmpFile);
+                Log.d(TAG, "[cacheFile] scrape:tmpFile " + tmpFile);
                 scrape(new DataOutputStream(out));
             } finally {
                 if (out != null) {
                     out.close();
                 }
             }
-            Log.d(TAG, "scrape:tmpFile:rename " + tmpFile + " to " + cacheFile);
+            Log.d(TAG, "[cacheFile] scrape:tmpFile:rename " + tmpFile + " to " + cacheFile);
             boolean goodRename = tmpFile.renameTo(cacheFile);
-            Log.d(TAG, "scrape:tmpFile:rename:after "  + cacheFile.length() + " " + goodRename);
+            Log.d(TAG, "[cacheFile] scrape:tmpFile:rename:after "  + cacheFile.length() + " " + goodRename);
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();
@@ -143,6 +143,7 @@ public abstract class Scraper {
     }
 
     void writeStory(DataOutputStream out, String name, String author, String url, String zipFile, String imageURL) throws IOException {
+        Log.i(TAG, "[cacheFile][writeStory] name=" + name + " author=" + author);
         out.writeUTF(name);
         out.writeUTF(author == null ? "" : author);
         out.writeUTF(url);

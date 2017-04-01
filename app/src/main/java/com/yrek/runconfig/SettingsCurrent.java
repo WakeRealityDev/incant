@@ -42,6 +42,7 @@ public class SettingsCurrent {
     private static boolean speechRecognizerMute = false;
     private static boolean interpreterProfileEnabled = true;
     private static boolean enableAutoEnterOnGlkCharInput = true;
+    private static boolean scrapeIFArchive = false;
 
     public static boolean getSpeechRecognizerEnabled() {
         return speechRecognizerEnabled;
@@ -112,5 +113,9 @@ public class SettingsCurrent {
 
     public static boolean getEnableAutoEnterOnGlkCharInput() {
         return enableAutoEnterOnGlkCharInput;
+    }
+
+    public static boolean getScrapeIFArchive() {
+        return scrapeIFArchive;
     }
 }
