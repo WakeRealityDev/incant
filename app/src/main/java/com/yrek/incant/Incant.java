@@ -798,7 +798,7 @@ public class Incant extends Activity {
                 sprefEditor.putBoolean("glk_auto_enter_char", SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
                 break;
             case R.id.action_story_database_test:
-
+                processAssetsCommaSeparatedValuesList();
                 break;
         }
 

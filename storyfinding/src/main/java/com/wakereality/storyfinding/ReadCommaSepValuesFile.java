@@ -3,14 +3,14 @@ package com.wakereality.storyfinding;
 import android.content.Context;
 import android.util.Log;
 
+import com.opencsv.CSVReader;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Created by Stephen A Gutknecht on 4/1/17.

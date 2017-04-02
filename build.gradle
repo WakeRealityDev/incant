@@ -19,4 +19,10 @@ allprojects {
         buildDir = "/tmp/androidstudio/${rootProject.name}/${project.name}"
     }
     println "allprojects buildDir " + buildDir
+
+
+
+    configurations.all {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
 }

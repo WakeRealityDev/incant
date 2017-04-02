@@ -26,3 +26,8 @@
 -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
     <init>(java.lang.Throwable);
 }
+
+# com.opencsv
+-dontwarn com.opencsv.**
+-dontwarn org.apache.commons.beanutils.**
+-dontwarn org.apache.commons.collections.**
