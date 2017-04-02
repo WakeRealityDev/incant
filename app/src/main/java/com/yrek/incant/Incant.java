@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.wakereality.incant.AboutAppActivity;
+import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
@@ -755,6 +756,10 @@ public class Incant extends Activity {
                 SettingsCurrent.flipEnableAutoEnterOnGlkCharInput();
                 item.setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
                 sprefEditor.putBoolean("glk_auto_enter_char", SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
+                break;
+            case R.id.action_story_database_test:
+                ReadCommaSepValuesFile readCommaSepValuesFile = new ReadCommaSepValuesFile();
+                readCommaSepValuesFile.tryCSV0(getApplicationContext());
                 break;
         }
 

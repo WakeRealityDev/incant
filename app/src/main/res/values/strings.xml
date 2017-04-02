@@ -73,4 +73,5 @@
   <!-- uses Square library Phrase -->
   <string name="engine_provider_detected_named">Interactive Fiction engine provider: <b>{engine}</b>{extra_a}</string>
   <string name="engine_provider_detected_extra"> [{quantity} detected]</string>
+    <string name="action_story_database_test">Story DB Test</string>
 </resources>

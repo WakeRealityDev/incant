@@ -47,6 +47,12 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/action_story_database_test"
+        android:orderInCategory="80"
+        android:title="@string/action_story_database_test"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about_app"
         android:orderInCategory="90"
         android:title="@string/action_about_app"
