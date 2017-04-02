@@ -15,6 +15,7 @@
 
     <application
      android:label="@string/app_name"
+     android:theme="@style/incant_theme"
      android:icon="@drawable/ic_launcher"
      android:allowBackup="true"
 

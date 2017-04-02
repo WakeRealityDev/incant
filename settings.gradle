@@ -1,4 +1,4 @@
-include ':app'
-include 'ifstd'
+include ':app', ':storyfinding'
+include ':ifstd'
 
-project(':ifstd').projectDir =   new File('../ifstd_WakeReality0')
+project(':ifstd').projectDir = new File('../ifstd_WakeReality0')
