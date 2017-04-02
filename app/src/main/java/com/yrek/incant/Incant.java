@@ -33,13 +33,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
+import com.wakereality.storyfinding.StoryEntryIFDB;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
+import com.yrek.incant.gamelistings.Scraper;
+import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
 
@@ -352,6 +358,34 @@ public class Incant extends Activity {
         try {
             List<Story> freshList = storyLister.getStories(storyLister.SortByDefault);
             storyListAdapter.addAll(freshList);
+
+            if (readCommaSepValuesFile != null) {
+                ArrayList<Story> stories = new ArrayList<>();
+                for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
+                    StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
+
+                    URL downloadLink = null;
+                    try {
+                        downloadLink = new URL(ifdbListEntry.downloadLink);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                    URL imageLink = null;
+                    try {
+                        imageLink = new URL(getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
+                    Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink);
+                    StoryHelper.addStory(this, newStory, stories, 1000);
+
+                    // Scraper.writeStory();
+                    // writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
+                }
+                storyListAdapter.addAll(stories);
+            }
         } catch (Exception e) {
             Log.wtf(TAG,e);
         }
@@ -534,35 +568,41 @@ public class Incant extends Activity {
                         download.setText(R.string.scrape);
                         convertView.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(View v) {
-                                Log.d(TAG, "[downloadStory] OnClick SPOT_B (scrape fetch)");
-                                download.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.VISIBLE);
-                                progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
-                                info.setVisibility(View.VISIBLE);
-                                // Idea: could use EventBus to update these with each web fetch
-                                scrapeMoreViewHolder.populateFromContainer((ViewGroup) finalConvertView1);
-                                scrapeMoreViewHolder.clearAllViews();
-                                scrapeMoreViewHolder.name.setText("Searching for more stories...");
-
-                                synchronized (downloading) {
-                                    downloading.add("");
-                                    setDownloadingObserver();
+                                if (SettingsCurrent.getGetMoreBypassLiveScrape()) {
+                                    processAssetsCommaSeparatedValuesList();
                                 }
-                                Thread downloadWorker = new Thread() {
-                                    @Override public void run() {
-                                        try {
-                                            storyLister.scrape();
-                                        } catch (Exception e) {
-                                            Log.wtf(TAG,e);
-                                        }
-                                        synchronized (downloading) {
-                                            downloading.remove("");
-                                            downloading.notifyAll();
-                                        }
+                                else {
+                                    Log.d(TAG, "[downloadStory] OnClick SPOT_B (scrape fetch)");
+                                    download.setVisibility(View.GONE);
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
+                                    info.setVisibility(View.VISIBLE);
+                                    // Idea: could use EventBus to update these with each web fetch
+                                    scrapeMoreViewHolder.populateFromContainer((ViewGroup) finalConvertView1);
+                                    scrapeMoreViewHolder.clearAllViews();
+                                    scrapeMoreViewHolder.name.setText("Searching for more stories...");
+
+                                    synchronized (downloading) {
+                                        downloading.add("");
+                                        setDownloadingObserver();
                                     }
-                                };
-                                downloadWorker.setName("DownloadWorker");
-                                downloadWorker.start();
+                                    Thread downloadWorker = new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                storyLister.scrape();
+                                            } catch (Exception e) {
+                                                Log.wtf(TAG, e);
+                                            }
+                                            synchronized (downloading) {
+                                                downloading.remove("");
+                                                downloading.notifyAll();
+                                            }
+                                        }
+                                    };
+                                    downloadWorker.setName("DownloadWorker");
+                                    downloadWorker.start();
+                                }
 
                             }
                         });
@@ -758,8 +798,7 @@ public class Incant extends Activity {
                 sprefEditor.putBoolean("glk_auto_enter_char", SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
                 break;
             case R.id.action_story_database_test:
-                ReadCommaSepValuesFile readCommaSepValuesFile = new ReadCommaSepValuesFile();
-                readCommaSepValuesFile.tryCSV0(getApplicationContext());
+
                 break;
         }
 
@@ -768,6 +807,17 @@ public class Incant extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public ReadCommaSepValuesFile readCommaSepValuesFile;
+
+    public void processAssetsCommaSeparatedValuesList() {
+        if (readCommaSepValuesFile == null) {
+            readCommaSepValuesFile = new ReadCommaSepValuesFile();
+        }
+        readCommaSepValuesFile.tryCSV0(getApplicationContext());
+        System.gc();
+        refreshStoryList();
+    }
 
     /*
     ================================================================================================

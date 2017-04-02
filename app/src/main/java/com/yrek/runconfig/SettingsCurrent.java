@@ -118,4 +118,8 @@ public class SettingsCurrent {
     public static boolean getScrapeIFArchive() {
         return scrapeIFArchive;
     }
+
+    public static boolean getGetMoreBypassLiveScrape() {
+        return true;
+    }
 }

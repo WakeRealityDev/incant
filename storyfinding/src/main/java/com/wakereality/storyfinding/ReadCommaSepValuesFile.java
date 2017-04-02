@@ -6,6 +6,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -38,32 +40,129 @@ public class ReadCommaSepValuesFile {
         return inString.replace(",", "&");
     }
 
-    public void tryCSV0(Context context) {
+    public final ArrayList<StoryEntryIFDB> foundEntries = new ArrayList<>();
+
+    public boolean tryCSV0(Context context) {
+        Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+
+        foundEntries.clear();
+
         String next[] = {};
-        List<String[]> list = new ArrayList<String[]>();
+        List<String[]> informStoriesList = new ArrayList<String[]>();
         try {
-            String fileSource = "csv/tryout.csv";
-            fileSource = "csv/ifdb_inform_list0.csv";
+            String fileSource = "csv/ifdb_inform_list0.csv";
             CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
-                    list.add(next);
+                    informStoriesList.add(next);
                 } else {
                     break;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
-        Log.i("ReadCSV", "[ReadCSV] got " + list.size());
-        for (int i = 0; i < list.size(); i++) {
-            if (i % 10 == 0) {
-                String[] e = list.get(i);
-                Log.i("ReadCSV", "[ReadCSV] # " + i + ": " + rc(e[1]) + ", " + rc(e[2]));
+
+        List<String[]> ratingsStars = new ArrayList<String[]>();
+        try {
+            String fileSource = "csv/ifdb_rating_stars_list0.csv";
+            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            for(;;) {
+                next = reader.readNext();
+                if (next != null) {
+                    ratingsStars.add(next);
+                } else {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        List<String[]> downloadLinks = new ArrayList<String[]>();
+        try {
+            String fileSource = "csv/ifdb_inform_downloads_list0_filtered.csv";
+            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            for(;;) {
+                next = reader.readNext();
+                if (next != null) {
+                    downloadLinks.add(next);
+                } else {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        int targetMatch = 0;
+        String previousEntry = "never_match";
+        Log.i("ReadCSV", "[ReadCSV] got " + informStoriesList.size());
+        for (int i = 0; i < informStoriesList.size(); i++) {
+            final String[] e = informStoriesList.get(i);
+
+            for (int s = 0; s < ratingsStars.size(); s++) {
+                final String[] r = ratingsStars.get(s);
+                if (r[0].equals(e[0])) {
+                    if (Float.valueOf(r[1]) > 3.0f) {
+
+                        for (int d = 0; d < downloadLinks.size(); d++) {
+                            final String[] l = downloadLinks.get(d);
+                            if (l[0].equals(e[0])) {
+                                // For now, filter out zip, there is another csv if we want to delve deeper into embedded files.
+                                if (! l[1].contains(".zip")) {
+                                    // Multiple download links for the same story
+                                    if (! e[0].equals(previousEntry)) {
+                                        previousEntry = e[0];
+                                        targetMatch++;
+                                        final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
+                                        storyEntry.downloadLink = l[1];
+                                        storyEntry.siteIdentity = e[0];
+                                        storyEntry.rating = Float.valueOf(r[1]);
+                                        storyEntry.storyTitle = e[1];
+                                        storyEntry.storyAuthor = e[2];
+                                        if (e[12].equals("NULL")) {
+                                            storyEntry.storyDescription = "";
+                                        } else {
+                                            storyEntry.storyDescription = e[12];
+                                        }
+                                        if (e[16].equals("NULL")) {
+                                            storyEntry.storyWhimsy = "";
+                                        } else {
+                                            storyEntry.storyWhimsy = e[16];
+                                        }
+                                        foundEntries.add(storyEntry);
+                                        Log.i("ReadCSV", "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            if (i % 100 == 0) {
+                Log.v("ReadCSV", "[ReadCSV] # " + i + ": " + rc(e[1]) + ", " + rc(e[2]));
             }
         }
 
+        // Sort by title
+        Collections.sort(foundEntries, new Comparator<StoryEntryIFDB>() {
+            @Override
+            public int compare(StoryEntryIFDB story1, StoryEntryIFDB story2)
+            {
+                return story1.storyTitle.compareTo(story2.storyTitle);
+            }
+        });
+
+        Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
+        return true;
     }
 }

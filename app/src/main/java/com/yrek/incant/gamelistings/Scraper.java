@@ -142,7 +142,7 @@ public abstract class Scraper {
         }
     }
 
-    void writeStory(DataOutputStream out, String name, String author, String url, String zipFile, String imageURL) throws IOException {
+    public static void writeStory(DataOutputStream out, String name, String author, String url, String zipFile, String imageURL) throws IOException {
         Log.i(TAG, "[cacheFile][writeStory] name=" + name + " author=" + author);
         out.writeUTF(name);
         out.writeUTF(author == null ? "" : author);
