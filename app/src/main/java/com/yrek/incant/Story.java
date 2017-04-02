@@ -58,7 +58,8 @@ public class Story implements Serializable {
         this.hashA = "";
         this.gameid = "";
 
-        Log.i(TAG, "trace Story create " + this.author + ":" + this.name + ":" + this.title);
+        if (SettingsCurrent.debugLogStoryCreate)
+            Log.v(TAG, "trace Story create " + this.author + ":" + this.name + ":" + this.title);
     }
 
     public String getName(Context context) {

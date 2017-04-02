@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Stephen A Gutknecht on 4/1/17.
@@ -115,7 +116,7 @@ public class ReadCommaSepValuesFile {
                             final String[] l = downloadLinks.get(d);
                             if (l[0].equals(e[0])) {
                                 // For now, filter out zip, there is another csv if we want to delve deeper into embedded files.
-                                if (! l[1].contains(".zip")) {
+                                if (! l[1].toLowerCase(Locale.US).contains(".zip")) {
                                     // Multiple download links for the same story
                                     if (! e[0].equals(previousEntry)) {
                                         previousEntry = e[0];

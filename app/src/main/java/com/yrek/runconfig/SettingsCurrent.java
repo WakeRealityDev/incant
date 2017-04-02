@@ -7,6 +7,10 @@ import java.io.File;
  */
 public class SettingsCurrent {
 
+    public static boolean debugLogStoryCreate = false;
+
+    //************************************************************************
+
     public static boolean getSpeechEnabled()
     {
         return speechEnabled;
