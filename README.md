@@ -67,8 +67,8 @@ Developers are welcome to hack on this.
 9. Saves files to /sdcard/ without use of Android API's. Probably doesn't work well on Android 4.4 for this reason.
 10. Sending story files to Thunderword, add content provider for secure exchange and to avoid /sdcard/ path usage. Suggest library: https://github.com/commonsguy/cwac-provider
 11. Thunderword screen size ~~and layout (Activity) picking~~ (DONE) for user interface.
-12. Some way to pick story files other than download/open (outside app) or internal picking off list. Similarly scan folders / storage for stories.
+12. Thunderword can publish SHA-256 hash of stories it has found on storage (not just the one path that Incant populates). Add a way to import and run those listings.
 13. ~~Incant does not preserve the file extensions when downloading off it's list, so it makes sharing the downloaded stories nearly impossible to find for outside apps searching the storage.~~ Copy is made in a Keep folder.
-
+14. Add a Thunderword Command Code dialog so users can prep settings before a launch. Also serves to document the protocol for command codes for developers who wish to enhance their own apps. This code addition can be shared with the Thunderstrike app here on GitHub.
 
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075
