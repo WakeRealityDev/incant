@@ -31,5 +31,7 @@ dependencies {
 
     compile 'com.opencsv:opencsv:3.9'
 
+    // compile group: 'net.sf.supercsv', name: 'super-csv', version: '2.4.0'
+
     testCompile 'junit:junit:4.12'
 }

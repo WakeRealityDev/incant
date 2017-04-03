@@ -3,8 +3,11 @@ package com.wakereality.storyfinding;
 import android.content.Context;
 import android.util.Log;
 
-import com.opencsv.CSVReader;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ import java.util.Locale;
 /**
  * Created by Stephen A Gutknecht on 4/1/17.
  * on Linux, this produces CSV file that has all CRLF intact and proper escaping
- *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT * FROM games WHERE system LIKE '%Inform%' OR system LIKE '%Supergl%';" | awk -F'\t' '{ sep=""; for(i = 1; i <= NF; i++) { gsub(/\\t/,"\t",$i); gsub(/\\n/,"\n",$i); gsub(/\%/,"__PERCENT__",$i); gsub(/\\\\/,"\\",$i); gsub(/"/,"\"\"",$i); printf sep"\""$i"\""; sep=","; if(i==NF){printf"\n"}}}' > ifdb_inform_list0.csv
+ *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT * FROM games WHERE system LIKE '%Inform%' OR system LIKE '%Supergl%' OR system LIKE '%ZETA%';" | awk -F'\t' '{ sep=""; for(i = 1; i <= NF; i++) { gsub(/\\t/,"\t",$i); gsub(/\\n/,"\n",$i); gsub(/\%/,"__PERCENT__",$i); gsub(/\\\\/,"\\",$i); gsub(/"/,"\"\"",$i); printf sep"\""$i"\""; sep=","; if(i==NF){printf"\n"}}}' > ifdb_inform_list0.csv
  * awk tip here:
  *    http://stackoverflow.com/questions/15640287/change-output-format-for-mysql-command-line-results-to-csv/17910254#17910254
  *
@@ -32,6 +35,9 @@ import java.util.Locale;
  *    grep '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv
  * Do a second pass to pick up zip files that also contain desired extensions:
  *    grep '\.zip' ifdb_inform_downloads_list0.csv | grep '\.gblorb\|\.z[1-8]\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' > ifdb_inform_downloads_list0_filtered_in_zip.csv
+ *
+ * ToDo:  there needs to be a step to filter parchment links, html links, etc. Study the ones removed from various GitHub checkins to get clues of what was done incorrectly.
+ * ToDo:  Right now it isn't using the index off the download to favor the newest, an example to study is curses-r12.z5
  *
  */
 
@@ -116,8 +122,11 @@ public class ReadCommaSepValuesFile {
                             final String[] l = downloadLinks.get(d);
                             if (l[0].equals(e[0])) {
                                 // For now, filter out zip, there is another csv if we want to delve deeper into embedded files.
+                                // Using contains instead of endswith as sometimes there are URL parameters.
                                 if (! l[1].toLowerCase(Locale.US).contains(".zip")) {
                                     // Multiple download links for the same story
+                                    // ToDo: it is likely that this logic is pulling the OLDEST, the west link, and revisions of the same story may be skipped.
+                                    //   Rework, reverse sorting in the SQL SELECT ORDER BY?
                                     if (! e[0].equals(previousEntry)) {
                                         previousEntry = e[0];
                                         targetMatch++;
@@ -159,11 +168,60 @@ public class ReadCommaSepValuesFile {
             @Override
             public int compare(StoryEntryIFDB story1, StoryEntryIFDB story2)
             {
-                return story1.storyTitle.compareTo(story2.storyTitle);
+                return story1.storyTitle.toLowerCase(Locale.US).compareTo(story2.storyTitle.toLowerCase(Locale.US));
             }
         });
 
+        saveCopyAsCSV(context);
+
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
+    }
+
+    /*
+    public String quoteIfComma(String inText) {
+        String returnString = inText;
+        if (inText.contains(",")) {
+            if (inText.contains("\"")) {
+
+            }
+        }
+    }
+    */
+
+    // ToDo:
+    // The saved copy can be read in and be a way to save RAM and CPU usage. Further, SHA-256 cross-reference and image-addition can be introduced for stories that the main image URL is missing
+    //   ideally users can see images before even downloading.
+    /*
+    Problem: CSV library either quotes ALL the time, every field, or not at all (even when escaping needed).
+     */
+    public boolean saveCopyAsCSV(Context context) {
+        /*
+        StringBuilder outCSV = new StringBuilder();
+        for (int i = 0; i < foundEntries.size(); i++) {
+            StoryEntryIFDB ifdbListEntry = foundEntries.get(i);
+
+        }
+        */
+
+        CSVWriter writer;
+        try {
+            writer = new CSVWriter(new FileWriter("/sdcard/Incant_saveList.csv", true));
+        } catch (IOException e) {
+            Log.e("ReadCSV", "Exception saving copy of data to CSV", e);
+            return false;
+        }
+
+        for (int i = 0; i < foundEntries.size(); i++) {
+            StoryEntryIFDB ifdbListEntry = foundEntries.get(i);
+            writer.writeNext(ifdbListEntry.toStringArray());
+        }
+        try {
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

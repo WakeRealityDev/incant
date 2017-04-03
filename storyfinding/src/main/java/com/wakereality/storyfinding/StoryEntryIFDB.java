@@ -21,4 +21,31 @@ public class StoryEntryIFDB {
             return siteIdentity + ", " + rating + ", " + storyTitle + ", " + storyAuthor + ", " + downloadLink + ", " + storyDescription + ", " + storyWhimsy;
         }
     }
+
+    public String[] toStringArray() {
+        String allTogether = downloadLink + storyAuthor + storyDescription + storyWhimsy;
+        /*
+        if (allTogether.contains("\"") || allTogether.contains(",")) {
+            return new String[]{
+                    siteIdentity,
+                    String.valueOf(rating),
+                    "\"" + storyTitle.replaceAll("\"", "\"\"") + "\"",
+                    "\"" + storyAuthor.replaceAll("\"", "\"\"") + "\"",
+                    "\"" + storyWhimsy.replaceAll("\"", "\"\"") + "\"",
+                    "\"" + downloadLink.replaceAll("\"", "\"\"") + "\"",
+                    "\"" + storyDescription.replaceAll("\"", "\"\"") + "\"",
+            };
+        } else {
+        */
+            return new String[]{
+                    siteIdentity,
+                    String.valueOf(rating),
+                    storyTitle,
+                    storyAuthor,
+                    storyWhimsy,
+                    downloadLink,
+                    storyDescription
+            };
+        //}
+    }
 }

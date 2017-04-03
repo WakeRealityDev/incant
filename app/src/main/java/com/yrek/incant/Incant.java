@@ -361,6 +361,7 @@ public class Incant extends Activity {
 
             if (readCommaSepValuesFile != null) {
                 ArrayList<Story> stories = new ArrayList<>();
+                // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
                 for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
                     StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
 
