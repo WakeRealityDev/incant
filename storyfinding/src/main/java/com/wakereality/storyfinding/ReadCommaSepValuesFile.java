@@ -49,7 +49,7 @@ public class ReadCommaSepValuesFile {
 
     public final ArrayList<StoryEntryIFDB> foundEntries = new ArrayList<>();
 
-    public boolean tryCSV0(Context context) {
+    public boolean readComplexSetOfFilesCSV(Context context) {
         Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
 
         foundEntries.clear();
@@ -172,12 +172,55 @@ public class ReadCommaSepValuesFile {
             }
         });
 
-        // save copy on dev system once in a white. saveCopyAsCSV(context);
+        // save copy on dev system once in a white.
+        // saveCopyAsCSV(context);
 
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
     }
 
+
+    public boolean readSimpleFileOneObjectCSV(Context context) {
+        Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+
+        foundEntries.clear();
+
+        String next[] = {};
+        List<String[]> informStoriesList = new ArrayList<String[]>();
+        try {
+            String fileSource = "csv/Incant_saveList.csv";
+            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            for (; ; ) {
+                next = reader.readNext();
+                if (next != null) {
+                    informStoriesList.add(next);
+                } else {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        Log.i("ReadCSV", "[ReadCSV] got " + informStoriesList.size());
+        for (int i = 0; i < informStoriesList.size(); i++) {
+            final String[] e = informStoriesList.get(i);
+
+            final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
+            storyEntry.siteIdentity = e[0];
+            storyEntry.rating = Float.valueOf(e[1]);
+            storyEntry.storyTitle = e[2];
+            storyEntry.storyAuthor = e[3];
+            storyEntry.storyWhimsy = e[4];
+            storyEntry.downloadLink = e[5];
+            storyEntry.storyDescription = e[6];
+            foundEntries.add(storyEntry);
+        }
+
+        Log.i("ReadCSV", "[ReadCSV] foundEntries " + foundEntries.size() + " totalMemory " + Runtime.getRuntime().totalMemory());
+        return true;
+    }
 
 
     // ToDo:

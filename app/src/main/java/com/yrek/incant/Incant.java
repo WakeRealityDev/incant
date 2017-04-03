@@ -33,7 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.storyfinding.StoryEntryIFDB;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
-import com.yrek.incant.gamelistings.Scraper;
 import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
@@ -815,7 +813,8 @@ public class Incant extends Activity {
         if (readCommaSepValuesFile == null) {
             readCommaSepValuesFile = new ReadCommaSepValuesFile();
         }
-        readCommaSepValuesFile.tryCSV0(getApplicationContext());
+        // readCommaSepValuesFile.readComplexSetOfFilesCSV(getApplicationContext());
+        readCommaSepValuesFile.readSimpleFileOneObjectCSV(getApplicationContext());
         System.gc();
         refreshStoryList();
     }
