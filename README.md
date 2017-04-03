@@ -18,7 +18,7 @@ Video: http://youtu.be/D6i7c7jdV4Q demonstrating speech in and out.
 Screenshot
 ============
 
-![Screenshot](screenshots/LGLS676/device-2017-02-22-132550.png)
+![Screenshot](screenshots/HUAWEI_H1611/opening_device-2017-04-02-162832.png)
 
 
 App Use
