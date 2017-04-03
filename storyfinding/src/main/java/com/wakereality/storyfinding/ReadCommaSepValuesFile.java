@@ -172,38 +172,18 @@ public class ReadCommaSepValuesFile {
             }
         });
 
-        saveCopyAsCSV(context);
+        // save copy on dev system once in a white. saveCopyAsCSV(context);
 
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
     }
 
-    /*
-    public String quoteIfComma(String inText) {
-        String returnString = inText;
-        if (inText.contains(",")) {
-            if (inText.contains("\"")) {
 
-            }
-        }
-    }
-    */
 
     // ToDo:
     // The saved copy can be read in and be a way to save RAM and CPU usage. Further, SHA-256 cross-reference and image-addition can be introduced for stories that the main image URL is missing
     //   ideally users can see images before even downloading.
-    /*
-    Problem: CSV library either quotes ALL the time, every field, or not at all (even when escaping needed).
-     */
     public boolean saveCopyAsCSV(Context context) {
-        /*
-        StringBuilder outCSV = new StringBuilder();
-        for (int i = 0; i < foundEntries.size(); i++) {
-            StoryEntryIFDB ifdbListEntry = foundEntries.get(i);
-
-        }
-        */
-
         CSVWriter writer;
         try {
             writer = new CSVWriter(new FileWriter("/sdcard/Incant_saveList.csv", true));
