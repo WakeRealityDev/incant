@@ -62,4 +62,5 @@ android {
 
 dependencies {
     compile project(':storyfinding')
+    compile project(':ifstd')
 }
