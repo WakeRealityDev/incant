@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
-class ZCodeStory implements GlkMain {
+public class ZCodeStory implements GlkMain {
     private static final long serialVersionUID = 0L;
     private static final String TAG = ZCodeStory.class.getSimpleName();
     final Story story;
@@ -25,7 +25,7 @@ class ZCodeStory implements GlkMain {
     transient ZCode zcode;
     transient GlkDispatch glk = null;
 
-    ZCodeStory(Story story, String name) {
+    public ZCodeStory(Story story, String name) {
         this.story = story;
         this.name = name;
     }

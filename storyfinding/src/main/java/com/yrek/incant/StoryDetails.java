@@ -18,10 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.phrase.Phrase;
+import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineProvider;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
-import com.yrek.incant.glk.GlkActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -46,7 +46,7 @@ public class StoryDetails extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.story_details);
-        story = (Story) getIntent().getSerializableExtra(Incant.SERIALIZE_KEY_STORY);
+        story = (Story) getIntent().getSerializableExtra(ParamConst.SERIALIZE_KEY_STORY);
         titleStyle = new TextAppearanceSpan(this, R.style.story_details_title);
         authorStyle = new TextAppearanceSpan(this, R.style.story_details_author);
         headlineStyle = new TextAppearanceSpan(this, R.style.story_details_headline);
@@ -86,14 +86,14 @@ public class StoryDetails extends Activity {
         private Thread downloadingObserver = null;
 
         private void setDownloadingObserver() {
-            synchronized (Incant.downloading) {
+            synchronized (DownloadSpot.downloading) {
                 if (downloadingObserver == null) {
                     downloadingObserver = new Thread() {
                         @Override
                         public void run() {
-                            synchronized (Incant.downloading) {
+                            synchronized (DownloadSpot.downloading) {
                                 try {
-                                    Incant.downloading.wait();
+                                    DownloadSpot.downloading.wait();
                                 } catch (Exception e) {
                                     Log.wtf(TAG,e);
                                 }
@@ -127,8 +127,8 @@ public class StoryDetails extends Activity {
                     @Override public void onClick(final View v) {
                         v.setVisibility(View.INVISIBLE);
                         findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
-                        synchronized (Incant.downloading) {
-                            Incant.downloading.add(storyName);
+                        synchronized (DownloadSpot.downloading) {
+                            DownloadSpot.downloading.add(storyName);
                             setDownloadingObserver();
                         }
                         new Thread() {
@@ -142,9 +142,9 @@ public class StoryDetails extends Activity {
                                     Log.wtf(TAG,e);
                                     error = StoryDetails.this.getString(R.string.download_failed, story.getName(StoryDetails.this));
                                 }
-                                synchronized (Incant.downloading) {
-                                    Incant.downloading.remove(storyName);
-                                    Incant.downloading.notifyAll();
+                                synchronized (DownloadSpot.downloading) {
+                                    DownloadSpot.downloading.remove(storyName);
+                                    DownloadSpot.downloading.notifyAll();
                                 }
                                 if (error != null) {
                                     final String msg = error;
@@ -169,8 +169,8 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.download_text).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.download_text)).setText(downloadText);
                 findViewById(R.id.save_container).setVisibility(View.GONE);
-                synchronized (Incant.downloading) {
-                    if (Incant.downloading.contains(storyName)) {
+                synchronized (DownloadSpot.downloading) {
+                    if (DownloadSpot.downloading.contains(storyName)) {
                         findViewById(R.id.download_delete).setVisibility(View.GONE);
                         findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
                         setDownloadingObserver();
@@ -180,13 +180,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
-                        Intent intent = new Intent(StoryDetails.this, GlkActivity.class);
-                        if (story.isZcode(StoryDetails.this)) {
-                            intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(story, story.getName(StoryDetails.this)));
-                        } else {
-                            intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(story, story.getName(StoryDetails.this)));
-                        }
-                        startActivity(intent);
+                        EventBus.getDefault().post(new EventLocalStoryLaunch(StoryDetails.this, story));
                     }
                 });
 
@@ -198,7 +192,7 @@ public class StoryDetails extends Activity {
                         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 
                         // Inform the Engine Provider who to call back.
-                        intent.putExtra("sender", BuildConfig.APPLICATION_ID);
+                        intent.putExtra("sender", EchoSpot.sending_APPLICATION_ID);
 
                         String targetPackage = "";
                         // Send to specific selected Engine Provider.
@@ -227,7 +221,7 @@ public class StoryDetails extends Activity {
                         }
                         intent.putExtra("path", exportStoryDataFile.getPath());
                         int myLaunchToken = launchToken.incrementAndGet();
-                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + BuildConfig.APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
+                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
                         // Set default value.
                         if (selectedLaunchActivity == 0) {
                             selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
@@ -270,7 +264,7 @@ public class StoryDetails extends Activity {
                         finish();
                     }
                 });
-                ((TextView) findViewById(R.id.download_delete_text)).setText(Incant.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, story.getStoryFile(StoryDetails.this).lastModified()));
+                ((TextView) findViewById(R.id.download_delete_text)).setText(Story.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, story.getStoryFile(StoryDetails.this).lastModified()));
                 Log.d(TAG, "[storyDetail] lastModified " + story.getStoryFile(StoryDetails.this).lastModified() + " file " + story.getStoryFile(StoryDetails.this).getPath());
                 if (!story.getSaveFile(StoryDetails.this).exists()) {
                     findViewById(R.id.save_container).setVisibility(View.GONE);
@@ -282,7 +276,7 @@ public class StoryDetails extends Activity {
                             setView.run();
                         }
                     });
-                    ((TextView) findViewById(R.id.save_text)).setText(Incant.getTimeString(StoryDetails.this, R.string.saved_recently, R.string.saved_at, story.getSaveFile(StoryDetails.this).lastModified()));
+                    ((TextView) findViewById(R.id.save_text)).setText(Story.getTimeString(StoryDetails.this, R.string.saved_recently, R.string.saved_at, story.getSaveFile(StoryDetails.this).lastModified()));
                 }
 
                 // Show the storage path

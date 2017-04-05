@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
-class GlulxStory implements GlkMain {
+public class GlulxStory implements GlkMain {
     private static final long serialVersionUID = 0L;
     private static final String TAG = GlulxStory.class.getSimpleName();
     final Story story;
@@ -22,7 +22,7 @@ class GlulxStory implements GlkMain {
     transient Glulx glulx = null;
     transient GlkDispatch glk = null;
 
-    GlulxStory(Story story, String name) {
+    public GlulxStory(Story story, String name) {
         this.story = story;
         this.name = name;
     }

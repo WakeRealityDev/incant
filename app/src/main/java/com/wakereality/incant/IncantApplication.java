@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.wakereality.thunderstrike.EchoSpot;
+import com.yrek.incant.BuildConfig;
 import com.yrek.runconfig.SettingsCurrent;
 
 /**
@@ -21,9 +23,13 @@ public class IncantApplication extends Application {
     public void populatedQuickPreferences() {
         SharedPreferences spref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        EchoSpot.sending_APPLICATION_ID = BuildConfig.APPLICATION_ID;
+
         SettingsCurrent.setSpeechEnabled(spref.getBoolean("speech_enabled", false));
         SettingsCurrent.setInterpreterProfileEnabled(spref.getBoolean("profile_enabled", false));
         SettingsCurrent.setSpeechRecognizerEnabled(spref.getBoolean("recognition_enabled", false));
         SettingsCurrent.setSpeechRecognizerMute(spref.getBoolean("recognition_mute_enabled", false));
+
+        LocalEngineLaunchHelper localEngineLaunchHelper = new LocalEngineLaunchHelper();
     }
 }

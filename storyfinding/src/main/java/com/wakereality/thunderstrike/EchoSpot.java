@@ -13,4 +13,7 @@ public class EchoSpot {
     public static EngineProvider currentEngineProvider = null;
     public static LinkedHashMap<String, EngineProvider> detectedEngineProviders = new LinkedHashMap<>(3);
     public static int currentEngineProviderIndex = 0;
+
+    // The app can tell the library which app ID to use on broadcast sending to Thunderword / Engine Providers.
+    public static String sending_APPLICATION_ID = "";
 }

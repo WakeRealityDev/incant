@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wakereality.storyfinding.R;
+
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.regex.Matcher;
@@ -155,7 +157,7 @@ public class StoryDownload extends Activity {
             final Runnable gotoStoryDetails = new Runnable() {
                 @Override public void run() {
                     Intent intent = new Intent(StoryDownload.this, StoryDetails.class);
-                    intent.putExtra(Incant.SERIALIZE_KEY_STORY, story);
+                    intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
                     startActivity(intent);
                 }
             };
@@ -176,17 +178,17 @@ public class StoryDownload extends Activity {
             final String storyName = name;
             downloading = new Thread("StoryDownload") {
                 @Override public void run() {
-                    synchronized (Incant.downloading) {
-                        Incant.downloading.add(storyName);
+                    synchronized (DownloadSpot.downloading) {
+                        DownloadSpot.downloading.add(storyName);
                     }
                     try {
                         story.download(StoryDownload.this);
                     } catch (Exception e) {
                         Log.wtf(TAG,e);
                     }
-                    synchronized (Incant.downloading) {
-                        Incant.downloading.remove(storyName);
-                        Incant.downloading.notifyAll();
+                    synchronized (DownloadSpot.downloading) {
+                        DownloadSpot.downloading.remove(storyName);
+                        DownloadSpot.downloading.notifyAll();
                     }
                     if (story.isDownloaded(StoryDownload.this)) {
                         progressbar.post(gotoStoryDetails);

@@ -87,7 +87,7 @@ public class Viewer extends Activity {
             Story story = new Story(title, null, null, null, null, null, null);
             if (story.download(this, gameInputStream)) {
                 intent = new Intent(this, StoryDetails.class);
-                intent.putExtra(Incant.SERIALIZE_KEY_STORY, story);
+                intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
                 Log.d(TAG, "startActivity for story " + story.getName(this) + " title " + story.getTitle(this));
                 startActivity(intent);
                 return;

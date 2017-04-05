@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">Story Finding</string>
+
+    <string name="play">Play</string>
+    <string name="cover_image">Cover image</string>
+    <string name="download">Download</string>
+    <string name="delete_save">Delete save file</string>
+
+    <string name="play_via_external_engine_provider">Via Thunderword</string>
+    <string name="play_zcode">[Z-code]</string>
+    <string name="play_glulx">[Glulx]</string>
+    <string name="delete_story">Delete story</string>
+
+    <string name="external_provider_noprompt">Interrupt story</string>
+    <string name="external_provider_activity_label">Activity</string>
+    <string name="engine_none_detected_invite">Thunderword or other engine provider apps have not been detected on your Android system. For additional compatibility and faster performance with some fiction stories, we invite you to install the Thunderword app on your system and new options will appear to launch this story to the partner app. Thunderword app pre-release link:</string>
+    <string name="engine_provider_store_link0">https://play.google.com/apps/testing/com.wakereality.thunderword.experimental</string>
+
+    <string name="ifdb_viewgame">http://ifdb.tads.org/viewgame?ifid=%s</string>
+    <string name="ifdb_label">Go to IFDB</string>
+    <string name="ifdb_text">View this story in the Interactive Fiction Database</string>
+
+    <string name="name">Name</string>
+    <string name="url">URL</string>
+
+    <!-- uses Square library Phrase -->
+    <string name="engine_provider_detected_named">Interactive Fiction engine provider: <b>{engine}</b>{extra_a}</string>
+    <string name="engine_provider_detected_extra"> [{quantity} detected]</string>
+
+    <string name="download_failed">Failed download: %s</string>
+    <string name="download_invalid">Invalid download: %s</string>
+
+    <string name="ifarchive">(ifarchive)</string>
+    <string name="ifarchive_download_url_input_prefix">http://mirror.ifarchive.org/if-archive/games/</string>
+    <string name="zip_entry">ZIP entry</string>
+
+    <string name="scrape">Get more</string>
+    <string name="downloaded_recently">Downloaded %tr</string>
+    <string name="downloaded_at">Downloaded %tD</string>
+    <string name="saved_recently">Saved %tr</string>
+    <string name="saved_at">Saved %tD</string>
 </resources>

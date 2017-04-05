@@ -3,6 +3,7 @@ package com.yrek.incant;
 import android.content.Context;
 import android.util.Log;
 
+import com.wakereality.storyfinding.R;
 import com.yrek.incant.gamelistings.IFArchiveScraper;
 import com.yrek.incant.gamelistings.IFDBScraper;
 import com.yrek.incant.gamelistings.Scraper;

@@ -2,7 +2,6 @@ package com.yrek.incant;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,7 +35,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.wakereality.incant.AboutAppActivity;
@@ -51,9 +49,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+
 public class Incant extends Activity {
     private static final String TAG = Incant.class.getSimpleName();
-    static final String SERIALIZE_KEY_STORY = "SERIALIZE_KEY_STORY";
     static final String STORY = "STORY";
 
     private StoryLister storyLister;
@@ -72,7 +70,6 @@ public class Incant extends Activity {
     private LruCache<String,Bitmap> coverImageCache;
     protected SharedPreferences spref;
 
-    protected static HashSet<String> downloading = new HashSet<String>();
     protected static boolean useStyledIntroStrings = true;
     protected boolean showOnScreenListingDebug = false;
     private static boolean storagePermissionReady = true;
@@ -270,8 +267,7 @@ public class Incant extends Activity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Write Storage permission granted",
-                            Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, "Write Storage permission granted", Toast.LENGTH_SHORT).show();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     storagePermissionReady = true;
@@ -428,13 +424,13 @@ public class Incant extends Activity {
         File storyFile = story.getStoryFile(this);
         int start = sb.length();
         if (saveFile.exists()) {
-            sb.append(getTimeString(this, R.string.saved_recently, R.string.saved_at, saveFile.lastModified()));
+            sb.append(Story.getTimeString(this, R.string.saved_recently, R.string.saved_at, saveFile.lastModified()));
             sb.setSpan(saveTimeStyle, start, sb.length(), 0);
         } else if (description != null) {
             sb.append(description);
             sb.setSpan(descriptionStyle, start, sb.length(), 0);
         } else if (storyFile.exists()) {
-            sb.append(getTimeString(this, R.string.downloaded_recently, R.string.downloaded_at, storyFile.lastModified()));
+            sb.append(Story.getTimeString(this, R.string.downloaded_recently, R.string.downloaded_at, storyFile.lastModified()));
             sb.setSpan(downloadTimeStyle, start, sb.length(), 0);
         }
         return sb;
@@ -480,15 +476,15 @@ public class Incant extends Activity {
         }
 
         private void setDownloadingObserver() {
-            synchronized (downloading) {
-                if (downloadingObserver == null && !downloading.isEmpty()) {
+            synchronized (DownloadSpot.downloading) {
+                if (downloadingObserver == null && ! DownloadSpot.downloading.isEmpty()) {
                     downloadingObserver = new Thread() {
                         @Override
                         public void run() {
                             Log.d(TAG, "setDownloadingObserver run() " + Thread.currentThread());
-                            synchronized (downloading) {
+                            synchronized (DownloadSpot.downloading) {
                                 try {
-                                    downloading.wait();
+                                    DownloadSpot.downloading.wait();
                                 } catch (Exception e) {
                                     Log.wtf(TAG,e);
                                 }
@@ -556,8 +552,8 @@ public class Incant extends Activity {
                         return true;
                     }
                 });
-                synchronized (downloading) {
-                    if (downloading.contains("")) {
+                synchronized (DownloadSpot.downloading) {
+                    if (DownloadSpot.downloading.contains("")) {
                         download.setVisibility(View.GONE);
                         progressBar.setVisibility(View.VISIBLE);
                         convertView.setOnClickListener(null);
@@ -581,8 +577,8 @@ public class Incant extends Activity {
                                     scrapeMoreViewHolder.clearAllViews();
                                     scrapeMoreViewHolder.name.setText("Searching for more stories...");
 
-                                    synchronized (downloading) {
-                                        downloading.add("");
+                                    synchronized (DownloadSpot.downloading) {
+                                        DownloadSpot.downloading.add("");
                                         setDownloadingObserver();
                                     }
                                     Thread downloadWorker = new Thread() {
@@ -593,9 +589,9 @@ public class Incant extends Activity {
                                             } catch (Exception e) {
                                                 Log.wtf(TAG, e);
                                             }
-                                            synchronized (downloading) {
-                                                downloading.remove("");
-                                                downloading.notifyAll();
+                                            synchronized (DownloadSpot.downloading) {
+                                                DownloadSpot.downloading.remove("");
+                                                DownloadSpot.downloading.notifyAll();
                                             }
                                         }
                                     };
@@ -619,7 +615,7 @@ public class Incant extends Activity {
                     @Override public boolean onLongClick(View v) {
                         Log.d(TAG, "OnLongClick SPOT_A");
                         Intent intent = new Intent(Incant.this, StoryDetails.class);
-                        intent.putExtra(SERIALIZE_KEY_STORY, story);
+                        intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
                         startActivity(intent);
                         return true;
                     }
@@ -629,13 +625,7 @@ public class Incant extends Activity {
                     convertView.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
                             Log.d(TAG, "OnClick SPOT_C");
-                            Intent intent = new Intent(Incant.this, GlkActivity.class);
-                            if (story.isZcode(Incant.this)) {
-                                intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(story, story.getName(Incant.this)));
-                            } else {
-                                intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(story, story.getName(Incant.this)));
-                            }
-                            startActivity(intent);
+                            EventBus.getDefault().post(new EventLocalStoryLaunch(Incant.this, story));
                         }
                     });
                     play.setVisibility(View.VISIBLE);
@@ -669,8 +659,8 @@ public class Incant extends Activity {
                 } else {
                     play.setVisibility(View.GONE);
                     cover.setVisibility(View.GONE);
-                    synchronized (downloading) {
-                        if (downloading.contains(storyName)) {
+                    synchronized (DownloadSpot.downloading) {
+                        if (DownloadSpot.downloading.contains(storyName)) {
                             download.setVisibility(View.GONE);
                             progressBar.setVisibility(View.VISIBLE);
                             convertView.setOnClickListener(null);
@@ -684,8 +674,8 @@ public class Incant extends Activity {
                                     download.setVisibility(View.GONE);
                                     progressBar.setVisibility(View.VISIBLE);
                                     progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
-                                    synchronized (downloading) {
-                                        downloading.add(storyName);
+                                    synchronized (DownloadSpot.downloading) {
+                                        DownloadSpot.downloading.add(storyName);
                                         setDownloadingObserver();
                                     }
                                     Thread downloadThreadA = new Thread() {
@@ -701,9 +691,9 @@ public class Incant extends Activity {
                                                 Log.wtf(TAG,e);
                                                 error = Incant.this.getString(R.string.download_failed, story.getName(Incant.this));
                                             }
-                                            synchronized (downloading) {
-                                                downloading.remove(storyName);
-                                                downloading.notifyAll();
+                                            synchronized (DownloadSpot.downloading) {
+                                                DownloadSpot.downloading.remove(storyName);
+                                                DownloadSpot.downloading.notifyAll();
                                             }
                                             if (error != null) {
                                                 Log.w(TAG, "download error " + error);
@@ -726,14 +716,6 @@ public class Incant extends Activity {
             }
             setDownloadingObserver();
             return convertView;
-        }
-    }
-
-    public static String getTimeString(Context context, int recentStringId, int stringId, long time) {
-        if (time + 86400000L > System.currentTimeMillis()) {
-            return context.getString(recentStringId, time);
-        } else {
-            return context.getString(stringId, time);
         }
     }
 

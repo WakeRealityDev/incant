@@ -34,4 +34,9 @@ dependencies {
     // compile group: 'net.sf.supercsv', name: 'super-csv', version: '2.4.0'
 
     testCompile 'junit:junit:4.12'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.squareup.phrase:phrase:1.1.0'
+
+    compile project(':ifstd')
 }

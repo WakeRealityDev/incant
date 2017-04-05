@@ -3,7 +3,7 @@ package com.yrek.incant.gamelistings;
 import android.content.Context;
 import android.util.Log;
 
-import com.yrek.incant.R;
+import com.wakereality.storyfinding.R;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

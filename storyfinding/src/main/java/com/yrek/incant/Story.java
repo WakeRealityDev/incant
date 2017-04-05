@@ -22,6 +22,7 @@ import java.util.zip.ZipFile;
 import org.xmlpull.v1.XmlSerializer;
 
 import com.wakereality.incant.FileCopy;
+import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.ifstd.blorb.Blorb;
 import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.incant.gamelistings.XMLScraper;
@@ -508,7 +509,7 @@ public class Story implements Serializable {
                     shareDownloadIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     shareDownloadIntent.setAction("interactivefiction.enginemeta.storydownloaded");
                     shareDownloadIntent.putExtra("sentwhen", System.currentTimeMillis());
-                    shareDownloadIntent.putExtra("sender", BuildConfig.APPLICATION_ID);
+                    shareDownloadIntent.putExtra("sender", EchoSpot.sending_APPLICATION_ID);
                     shareDownloadIntent.putExtra("file", keepFile);
                     context.sendBroadcast(shareDownloadIntent);
                 }
@@ -775,6 +776,14 @@ public class Story implements Serializable {
             if (tmpFile.exists()) {
                 tmpFile.delete();
             }
+        }
+    }
+
+    public static String getTimeString(Context context, int recentStringId, int stringId, long time) {
+        if (time + 86400000L > System.currentTimeMillis()) {
+            return context.getString(recentStringId, time);
+        } else {
+            return context.getString(stringId, time);
         }
     }
 }
