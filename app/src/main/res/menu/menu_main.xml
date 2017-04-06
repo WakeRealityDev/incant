@@ -53,6 +53,12 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/action_storylist_not_downloaded"
+        android:orderInCategory="82"
+        android:title="@string/action_storylist_not_downloaded"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about_app"
         android:orderInCategory="90"
         android:title="@string/action_about_app"

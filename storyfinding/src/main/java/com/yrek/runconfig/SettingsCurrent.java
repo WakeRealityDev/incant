@@ -47,6 +47,7 @@ public class SettingsCurrent {
     private static boolean interpreterProfileEnabled = true;
     private static boolean enableAutoEnterOnGlkCharInput = true;
     private static boolean scrapeIFArchive = false;
+    private static boolean storyListFilterOnlyNotDownloaded = false;
 
     public static boolean getSpeechRecognizerEnabled() {
         return speechRecognizerEnabled;
@@ -128,6 +129,10 @@ public class SettingsCurrent {
     }
 
     public static boolean getStoryListFilterOnlyNotDownloaded() {
-        return true;
+        return storyListFilterOnlyNotDownloaded;
+    }
+
+    public static void flipStoryListFilterOnlyNotDownloaded() {
+        storyListFilterOnlyNotDownloaded = ! storyListFilterOnlyNotDownloaded;
     }
 }

@@ -44,9 +44,7 @@ class StoryLister {
 
     public List<Story> getStories(Comparator<Story> sort, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) throws IOException {
         ArrayList<Story> stories = new ArrayList<Story>();
-        if (! SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
-            addDownloaded(stories);
-        }
+        addDownloaded(stories);
         Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
 
         if (! SettingsCurrent.getListingShowLocal()) {
@@ -62,7 +60,6 @@ class StoryLister {
         }
 
         if (readCommaSepValuesFile != null) {
-            // ArrayList<Story> stories = new ArrayList<>();
             // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
             for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
                 StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
@@ -71,13 +68,13 @@ class StoryLister {
                 try {
                     downloadLink = new URL(ifdbListEntry.downloadLink);
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    Log.w(TAG, "Bad URL on CSV list generation ", e);
                 }
                 URL imageLink = null;
                 try {
                     imageLink = new URL(context.getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    Log.w(TAG, "Bad URL for Image on CSV list generation ", e);
                 }
 
                 // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
@@ -87,7 +84,16 @@ class StoryLister {
                 // Scraper.writeStory();
                 // writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
             }
-            // storyListAdapter.addAll(stories);
+        }
+
+        if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
+            ArrayList<Story> freshList = new ArrayList<>();
+            for (int i = 0; i < stories.size(); i++) {
+                if (! stories.get(i).isDownloaded(context)) {
+                    freshList.add(stories.get(i));
+                }
+            }
+            stories = freshList;
         }
 
         if (sort != null) {

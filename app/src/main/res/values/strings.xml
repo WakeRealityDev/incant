@@ -38,4 +38,5 @@
   <string name="main_top_error_storage_try">[ Try Again ]</string>
 
   <string name="action_story_database_test">Story DB Test</string>
+    <string name="action_storylist_not_downloaded">List downloaded</string>
 </resources>

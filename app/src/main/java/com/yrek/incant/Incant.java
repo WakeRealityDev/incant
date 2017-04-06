@@ -32,16 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
-import com.wakereality.storyfinding.StoryEntryIFDB;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
-import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.runconfig.SettingsCurrent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -326,10 +322,10 @@ public class Incant extends Activity {
     }
 
 
-    private final Runnable refreshStoryList = new Runnable() {
+    private final Runnable refreshStoryListRunnable = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "refreshStoryList Runnable run()");
+            Log.d(TAG, "refreshStoryListRunnable Runnable run()");
             refreshStoryList();
         }
     };
@@ -459,7 +455,7 @@ public class Incant extends Activity {
                                     Log.wtf(TAG,e);
                                 }
                                 downloadingObserver = null;
-                                storyList.post(refreshStoryList);
+                                storyList.post(refreshStoryListRunnable);
                             }
                         }
                     };
@@ -764,6 +760,10 @@ public class Incant extends Activity {
             case R.id.action_story_database_test:
                 processAssetsCommaSeparatedValuesList();
                 break;
+            case R.id.action_storylist_not_downloaded:
+                SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
+                refreshStoryList();
+                break;
         }
 
         sprefEditor.commit();
@@ -795,7 +795,7 @@ public class Incant extends Activity {
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
-        Log.i(TAG, "EventEngineProviderChange, updating refreshStoryList()");
+        Log.i(TAG, "EventEngineProviderChange, updating refreshStoryListRunnable()");
         refreshStoryList();
     }
 
