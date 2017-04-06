@@ -51,12 +51,18 @@ public class StoryHelper {
             return "gblorb";
         } else if (simpleString.endsWith(".ulx")) {
             return "ulx";
-        } else if (simpleString.endsWith(".z5")) {
-            return "z5";
-        } else if (simpleString.endsWith(".z3")) {
-            return "z3";
         } else if (simpleString.endsWith(".z8")) {
             return "z8";
+        } else if (simpleString.endsWith(".z7")) {
+            return "z7";
+        } else if (simpleString.endsWith(".z6")) {
+            return "z6";
+        } else if (simpleString.endsWith(".z5")) {
+            return "z5";
+        } else if (simpleString.endsWith(".z4")) {
+            return "z4";
+        } else if (simpleString.endsWith(".z3")) {
+            return "z3";
         } else if (simpleString.endsWith(".blb")) {
             return "blorb";
         } else if (simpleString.endsWith(".zip")) {
