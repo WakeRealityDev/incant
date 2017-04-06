@@ -128,7 +128,7 @@
 			  <Button
 				 android:layout_width="match_parent"
 				 android:layout_height="wrap_content"
-				 android:text="@string/download"
+				 android:text="@string/download_story"
 				 android:id="@+id/download_delete"
 				 />
 			</RelativeLayout>

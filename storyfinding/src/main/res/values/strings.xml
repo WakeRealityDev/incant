@@ -3,7 +3,7 @@
 
     <string name="play">Play</string>
     <string name="cover_image">Cover image</string>
-    <string name="download">Download</string>
+    <string name="download_story">Download</string>
     <string name="delete_save">Delete save file</string>
 
     <string name="play_via_external_engine_provider">Via Thunderword</string>

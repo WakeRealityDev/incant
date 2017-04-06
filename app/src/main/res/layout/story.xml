@@ -15,7 +15,7 @@
        android:layout_width="wrap_content"
        android:layout_height="80dp"
        android:id="@+id/download"
-       android:text="@string/download"
+       android:text="@string/download_story"
        android:textSize="20sp"
        android:gravity="center"
        />

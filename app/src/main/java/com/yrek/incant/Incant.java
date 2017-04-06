@@ -42,7 +42,6 @@ import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.storyfinding.StoryEntryIFDB;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.incant.gamelistings.StoryHelper;
-import com.yrek.incant.glk.GlkActivity;
 import com.yrek.runconfig.SettingsCurrent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -350,37 +349,8 @@ public class Incant extends Activity {
         storyListAdapter.setNotifyOnChange(false);
         storyListAdapter.clear();
         try {
-            List<Story> freshList = storyLister.getStories(storyLister.SortByDefault);
+            List<Story> freshList = storyLister.getStories(storyLister.SortByDefault, readCommaSepValuesFile, this);
             storyListAdapter.addAll(freshList);
-
-            if (readCommaSepValuesFile != null) {
-                ArrayList<Story> stories = new ArrayList<>();
-                // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
-                for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
-                    StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
-
-                    URL downloadLink = null;
-                    try {
-                        downloadLink = new URL(ifdbListEntry.downloadLink);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                    URL imageLink = null;
-                    try {
-                        imageLink = new URL(getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
-                    Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink);
-                    StoryHelper.addStory(this, newStory, stories, 1000);
-
-                    // Scraper.writeStory();
-                    // writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
-                }
-                storyListAdapter.addAll(stories);
-            }
         } catch (Exception e) {
             Log.wtf(TAG,e);
         }
@@ -620,41 +590,53 @@ public class Incant extends Activity {
                         return true;
                     }
                 });
+
                 if (story.isDownloaded(Incant.this)) {
-                    download.setVisibility(View.GONE);
-                    convertView.setOnClickListener(new View.OnClickListener() {
-                        @Override public void onClick(View v) {
-                            Log.d(TAG, "OnClick SPOT_C");
-                            EventBus.getDefault().post(new EventLocalStoryLaunch(Incant.this, story));
-                        }
-                    });
-                    play.setVisibility(View.VISIBLE);
-                    cover.setVisibility(View.GONE);
-                    if (story.getCoverImageFile(Incant.this).exists()) {
-                        cover.setTag(story);
-                        handler.post(new Runnable() {
-                            @Override public void run() {
-                                Bitmap image = coverImageCache.get(storyName);
-                                if (image == null) {
-                                    image = story.getCoverImageBitmap(Incant.this);
-                                    if (image == null) {
-                                        return;
-                                    }
-                                    coverImageCache.put(storyName, image);
-                                }
-                                final Bitmap bitmap = image;
-                                cover.post(new Runnable() {
-                                    @Override public void run() {
-                                        if (story == cover.getTag()) {
-                                            play.setVisibility(View.GONE);
-                                            cover.setVisibility(View.VISIBLE);
-                                            cover.setImageBitmap(bitmap);
-                                            cover.setTag(null);
-                                        }
-                                    }
-                                });
+                    boolean showThisEntry = true;
+                    if (1==2 /* SettingsCurrent.getStoryListFilterOnlyNotDownloaded() */) {
+                        convertView.setVisibility(View.GONE);
+                        showThisEntry = false;
+                    }
+
+                    if (showThisEntry) {
+                        download.setVisibility(View.GONE);
+                        convertView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.d(TAG, "OnClick SPOT_C");
+                                EventBus.getDefault().post(new EventLocalStoryLaunch(Incant.this, story));
                             }
                         });
+                        play.setVisibility(View.VISIBLE);
+                        cover.setVisibility(View.GONE);
+                        if (story.getCoverImageFile(Incant.this).exists()) {
+                            cover.setTag(story);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Bitmap image = coverImageCache.get(storyName);
+                                    if (image == null) {
+                                        image = story.getCoverImageBitmap(Incant.this);
+                                        if (image == null) {
+                                            return;
+                                        }
+                                        coverImageCache.put(storyName, image);
+                                    }
+                                    final Bitmap bitmap = image;
+                                    cover.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (story == cover.getTag()) {
+                                                play.setVisibility(View.GONE);
+                                                cover.setVisibility(View.VISIBLE);
+                                                cover.setImageBitmap(bitmap);
+                                                cover.setTag(null);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 } else {
                     play.setVisibility(View.GONE);
@@ -666,7 +648,7 @@ public class Incant extends Activity {
                             convertView.setOnClickListener(null);
                         } else {
                             download.setVisibility(View.VISIBLE);
-                            download.setText(R.string.download);
+                            download.setText(R.string.download_story);
                             final View finalConvertView = convertView;
                             convertView.setOnClickListener(new View.OnClickListener() {
                                 @Override public void onClick(final View v) {
@@ -714,6 +696,7 @@ public class Incant extends Activity {
                     }
                 }
             }
+
             setDownloadingObserver();
             return convertView;
         }

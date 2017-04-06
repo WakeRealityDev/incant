@@ -126,4 +126,8 @@ public class SettingsCurrent {
     public static boolean getGetMoreBypassLiveScrape() {
         return true;
     }
+
+    public static boolean getStoryListFilterOnlyNotDownloaded() {
+        return true;
+    }
 }

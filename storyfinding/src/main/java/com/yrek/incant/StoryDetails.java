@@ -121,7 +121,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                 findViewById(R.id.cover).setVisibility(View.GONE);
                 findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-                ((Button) findViewById(R.id.download_delete)).setText(R.string.download);
+                ((Button) findViewById(R.id.download_delete)).setText(R.string.download_story);
                 findViewById(R.id.download_delete).setVisibility(View.VISIBLE);
                 findViewById(R.id.download_delete).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(final View v) {

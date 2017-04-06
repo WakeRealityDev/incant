@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.wakereality.storyfinding.R;
+import com.wakereality.storyfinding.ReadCommaSepValuesFile;
+import com.wakereality.storyfinding.StoryEntryIFDB;
 import com.yrek.incant.gamelistings.IFArchiveScraper;
 import com.yrek.incant.gamelistings.IFDBScraper;
 import com.yrek.incant.gamelistings.Scraper;
@@ -12,6 +14,7 @@ import com.yrek.runconfig.SettingsCurrent;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,28 +42,62 @@ class StoryLister {
         }
     }
 
-    public List<Story> getStories(Comparator<Story> sort) throws IOException {
+    public List<Story> getStories(Comparator<Story> sort, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) throws IOException {
         ArrayList<Story> stories = new ArrayList<Story>();
-        addDownloaded(stories);
-        Log.d(TAG, "getStories addDownloaded " + stories.size());
+        if (! SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
+            addDownloaded(stories);
+        }
+        Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
 
         if (! SettingsCurrent.getListingShowLocal()) {
             // Featured download links
             addInitial(stories);
-            Log.d(TAG, "getStories addInitial " + stories.size());
+            Log.d(TAG, "[listPopulate] getStories addInitial " + stories.size());
 
             for (Scraper scraper : scrapers) {
                 addDownloadRunIndex++;
                 scraper.addStories(stories, addDownloadRunIndex);
-                Log.d(TAG, "getStories scraper " + stories.size());
+                Log.d(TAG, "[listPopulate] getStories scraper " + stories.size());
             }
+        }
+
+        if (readCommaSepValuesFile != null) {
+            // ArrayList<Story> stories = new ArrayList<>();
+            // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
+            for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
+                StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
+
+                URL downloadLink = null;
+                try {
+                    downloadLink = new URL(ifdbListEntry.downloadLink);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                URL imageLink = null;
+                try {
+                    imageLink = new URL(context.getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+                // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
+                Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink);
+                StoryHelper.addStory(context, newStory, stories, 1000);
+
+                // Scraper.writeStory();
+                // writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
+            }
+            // storyListAdapter.addAll(stories);
         }
 
         if (sort != null) {
             Collections.sort(stories, sort);
         }
+
+        Log.d(TAG, "[listPopulate] getStories final stories " + stories.size());
         return stories;
     }
+
 
     public void scrape() throws IOException {
         for (Scraper scraper : scrapers) {

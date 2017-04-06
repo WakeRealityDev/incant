@@ -20,8 +20,6 @@ allprojects {
     }
     println "allprojects buildDir " + buildDir
 
-
-
     configurations.all {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
