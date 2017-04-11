@@ -114,7 +114,11 @@ public class StoryDetails extends Activity {
             ((TextView) findViewById(R.id.name)).setText(makeName());
             ((TextView) findViewById(R.id.author)).setText(makeAuthor());
             ((TextView) findViewById(R.id.description)).setText(story.getDescription(StoryDetails.this));
-            ((TextView) findViewById(R.id.storyextra0)).setText("Category " + story.getStoryCategory());
+
+            TextView storyExtra0 = (TextView) findViewById(R.id.storyextra0);
+            storyExtra0.setText("Category " + story.getStoryCategory());
+            // Using append allows one thing multiple textviews do not, word-wrapping.
+
             ((TextView) findViewById(R.id.story_hash_info)).setText("MD5: " + story.getHash());
             if (!story.isDownloaded(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);

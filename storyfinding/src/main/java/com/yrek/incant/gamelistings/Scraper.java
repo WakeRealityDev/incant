@@ -57,6 +57,10 @@ public abstract class Scraper {
     public void addStories(ArrayList<Story> stories, int addCategory) throws IOException {
         DataInputStream in = null;
         try {
+            if (! cacheFile.exists()) {
+                return;
+            }
+
             in = new DataInputStream(new FileInputStream(cacheFile));
             for (;;) {
                 String name = in.readUTF();

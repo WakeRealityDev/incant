@@ -149,6 +149,9 @@ public class Story implements Serializable {
             return context.getDir("story", Context.MODE_PRIVATE);
         }
         else {
+            // ToDo: yes, these are hard-coded paths, but in a lot of ways this is the most consistent thing in Android - as this app relies on the ability for other apps to find the files.
+            // ToDo: become a content-provider, do own sha256-hash, and publish stories over to Thunderword via key=sha256 and content-provider is means to share data.
+            //   A common library with Thunderword for this.
             return new File("/sdcard/Incant_Stories/setA");
         }
     }
@@ -158,7 +161,10 @@ public class Story implements Serializable {
     }
 
     public static File getDownloadKeepDir(Context context) {
-        return new File(getRootDir(context), "DownloadKeep");
+        // ToDo: yes, these are hard-coded paths, but in a lot of ways this is the most consistent thing in Android - as this app relies on the ability for other apps to find the files.
+        // ToDo: become a content-provider, do own sha256-hash, and publish stories over to Thunderword via key=sha256 and content-provider is means to share data.
+        //   A common library with Thunderword for this.
+        return new File("/sdcard/Incant_Stories/DownloadKeepA");
     }
 
     public static File getZcodeFile(Context context, String name) {
@@ -311,7 +317,10 @@ public class Story implements Serializable {
 
     protected boolean download(Context context, InputStream inputStream) throws IOException {
         boolean downloaded = false;
+
         getDir(context).mkdirs();
+        getDownloadKeepDir(context).mkdirs();
+
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
         String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
         String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;

@@ -117,31 +117,54 @@ class StoryLister {
         }
     }
 
+
     public final Comparator<Story> SortByDefault = new Comparator<Story>() {
+
         @Override public int compare(Story story1, Story story2) {
+            final String storyName1 = story1.getName(context);
+
             if (story1 == story2) {
+                //Log.v(TAG, "[sortName] equalA " + storyName1);
                 return 0;
             }
+
             if (story1.isDownloaded(context)) {
-                if (!story2.isDownloaded(context)) {
+                if (! story2.isDownloaded(context)) {
+                    // If first is downloaded and second is not push second to bottom.
+                    Log.v(TAG, "[sortName] downloadA " + storyName1);
                     return -1;
                 }
+
+                // Stories with save files go highest, most recent saved first.
+                // ToDo: last played needs to be trackec on it's own, for Thunderword integration. iFrotz has nice logic to resume in-progress game.
                 if (story1.getSaveFile(context).exists()) {
                     if (!story2.getSaveFile(context).exists()) {
+                        //Log.v(TAG, "[sortName] saveA " + storyName1);
                         return -1;
                     } else {
+                        //Log.v(TAG, "[sortName] saveB " + storyName1);
                         return - (int) (story1.getSaveFile(context).lastModified() - story2.getSaveFile(context).lastModified());
                     }
                 } else if (story2.getSaveFile(context).exists()) {
+                    //Log.v(TAG, "[sortName] saveC " + storyName1);
                     return 1;
                 }
+
+                //Log.v(TAG, "[sortName] lastModified? " + storyName1);
                 return (int) (story1.getStoryFile(context).lastModified() - story2.getStoryFile(context).lastModified());
             } else if (story2.isDownloaded(context)) {
+                // Downloaded go before non-downloaded.
+                //Log.v(TAG, "[sortName] story2 downloaded " + storyName1);
                 return 1;
             } else {
-                return story1.getName(context).compareTo(story2.getName(context));
+                // If neither one is downloaded or both are downloaded, they are on the same equality of sorting by name.
+                //final String storyName1 = story1.getName(context);
+                final String storyName2 = story2.getName(context);
+                //Log.v(TAG, "[sortName] " + storyName1 + " : " + storyName2);
+                return storyName1.compareToIgnoreCase(storyName2);
             }
         }
+
         @Override public boolean equals(Object object) {
             return this == object;
         }
@@ -156,23 +179,24 @@ class StoryLister {
         File[] primaryDirectoryFiles = Story.getRootDir(context).listFiles();
         if (primaryDirectoryFiles == null)
         {
-            Log.w(TAG, "primaryDirectoryFiles is null");
+            Log.w(TAG, "[listPopulate] primaryDirectoryFiles is null");
             return;
         }
 
         addDownloadRunIndex++;
         for (File file : primaryDirectoryFiles) {
             if (! Story.isDownloaded(context, file.getName())) {
-                Log.i(TAG, "addDownloaded SKIP file " + file);
+                Log.i(TAG, "[listPopulate] addDownloaded SKIP file " + file);
                 continue;
             }
-            Log.d(TAG, "SPOT_AAA0 addDownloaded story " + file + " addDownloadRunIndex " + addDownloadRunIndex);
+            Log.d(TAG, "[listPopulate] SPOT_AAA0 addDownloaded story " + file + " addDownloadRunIndex " + addDownloadRunIndex);
             StoryHelper.addStory(context, new Story(file.getName(), null, null, null, null, null, null), stories, addDownloadRunIndex);
         }
     }
 
     private void addInitial(ArrayList<Story> stories) throws IOException {
         String[] initial = context.getResources().getStringArray(R.array.initial_story_list);
+        // 7 lines of array per entry.
         for (int i = 0; i + 6 < initial.length; i += 7) {
             StoryHelper.addStory(context, new Story(initial[i], initial[i+1], initial[i+2], initial[i+3], new URL(initial[i+4]), initial[i+5].length() > 0 ? initial[i+5] : null, initial[i+6].length() > 0 ? new URL(initial[i+6]) : null), stories, 1);
         }

@@ -350,6 +350,7 @@ public class Incant extends Activity {
         } catch (Exception e) {
             Log.wtf(TAG,e);
         }
+        // What's this null added at end?
         storyListAdapter.add(null);
         storyListAdapter.notifyDataSetChanged();
     }
