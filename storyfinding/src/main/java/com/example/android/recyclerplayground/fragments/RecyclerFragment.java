@@ -49,7 +49,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         mList.getItemAnimator().setRemoveDuration(1000);
 
         mAdapter = getAdapter();
-        mAdapter.setItemCount(getDefaultItemCount());
+        mAdapter.setItemCount(getDefaultItemCount(), getContext());
         mAdapter.setOnItemClickListener(this);
         mList.setAdapter(mAdapter);
 
@@ -92,16 +92,16 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
             return true;
         } else if (i == R.id.action_empty) {
-            mAdapter.setItemCount(0);
+            mAdapter.setItemCount(0, getContext());
             return true;
         } else if (i == R.id.action_small) {
-            mAdapter.setItemCount(5);
+            mAdapter.setItemCount(5, getContext());
             return true;
         } else if (i == R.id.action_medium) {
-            mAdapter.setItemCount(25);
+            mAdapter.setItemCount(25, getContext());
             return true;
         } else if (i == R.id.action_large) {
-            mAdapter.setItemCount(196);
+            mAdapter.setItemCount(196, getContext());
             return true;
         } else if (i == R.id.action_scroll_zero) {
             mList.scrollToPosition(0);

@@ -1,6 +1,8 @@
 package com.example.android.recyclerplayground.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,19 +10,21 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.wakereality.storyfinding.R;
+import com.yrek.incant.Story;
+import com.yrek.incant.StoryListSpot;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
 
 public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalItemHolder> {
 
-    private ArrayList<GameItem> mItems;
+    private ArrayList<Story> mItems;
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
     public SimpleAdapter() {
-        mItems = new ArrayList<GameItem>();
+        mItems = new ArrayList<>();
     }
 
     /*
@@ -29,9 +33,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
      * the view. However, this method will not trigger any of the RecyclerView
      * animation features.
      */
-    public void setItemCount(int count) {
+    public void setItemCount(int count, Context context) {
         mItems.clear();
-        mItems.addAll(generateDummyData(count));
+        try {
+            mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
+        } catch (IOException e) {
+            Log.e("SimpleAdapter", "Exception ", e);
+        }
 
         notifyDataSetChanged();
     }
@@ -44,7 +52,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     public void addItem(int position) {
         if (position > mItems.size()) return;
         
-        mItems.add(position, generateDummyItem());
+        // mItems.add(position, generateDummyItem());
         notifyItemInserted(position);
     }
 
@@ -70,13 +78,15 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {
-        GameItem item = mItems.get(position);
+        Story item = mItems.get(position);
 
-        itemHolder.setAwayScore(String.valueOf(item.awayScore));
-        itemHolder.setHomeScore(String.valueOf(item.homeScore));
+        itemHolder.setLeftBottomNumber("p" + position);
+        itemHolder.setLeftTopNumber("2.0");
 
-        itemHolder.setAwayName(item.awayTeam);
-        itemHolder.setHomeName(item.homeTeam);
+        // itemHolder.setStoryDescription(item.getTitle(itemHolder.mStoryTitle.getContext()));
+        itemHolder.setStoryDescription("storyDescription");
+
+        itemHolder.setStoryAuthors(item.getAuthor(itemHolder.mStoryTitle.getContext()));
     }
 
     @Override
@@ -95,23 +105,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         }
     }
 
-    public static class GameItem {
-        public String homeTeam;
-        public String awayTeam;
-        public int homeScore;
-        public int awayScore;
-
-        public GameItem(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-            this.homeTeam = homeTeam;
-            this.awayTeam = awayTeam;
-            this.homeScore = homeScore;
-            this.awayScore = awayScore;
-        }
-    }
 
     public static class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView mHomeScore, mAwayScore;
-        private TextView mHomeName, mAwayName;
+        private TextView mLeftTopNumber, mLeftBottomNumber;
+        private TextView mHomeName, mStoryTitle;
 
         private SimpleAdapter mAdapter;
 
@@ -121,10 +118,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
             mAdapter = adapter;
 
-            mHomeScore = (TextView) itemView.findViewById(R.id.text_score_home);
-            mAwayScore = (TextView) itemView.findViewById(R.id.text_score_away);
+            mLeftTopNumber = (TextView) itemView.findViewById(R.id.text_score_home);
+            mLeftBottomNumber = (TextView) itemView.findViewById(R.id.text_score_away);
             mHomeName = (TextView) itemView.findViewById(R.id.text_team_home);
-            mAwayName = (TextView) itemView.findViewById(R.id.text_team_away);
+            mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
         }
 
         @Override
@@ -132,37 +129,20 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mAdapter.onItemHolderClick(this);
         }
 
-        public void setHomeScore(CharSequence homeScore) {
-            mHomeScore.setText(homeScore);
+        public void setLeftTopNumber(CharSequence homeScore) {
+            mLeftTopNumber.setText(homeScore);
         }
 
-        public void setAwayScore(CharSequence awayScore) {
-            mAwayScore.setText(awayScore);
+        public void setLeftBottomNumber(CharSequence awayScore) {
+            mLeftBottomNumber.setText(awayScore);
         }
 
-        public void setHomeName(CharSequence homeName) {
+        public void setStoryAuthors(CharSequence homeName) {
             mHomeName.setText(homeName);
         }
 
-        public void setAwayName(CharSequence awayName) {
-            mAwayName.setText(awayName);
+        public void setStoryDescription(CharSequence awayName) {
+            mStoryTitle.setText(awayName);
         }
-    }
-
-    public static GameItem generateDummyItem() {
-        Random random = new Random();
-        return new GameItem("Upset Home", "Upset Away",
-                random.nextInt(100),
-                random.nextInt(100) );
-    }
-
-    public static List<SimpleAdapter.GameItem> generateDummyData(int count) {
-        ArrayList<SimpleAdapter.GameItem> items = new ArrayList<SimpleAdapter.GameItem>();
-
-        for (int i=0; i < count; i++) {
-            items.add(new SimpleAdapter.GameItem("Losers", "Winners", i, i+5));
-        }
-
-        return items;
     }
 }

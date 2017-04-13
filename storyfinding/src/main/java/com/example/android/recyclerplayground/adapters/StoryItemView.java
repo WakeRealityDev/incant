@@ -8,19 +8,19 @@ import android.widget.TextView;
 import com.wakereality.storyfinding.R;
 
 
-public class GameItemView extends GridLayout {
+public class StoryItemView extends GridLayout {
 
-    private TextView mHomeScore, mAwayScore;
+    private TextView mStoryTitle, mStoryAuthor;
 
-    public GameItemView(Context context) {
+    public StoryItemView(Context context) {
         super(context);
     }
 
-    public GameItemView(Context context, AttributeSet attrs) {
+    public StoryItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public GameItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StoryItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -28,13 +28,13 @@ public class GameItemView extends GridLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mHomeScore = (TextView) findViewById(R.id.text_score_home);
-        mAwayScore = (TextView) findViewById(R.id.text_score_away);
+        mStoryTitle = (TextView) findViewById(R.id.text_score_home);
+        mStoryAuthor = (TextView) findViewById(R.id.text_score_away);
     }
 
     @Override
     public String toString() {
-        return mAwayScore.getText() + "v" + mHomeScore.getText()
+        return mStoryAuthor.getText() + "v" + mStoryTitle.getText()
                 + ": " + getLeft() + "," + getTop()
                 + ": " + getMeasuredWidth() + "x" + getMeasuredHeight();
     }

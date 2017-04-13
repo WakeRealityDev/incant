@@ -348,7 +348,7 @@ public class Incant extends Activity {
         storyListAdapter.setNotifyOnChange(false);
         storyListAdapter.clear();
         try {
-            List<Story> freshList = StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, readCommaSepValuesFile, this);
+            List<Story> freshList = StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, this);
             storyListAdapter.addAll(freshList);
         } catch (Exception e) {
             Log.wtf(TAG,e);
@@ -779,14 +779,13 @@ public class Incant extends Activity {
     }
 
 
-    public ReadCommaSepValuesFile readCommaSepValuesFile;
 
     public void processAssetsCommaSeparatedValuesList() {
-        if (readCommaSepValuesFile == null) {
-            readCommaSepValuesFile = new ReadCommaSepValuesFile();
+        if (StoryListSpot.readCommaSepValuesFile == null) {
+            StoryListSpot.readCommaSepValuesFile = new ReadCommaSepValuesFile();
         }
         // readCommaSepValuesFile.readComplexSetOfFilesCSV(getApplicationContext());
-        readCommaSepValuesFile.readSimpleFileOneObjectCSV(getApplicationContext());
+        StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(getApplicationContext());
         System.gc();
         refreshStoryList();
     }
