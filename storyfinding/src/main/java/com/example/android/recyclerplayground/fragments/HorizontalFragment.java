@@ -33,6 +33,6 @@ public class HorizontalFragment extends RecyclerFragment {
 
     @Override
     protected SimpleAdapter getAdapter() {
-        return new SimpleAdapter();
+        return new SimpleAdapter(getActivity());
     }
 }

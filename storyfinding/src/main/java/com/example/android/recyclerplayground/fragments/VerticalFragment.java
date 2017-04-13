@@ -34,6 +34,6 @@ public class VerticalFragment extends RecyclerFragment {
 
     @Override
     protected SimpleAdapter getAdapter() {
-        return new SimpleAdapter();
+        return new SimpleAdapter(getActivity());
     }
 }

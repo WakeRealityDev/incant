@@ -1,11 +1,16 @@
 package com.example.android.recyclerplayground.adapters;
 
+import android.content.Context;
 import android.view.View;
 
 import com.wakereality.storyfinding.R;
 
 
 public class SimpleStaggeredAdapter extends SimpleAdapter {
+
+    public SimpleStaggeredAdapter(Context context) {
+        super(context);
+    }
 
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {

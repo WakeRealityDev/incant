@@ -2,6 +2,11 @@ package com.example.android.recyclerplayground.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +28,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public SimpleAdapter() {
+    public SimpleAdapter(Context context) {
         mItems = new ArrayList<>();
+        headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
     }
 
     /*
@@ -76,6 +82,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         return new VerticalItemHolder(root, this);
     }
 
+    private TextAppearanceSpan headlineStyle;
+
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {
         Story item = mItems.get(position);
@@ -83,8 +91,19 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         itemHolder.setLeftBottomNumber("p" + position);
         itemHolder.setLeftTopNumber("2.0");
 
-        // itemHolder.setStoryDescription(item.getTitle(itemHolder.mStoryTitle.getContext()));
-        itemHolder.setStoryDescription("storyDescription");
+        Context context = itemHolder.mStoryTitle.getContext();
+        SpannableStringBuilder sb = new SpannableStringBuilder(item.getName(context));
+        String storyHeadline = item.getHeadline(context);
+        if (storyHeadline.length() > 0) {
+            sb.append(" (");
+            int start = sb.length();
+            sb.append(storyHeadline);
+            // sb.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            sb.setSpan(headlineStyle, start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            sb.append(")");
+        }
+        itemHolder.setStoryDescription(sb);
+        // itemHolder.setStoryDescription("storyDescription");
 
         itemHolder.setStoryAuthors(item.getAuthor(itemHolder.mStoryTitle.getContext()));
     }

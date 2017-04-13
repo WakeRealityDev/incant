@@ -37,6 +37,6 @@ public class FixedTwoWayFragment extends RecyclerFragment{
 
     @Override
     protected SimpleAdapter getAdapter() {
-        return new SimpleAdapter();
+        return new SimpleAdapter(getActivity());
     }
 }
