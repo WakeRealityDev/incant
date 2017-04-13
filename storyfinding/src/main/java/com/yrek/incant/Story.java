@@ -21,7 +21,7 @@ import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import com.wakereality.incant.FileCopy;
+import com.wakereality.apphelpersa.fileutils.FileCopy;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.ifstd.blorb.Blorb;
 import com.yrek.incant.gamelistings.StoryHelper;
@@ -510,16 +510,15 @@ public class Story implements Serializable {
                 if (!goodFileCopy) {
                     Log.e(TAG, "[storyFileShare] file copy failed for duplicate " + downloadTargetFile);
                 } else {
-                    Log.d(TAG, "[storyFileShare] file copy for duplicate to share " + downloadTargetFile);
+                    Log.d(TAG, "[storyFileShare][mediaStoreScan] file copy for duplicate to share " + downloadTargetFile + " to " + keepFile.getPath());
                     // Notify all interested apps that there is a new file to add to their records.
-                    //  NOTE: For Thunderword, an alternate to sending this broadcast action ("interactivefiction.enginemeta.storydownloaded") is to send a command-code OUTSIDE_APP_NOTIFIED_NEW_STORY_FILE_DOWNLOAD = 96000
                     Intent shareDownloadIntent = new Intent();
                     // Tell Android to start Thunderword app if not already running.
                     shareDownloadIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     shareDownloadIntent.setAction("interactivefiction.enginemeta.storydownloaded");
                     shareDownloadIntent.putExtra("sentwhen", System.currentTimeMillis());
                     shareDownloadIntent.putExtra("sender", EchoSpot.sending_APPLICATION_ID);
-                    shareDownloadIntent.putExtra("file", keepFile);
+                    shareDownloadIntent.putExtra("file", keepFile.getPath());
                     context.sendBroadcast(shareDownloadIntent);
                 }
             } else {
