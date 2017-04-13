@@ -17,6 +17,9 @@
   <string name="action_speech_input_beepmute">Speech In Beep Mute</string>
   <string name="action_onscreen_debug">Show Debug</string>
   <string name="action_glk_auto_enter_char_input">Auto enter char</string>
+  <string name="action_story_database_test">Story DB Test</string>
+  <string name="action_storylist_not_downloaded">List downloaded</string>
+  <string name="action_list_test">List Test</string>
 
   <string name="app_website_link0">http://www.WakeReality.com</string>
   <string name="app_website_link1">https://github.com/WakeRealityDev/incant</string>
@@ -36,7 +39,4 @@
 
   <string name="main_top_error_storagepermission">Incant! needs public write storage permission to download stories and launch Thunderword.</string>
   <string name="main_top_error_storage_try">[ Try Again ]</string>
-
-  <string name="action_story_database_test">Story DB Test</string>
-    <string name="action_storylist_not_downloaded">List downloaded</string>
 </resources>

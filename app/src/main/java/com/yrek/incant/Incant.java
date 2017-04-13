@@ -35,8 +35,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import com.example.android.recyclerplayground.MainActivity;
 import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
+import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.runconfig.SettingsCurrent;
 
@@ -49,7 +51,6 @@ public class Incant extends Activity {
     private static final String TAG = Incant.class.getSimpleName();
     static final String STORY = "STORY";
 
-    private StoryLister storyLister;
     private ListView storyList;
     private StoryListAdapter storyListAdapter;
 
@@ -89,7 +90,9 @@ public class Incant extends Activity {
         // We may need to create paths
         createDiskPathsOnce();
 
-        storyLister = new StoryLister(this);
+        if (StoryListSpot.storyLister == null) {
+            StoryListSpot.storyLister = new StoryLister(getApplicationContext());
+        }
         storyList = (ListView) findViewById(R.id.storylist);
         storyListAdapter = new StoryListAdapter();
 
@@ -345,7 +348,7 @@ public class Incant extends Activity {
         storyListAdapter.setNotifyOnChange(false);
         storyListAdapter.clear();
         try {
-            List<Story> freshList = storyLister.getStories(storyLister.SortByDefault, readCommaSepValuesFile, this);
+            List<Story> freshList = StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, readCommaSepValuesFile, this);
             storyListAdapter.addAll(freshList);
         } catch (Exception e) {
             Log.wtf(TAG,e);
@@ -552,7 +555,7 @@ public class Incant extends Activity {
                                         @Override
                                         public void run() {
                                             try {
-                                                storyLister.scrape();
+                                                StoryListSpot.storyLister.scrape();
                                             } catch (Exception e) {
                                                 Log.wtf(TAG, e);
                                             }
@@ -765,6 +768,9 @@ public class Incant extends Activity {
                 SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
                 refreshStoryList();
                 break;
+            case R.id.action_list_test:
+                startActivity(new Intent(Incant.this, MainActivity.class));
+                return true;
         }
 
         sprefEditor.commit();

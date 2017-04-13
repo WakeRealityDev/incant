@@ -39,4 +39,24 @@
     <string name="downloaded_at">Downloaded %tD</string>
     <string name="saved_recently">Saved %tr</string>
     <string name="saved_at">Saved %tD</string>
+
+    <!-- RecyclerView Playground -->
+
+    <string name="title_section1">Vertical List</string>
+    <string name="title_section2">Horizontal List</string>
+    <string name="title_section3">Vertical Grid</string>
+    <string name="title_section4">Vertical Staggered Grid</string>
+    <string name="title_section5">Fixed Two-Way List</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_empty">Empty</string>
+    <string name="action_small">Small Grid</string>
+    <string name="action_medium">Medium Grid</string>
+    <string name="action_large">Large Grid</string>
+    <string name="action_scroll_zero">Scroll Home</string>
+    <string name="action_smooth_zero">Smooth Scroll Home</string>
+
+    <!-- RecyclerView Playground End -->
+
 </resources>
