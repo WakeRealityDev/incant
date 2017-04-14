@@ -1,5 +1,6 @@
 package com.example.android.recyclerplayground.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,10 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.recyclerplayground.MainActivity;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
+import com.yrek.incant.EventLocalStoryLaunch;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,9 +39,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public SimpleAdapter(Context context) {
+    private Activity parentActivity;
+
+    public SimpleAdapter(Context context, Activity launchParentActivity) {
         mItems = new ArrayList<>();
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
+        parentActivity = launchParentActivity;
     }
 
 
@@ -220,8 +228,19 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             final Context context = cover.getContext();
             final String storyName = story == null ? null : story.getName(context);
 
+            View.OnClickListener launchStoryClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "OnClick SPOT_C");
+                    EventBus.getDefault().post(new EventLocalStoryLaunch(parentActivity, story));
+                }
+            };
+
             if (story.isDownloaded(context)) {
                 download.setVisibility(View.GONE);
+
+                // Make the entire section, left button layout, clickable
+                itemView.findViewById(R.id.buttons).setOnClickListener(launchStoryClickListener);
 
                 if (story.getCoverImageFile(context).exists()) {
                     cover.setTag(story);
@@ -250,8 +269,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                             });
                         }
                     });
+                    //cover.setOnClickListener(launchStoryClickListener);
                 } else {
                     play.setVisibility(View.VISIBLE);
+                    //play.setOnClickListener(launchStoryClickListener);
                 }
             } else {
                 play.setVisibility(View.GONE);

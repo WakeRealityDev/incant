@@ -1,5 +1,6 @@
 package com.example.android.recyclerplayground.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
@@ -11,8 +12,8 @@ Thoughts: we have two sizes of images to work with
  */
 public class SimpleStaggeredAdapter extends SimpleAdapter {
 
-    public SimpleStaggeredAdapter(Context context) {
-        super(context);
+    public SimpleStaggeredAdapter(Context context, Activity launchParentActivity) {
+        super(context, launchParentActivity);
     }
 
     @Override

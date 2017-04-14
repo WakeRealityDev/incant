@@ -33,6 +33,6 @@ public class VerticalGridFragment extends RecyclerFragment {
 
     @Override
     protected SimpleAdapter getAdapter() {
-        return new SimpleAdapter(getActivity());
+        return new SimpleAdapter(getActivity(), getActivity());
     }
 }
