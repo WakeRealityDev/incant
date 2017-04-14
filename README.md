@@ -76,4 +76,8 @@ Developers are welcome to hack on this.
   The Waves Chock the Wind - screen flashes and no error
   The Moon Watch - divide by zero error
 
+17. On Android virgin 7.1 Emualtor, if you install Incant! first and then Thunderword - without a reboot in between, Thunderword will not see the files form Android's MedidaStore.  Downloads performed in Incant! after Thunderword is installed will be detected.  ToDo: add direct MedaiStore notification for new downloads when no engine provider is detected.
+18. The story list CSV from IFDB file could use pre-trim of whitespace and a flag if HTML is used in a description or not.
+
+
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075
