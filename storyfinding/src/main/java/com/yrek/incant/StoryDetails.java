@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.phrase.Phrase;
+import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
+import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
@@ -28,9 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
@@ -39,9 +39,6 @@ public class StoryDetails extends Activity {
     private TextAppearanceSpan titleStyle;
     private TextAppearanceSpan authorStyle;
     private TextAppearanceSpan headlineStyle;
-    private boolean launchInterruptStory = true;
-    protected int selectedLaunchActivity = 0;
-    protected static AtomicInteger launchToken = new AtomicInteger(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,49 +192,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play_via_external_engine_provider).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
-                        Intent intent = new Intent();
-                        // Tell Android to start Thunderword app if not already running.
-                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-
-                        // Inform the Engine Provider who to call back.
-                        intent.putExtra("sender", EchoSpot.sending_APPLICATION_ID);
-
-                        String targetPackage = "";
-                        // Send to specific selected Engine Provider.
-                        if (EchoSpot.currentEngineProvider != null) {
-                            intent.setPackage(EchoSpot.currentEngineProvider.providerAppPackage);
-                            targetPackage = EchoSpot.currentEngineProvider.providerAppPackage;
-                        }
-
-                        long launchWhen = System.currentTimeMillis();
-                        intent.putExtra("sentwhen", launchWhen);
-
-
-                        if (story.isZcode(StoryDetails.this)) {
-                            intent.setAction("interactivefiction.engine.zmachine");
-                        } else {
-                            intent.setAction("interactivefiction.engine.glulx");
-                        }
-                        // Not all stories come in Blorb packages, check first, but if missing go for the data file.
-                        File exportStoryDataFile = story.getBlorbFile(StoryDetails.this);
-                        if (! exportStoryDataFile.exists()) {
-                            if (story.isZcode(StoryDetails.this)) {
-                                exportStoryDataFile = story.getZcodeFile(StoryDetails.this);
-                            } else {
-                                exportStoryDataFile = story.getGlulxFile(StoryDetails.this);
-                            }
-                        }
-                        intent.putExtra("path", exportStoryDataFile.getPath());
-                        int myLaunchToken = launchToken.incrementAndGet();
-                        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
-                        // Set default value.
-                        if (selectedLaunchActivity == 0) {
-                            selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
-                        }
-                        intent.putExtra("activitycode", selectedLaunchActivity);
-                        intent.putExtra("interrupt", launchInterruptStory);
-                        intent.putExtra("launchtoken", "A" + myLaunchToken);
-                        sendBroadcast(intent);
+                        EventBus.getDefault().post(new EventExternalEngineStoryLaunch(StoryDetails.this, story, StoryListSpot.optionLaunchExternalActivityCode, StoryListSpot.optionaLaunchInterruptEngine));
                     }
                 });
 
@@ -246,12 +201,12 @@ public class StoryDetails extends Activity {
                 ((Spinner) findViewById(R.id.external_provider_activity)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        selectedLaunchActivity = selectedActivityValues.getInt(position, -1);
+                        StoryListSpot.optionLaunchExternalActivityCode = selectedActivityValues.getInt(position, -1);
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
-                        selectedLaunchActivity = 0;
+                        StoryListSpot.optionLaunchExternalActivityCode = 0;
                     }
                 });
 
@@ -404,7 +359,7 @@ public class StoryDetails extends Activity {
     }
 
     public void onProviderInterruptClicked(View view) {
-        launchInterruptStory = ((CheckBox) view).isChecked();
+        StoryListSpot.optionaLaunchInterruptEngine = ((CheckBox) view).isChecked();
     }
 
 

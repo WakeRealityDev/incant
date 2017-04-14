@@ -30,6 +30,6 @@ public class IncantApplication extends Application {
         SettingsCurrent.setSpeechRecognizerEnabled(spref.getBoolean("recognition_enabled", false));
         SettingsCurrent.setSpeechRecognizerMute(spref.getBoolean("recognition_mute_enabled", false));
 
-        LocalEngineLaunchHelper localEngineLaunchHelper = new LocalEngineLaunchHelper();
+        StoryEngineLaunchHelper storyEngineLaunchHelper = new StoryEngineLaunchHelper();
     }
 }

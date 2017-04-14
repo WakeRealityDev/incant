@@ -58,6 +58,16 @@
             android:contentDescription="@string/cover_image"
             />
 
+        <!-- Higher Z-order to overlay the image -->
+        <TextView
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/external_launch_indciator"
+            android:text="⚡⚡"
+            android:textSize="24sp"
+            />
+
     </RelativeLayout>
 
     <TextView

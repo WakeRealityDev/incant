@@ -2,7 +2,6 @@ package com.example.android.recyclerplayground.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -17,17 +16,11 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
-import com.yrek.incant.EventLocalStoryLaunch;
-import com.yrek.incant.ParamConst;
 import com.yrek.incant.Story;
-import com.yrek.incant.StoryDetails;
 import com.yrek.incant.StoryListSpot;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -229,6 +222,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private String storyName = "";
         private TextView storyDescription;
         private TextView storyEngine;
+        private View externalLaunchIndicator;
 
         private SimpleAdapter mAdapter;
 
@@ -249,6 +243,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
             buttons = (ViewGroup) itemView.findViewById(R.id.buttons);
             storyEngine = (TextView) itemView.findViewById(R.id.engine_detail);
+            externalLaunchIndicator = itemView.findViewById(R.id.external_launch_indciator);
 
             itemViewContainer = itemView;
         }
@@ -299,192 +294,41 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         public void setCoverImage(Bitmap image, boolean isDownloaded, boolean isDownloading, boolean isDownloadError) {
             cover.setImageBitmap(image);
 
-                if (isDownloaded) {
-                    // Items without image get this TextView
-                    if (image == null) {
-                        play.setVisibility(View.VISIBLE);
-                    } else {
-                        play.setVisibility(View.GONE);
-                    }
-                    download.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
+            if (isDownloaded) {
+                // Items without image get this TextView
+                if (image == null) {
+                    play.setVisibility(View.VISIBLE);
                 } else {
                     play.setVisibility(View.GONE);
-                    if (isDownloading) {
-                        download.setVisibility(View.VISIBLE);
-                        download.setText("Downloading");
-                        download.setBackgroundColor(Color.parseColor("#E1BEE7"));
-                        progressBar.setVisibility(View.VISIBLE);
-                    } else {
-                        download.setVisibility(View.VISIBLE);
-                        download.setBackgroundColor(Color.parseColor("#BBDEFB"));
-                        download.setText("Download");
-                        if (isDownloadError) {
-                            download.append("\n(Retry)");
-                            download.setBackgroundColor(Color.parseColor("#FFF9C4"));
-                        }
-                        progressBar.setVisibility(View.GONE);
-                    }
                 }
-        }
-
-        /*
-        ToDo: all this ImageCache is based on story name - would be better to use SHA256 hash of story.
-         */
-        public void setButtonAreaBehavior(final Story story, final int onPosition) {
-
-            // Set non-visible so if all conditions aren't right there will be nothing.
-            cover.setVisibility(View.GONE);
-            final Context context = cover.getContext();
-            storyName = story == null ? null : story.getName(context);
-
-            View.OnClickListener launchStoryClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "OnClick SPOT_C");
-                    EventBus.getDefault().post(new EventLocalStoryLaunch(parentActivity, story));
-                }
-            };
-
-            itemViewContainer.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override public boolean onLongClick(View v) {
-                    Log.d(TAG, "OnLongClick SPOT_A");
-                    Intent intent = new Intent(parentActivity, StoryDetails.class);
-                    intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
-                    parentActivity.startActivity(intent);
-                    return true;
-                }
-            });
-
-            if (story.isDownloaded(context)) {
                 download.setVisibility(View.GONE);
-
-                // Make the entire section, left button layout, clickable
-                buttons.setOnClickListener(launchStoryClickListener);
-                Log.i(TAG, "[RVlist][RVlistClick] setting launch click listner " + storyName);
-
-                if (story.getCoverImageFile(context).exists()) {
-                    cover.setTag(story);
-                    cover.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Bitmap image = StoryListSpot.coverImageCache.get(storyName);
-                            if (image == null) {
-                                image = story.getCoverImageBitmap(context);
-                                if (image == null) {
-                                    Log.i(TAG, "[RVlist][coverImage] imageLost " + storyName);
-                                    if (play != null) {
-                                        play.setVisibility(View.VISIBLE);
-                                    }
-                                    return;
-                                }
-                                StoryListSpot.coverImageCache.put(storyName, image);
-                            }
-                            final Bitmap bitmap = image;
-                            cover.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (story == cover.getTag()) {
-                                        cover.setVisibility(View.VISIBLE);
-                                        cover.setImageBitmap(bitmap);
-                                        cover.setTag(null);
-                                        if (play != null) {
-                                            play.setVisibility(View.GONE);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    //cover.setOnClickListener(launchStoryClickListener);
-                } else {
-                    play.setVisibility(View.VISIBLE);
-                    //play.setOnClickListener(launchStoryClickListener);
-                }
+                progressBar.setVisibility(View.GONE);
             } else {
-                //  final int saveOnPositon = onPosition;
-                final String storyNameSaved = storyName;
                 play.setVisibility(View.GONE);
-                cover.setVisibility(View.GONE);
-                synchronized (DownloadSpot.downloading) {
-                    if (DownloadSpot.downloading.contains(storyName)) {
-                        download.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.VISIBLE);
-                        itemViewContainer.setOnClickListener(null);
-                    } else {
-                        progressBar.setTag(R.id.downloadPositionTag, onPosition);
-                        download.setVisibility(View.VISIBLE);
-                        download.setText(R.string.download_story);
-                        Log.i(TAG, "[RVlist][RVlistClick] setting download listner " + storyName);
-                        buttons.setOnClickListener(new View.OnClickListener() {
-                            @Override public void onClick(final View v) {
-                                Log.d(TAG, "[downloadStory] OnClick SPOT_D download");
-                                download.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.VISIBLE);
-                                progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
-                                synchronized (DownloadSpot.downloading) {
-                                    DownloadSpot.downloading.add(storyName);
-                                    setDownloadingObserver();
-                                }
-                                Thread downloadThreadA = new Thread() {
-                                    @Override public void run() {
-                                        Log.d(TAG, "run() " + Thread.currentThread());
-                                        String error = null;
-                                        try {
-                                            if (!story.download(context)) {
-                                                Log.w(TAG, "download_invalid " + story.getName(context));
-                                                error = context.getString(R.string.download_invalid, storyNameSaved);
-                                            }
-                                        } catch (Exception e) {
-                                            Log.wtf(TAG,e);
-                                            error = context.getString(R.string.download_failed, storyNameSaved);
-                                        }
-                                        synchronized (DownloadSpot.downloading) {
-                                            DownloadSpot.downloading.remove(storyName);
-                                            DownloadSpot.downloading.notifyAll();
-                                            //if (progressBar != null) {
-                                                progressBar.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        int progressBarTag = -1;
-                                                        Object getTag =  progressBar.getTag(R.id.downloadPositionTag);
-                                                        if (getTag != null) {
-                                                            progressBarTag = (int) getTag;
-                                                        }
-                                                        if (progressBarTag == onPosition) {
-                                                            //if (progressBar != null) {
-                                                                progressBar.setVisibility(View.GONE);
-                                                                // call self to show icon?
-                                                                // Not really recursive, as we are on a runnable.
-                                                                setButtonAreaBehavior(story, onPosition);
-                                                            Log.d(TAG, "[RVlist][coverImage][RVrecycled] calling setCoverImage after download " + progressBarTag + " vs " + onPosition + " story " + storyName);
-                                                            //}
-                                                        } else {
-                                                            Log.w(TAG, "[RVlist][coverImage][RVrecycled] detected change of reuseViewCount, " + progressBarTag + " vs " + onPosition + " skipping update. story " + storyName + " ==? " + storyNameSaved);
-                                                        }
-                                                    }
-                                                });
-                                            //}
-                                        }
-                                        if (error != null) {
-                                            Log.w(TAG, "download error " + error);
-                                            final String msg = error;
-                                            v.post(new Runnable() {
-                                                @Override public void run() {
-                                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    }
-                                };
-                                downloadThreadA.setName("downloadA");
-                                downloadThreadA.start();
-                            }
-                        });
+                if (isDownloading) {
+                    download.setVisibility(View.VISIBLE);
+                    download.setText("Downloading");
+                    download.setBackgroundColor(Color.parseColor("#E1BEE7"));
+                    progressBar.setVisibility(View.VISIBLE);
+                } else {
+                    download.setVisibility(View.VISIBLE);
+                    download.setBackgroundColor(Color.parseColor("#BBDEFB"));
+                    download.setText("Download");
+                    if (isDownloadError) {
+                        download.append("\n(Retry)");
+                        download.setBackgroundColor(Color.parseColor("#FFF9C4"));
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
             }
+
+            if (StoryListSpot.optionLaunchExternal) {
+                externalLaunchIndicator.setVisibility(View.VISIBLE);
+            } else {
+                externalLaunchIndicator.setVisibility(View.GONE);
+            }
         }
+
 
         public void setStoryDescriptionMaxLines(int maxTextViewwWrappedLines) {
             storyDescription.setMaxLines(maxTextViewwWrappedLines);

@@ -9,6 +9,12 @@
         android:title="Remove"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_launch_external"
+          android:title="Launch Thunderword"
+          android:checkable="true"
+          android:checked="false"
+          app:showAsAction="never" />
+
     <item android:id="@+id/action_empty"
         android:title="@string/action_empty"
         android:orderInCategory="90"
@@ -34,4 +40,13 @@
         android:title="@string/action_smooth_zero"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item android:id="@+id/action_scroll_max"
+          android:title="@string/action_scroll_max"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
+    <item android:id="@+id/action_smooth_max"
+          android:title="@string/action_smooth_max"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
 </menu>

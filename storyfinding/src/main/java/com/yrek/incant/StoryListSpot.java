@@ -14,4 +14,7 @@ public class StoryListSpot {
     public static ReadCommaSepValuesFile readCommaSepValuesFile;
     public static LruCache<String,Bitmap> coverImageCache;
 
+    public static boolean optionLaunchExternal = false;
+    public static int optionLaunchExternalActivityCode = 0;
+    public static boolean optionaLaunchInterruptEngine = true;
 }

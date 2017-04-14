@@ -16,14 +16,16 @@ import android.widget.Toast;
 
 import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
-import com.yrek.incant.EventLocalStoryLaunch;
+import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.yrek.incant.ParamConst;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryDetails;
+import com.yrek.incant.StoryListSpot;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -105,23 +107,22 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             dialog.show();
 
             return true;
-        } else if (i == R.id.action_empty) {
-            mAdapter.setAdapterContent(getContext());
-            return true;
-        } else if (i == R.id.action_small) {
-            mAdapter.setAdapterContent(getContext());
-            return true;
-        } else if (i == R.id.action_medium) {
-            mAdapter.setAdapterContent(getContext());
-            return true;
-        } else if (i == R.id.action_large) {
-            mAdapter.setAdapterContent(getContext());
+        } else if (i == R.id.action_launch_external) {
+            item.setChecked(! item.isChecked());
+            StoryListSpot.optionLaunchExternal = item.isChecked();
+            mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_scroll_zero) {
             mList.scrollToPosition(0);
             return true;
         } else if (i == R.id.action_smooth_zero) {
             mList.smoothScrollToPosition(0);
+            return true;
+        } else if (i == R.id.action_scroll_max) {
+            mList.scrollToPosition(mAdapter.getItemCount() - 1);
+            return true;
+        } else if (i == R.id.action_smooth_max) {
+            mList.smoothScrollToPosition(mAdapter.getItemCount() - 1);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -139,7 +140,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
         if (story.isDownloaded(getContext())) {
             // click means launch
-            EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
+            if (StoryListSpot.optionLaunchExternal) {
+                EventBus.getDefault().post(new EventExternalEngineStoryLaunch(getActivity(), story, StoryListSpot.optionLaunchExternalActivityCode,  StoryListSpot.optionaLaunchInterruptEngine));
+            } else {
+                EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
+            }
         } else {
             if (story.isDownloadingNow()) {
                 // Cancel download?

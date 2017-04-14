@@ -37,6 +37,7 @@ import java.util.List;
 
 import com.example.android.recyclerplayground.MainActivity;
 import com.wakereality.incant.AboutAppActivity;
+import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.runconfig.SettingsCurrent;
