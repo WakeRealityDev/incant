@@ -39,9 +39,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
+            android:minWidth="80dp"
             android:id="@+id/download"
             android:text="@string/download_story"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:gravity="center"
             android:background="#BBDEFB"
             />
@@ -93,7 +94,7 @@
         android:layout_column="1"
         android:layout_row="1"
         android:gravity="center_vertical"
-        tools:text="Away Team"
+        tools:text="Home Team"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <ImageView
@@ -102,13 +103,17 @@
         android:layout_height="wrap_content"
         android:layout_column="2"
         android:layout_row="0"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
+        />
     <ImageView
         android:id="@+id/logo_team_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_column="2"
         android:layout_row="1"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
+        />
 
 </com.example.android.recyclerplayground.adapters.StoryItemView>
