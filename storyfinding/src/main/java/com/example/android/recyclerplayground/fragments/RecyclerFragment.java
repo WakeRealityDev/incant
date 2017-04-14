@@ -18,6 +18,7 @@ import com.example.android.recyclerplayground.adapters.SimpleAdapter;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
+import com.yrek.incant.Story;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -124,15 +125,24 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Story story = mAdapter.getStoryForPosition(position);
         Toast.makeText(getActivity(),
-                "Clicked: " + position + ", index " + mList.indexOfChild(view),
+                "Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
                 Toast.LENGTH_SHORT).show();
+
+        if (story.isDownloaded(getContext())) {
+            // click means launch
+        } else {
+            story.setDownloadingNow(! story.isDownloadingNow());
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Story story = mAdapter.getStoryForPosition(position);
         Toast.makeText(getActivity(),
-                "LONG Clicked: " + position + ", index " + mList.indexOfChild(view),
+                "LONG Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
                 Toast.LENGTH_SHORT).show();
         return true;
     }

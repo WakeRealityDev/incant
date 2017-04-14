@@ -161,8 +161,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         // itemHolder.setButtonAreaBehavior(item, position);
 
+        boolean isDownloaded = item.isDownloaded(context);
+        boolean isDownloading = item.isDownloadingNow();
         Bitmap image = null;
-        if (item.isDownloaded(context)) {
+        if (isDownloaded) {
             final File coverImage = item.getCoverImageFile(context);
             if (coverImage.exists()) {
                 image = StoryListSpot.coverImageCache.get(storyName);
@@ -175,8 +177,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             }
         }
 
+        itemHolder.setDownloadProgress(item.isDownloadingNow());
+
         // null is good, it will remove image from recycled views
-        itemHolder.setCoverImage(image);
+        itemHolder.setCoverImage(image, isDownloaded, isDownloading);
 
         itemHolder.setStoryDescription(item.getDescription(context));
     }
@@ -217,6 +221,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         // Recycling want to remove these.
         //Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
         //holder.clearEverythingLoss();
+    }
+
+    public Story getStoryForPosition(int position) {
+        return mItems.get(position);
     }
 
     public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -319,13 +327,32 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             }
         }
 
-        public void setCoverImage(Bitmap image) {
+        public void setCoverImage(Bitmap image, boolean isDownloaded, boolean isDownloading) {
             cover.setImageBitmap(image);
-            if (image == null) {
-                play.setVisibility(View.VISIBLE);
-            } else {
-                play.setVisibility(View.GONE);
-            }
+
+                if (isDownloaded) {
+                    // Items without image get this TextView
+                    if (image == null) {
+                        play.setVisibility(View.VISIBLE);
+                    } else {
+                        play.setVisibility(View.GONE);
+                    }
+                    download.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    play.setVisibility(View.GONE);
+                    if (isDownloading) {
+                        download.setVisibility(View.VISIBLE);
+                        download.setText("Downloading");
+                        download.setBackgroundColor(Color.parseColor("#E1BEE7"));
+                        progressBar.setVisibility(View.VISIBLE);
+                    } else {
+                        download.setVisibility(View.VISIBLE);
+                        download.setText("Download");
+                        download.setBackgroundColor(Color.parseColor("#BBDEFB"));
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
         }
 
         /*
@@ -488,6 +515,14 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         public void setStoryDescriptionMaxLines(int maxTextViewwWrappedLines) {
             storyDescription.setMaxLines(maxTextViewwWrappedLines);
+        }
+
+        public void setDownloadProgress(boolean downloadingNow) {
+            if (downloadingNow) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 }

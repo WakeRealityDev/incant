@@ -689,6 +689,18 @@ public class Story implements Serializable {
         return hashA;
     }
 
+
+    private boolean downloadingNow = false;
+
+    public boolean isDownloadingNow() {
+        return downloadingNow;
+    }
+
+    public void setDownloadingNow(boolean value) {
+        downloadingNow = value;
+    }
+
+
     private class Metadata implements XMLScraper.Handler {
         String ifid;
         String author;
