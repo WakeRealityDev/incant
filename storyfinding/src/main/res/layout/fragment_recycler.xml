@@ -55,7 +55,7 @@
                     android:id="@+id/storylist_header_extra_info0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thunderword app can be installed from Play store at: https://play.google.com/apps/testing/com.wakereality.thunderword and is also available on the Amazon appstore"
+                    android:text="@string/storylist_header_extra_thunderwordapp0"
                     android:autoLink="web"
                     />
 

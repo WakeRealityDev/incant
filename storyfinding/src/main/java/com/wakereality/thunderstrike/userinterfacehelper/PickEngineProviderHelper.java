@@ -48,11 +48,15 @@ public class PickEngineProviderHelper {
             };
         }
 
-        engineProviderStatus.setText(Phrase.from(res, R.string.engine_provider_detected_named)
-                .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality.") )
-                .put("extra_a", extraA )
-                .format()
-        );
+        if (EchoSpot.currentEngineProvider != null) {
+            engineProviderStatus.setText(Phrase.from(res, R.string.engine_provider_detected_named)
+                    .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality."))
+                    .put("extra_a", extraA)
+                    .format()
+            );
+        } else {
+            engineProviderStatus.setText(R.string.engine_none_detected_shorter);
+        }
 
         // Switch providers with touch if multiple available
         // ToDo: make this smarter about not picking the one that is already visible on first touch.

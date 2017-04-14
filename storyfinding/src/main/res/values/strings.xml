@@ -13,8 +13,12 @@
 
     <string name="external_provider_noprompt">Interrupt story</string>
     <string name="external_provider_activity_label">Activity</string>
-    <string name="engine_none_detected_invite">Thunderword or other engine provider apps have not been detected on your Android system. For additional compatibility and faster performance with some fiction stories, we invite you to install the Thunderword app on your system and new options will appear to launch this story to the partner app. Thunderword app pre-release link:</string>
-    <string name="engine_provider_store_link0">https://play.google.com/apps/testing/com.wakereality.thunderword.experimental</string>
+    <string name="engine_none_detected_invite">Thunderword or other engine provider apps not detected on this Android system. For additional compatibility and faster performance with some fiction stories, we invite you to install the Thunderword app on your system and new options will appear to launch this story to the partner app. Thunderword app pre-release link:</string>
+    <string name="engine_provider_store_link0">https://Play.Google.com/apps/testing/com.wakereality.thunderword</string>
+    <string name="storylist_header_extra_thunderwordapp0">Thunderword app can be installed from Google Play at: https://Play.Google.com/apps/testing/com.wakereality.thunderword and is also on the Amazon appstore. For additional compatibility and faster performance with some fiction stories, both apps work together and extra options will appear.</string>
+    <!-- The new RecyclerView list has an expandable section, so this message is shorter and only for provider absent -->
+    <string name="engine_none_detected_shorter">Thunderword or other engine provider apps not detected.</string>
+
 
     <string name="ifdb_viewgame">http://ifdb.tads.org/viewgame?ifid=%s</string>
     <string name="ifdb_label">Go to IFDB</string>

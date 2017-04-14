@@ -25,6 +25,7 @@ import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
+import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 import com.yrek.incant.DownloadSpot;
@@ -52,6 +53,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     protected Animation myFadeInOutAnimation;
     protected Animation myTouchWobbleAnimation;
     protected CheckBox launchDefaultTopPanelCheckbox;
+    protected TextView listHeaderExtraNoThunderwordDetected;
 
     PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
 
@@ -85,6 +87,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         myTouchWobbleAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
 
         launchDefaultTopPanelCheckbox = (CheckBox) rootView.findViewById(R.id.storylist_header_extra_checkenginelaunch);
+        listHeaderExtraNoThunderwordDetected = (TextView) rootView.findViewById(R.id.storylist_header_extra_info0);
 
         pickEngineProviderHelper.redrawEngineProvider((TextView) rootView.findViewById(R.id.engine_provider_status));
 
@@ -93,7 +96,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         return rootView;
     }
 
-    
+
     protected boolean doHeaderOnce = false;
 
     protected void headerSectionSetup(final View rootView) {
@@ -139,6 +142,15 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     // This will not expand or contract, only adjusting the default for future.
                 }
             });
+        }
+
+        // If no engine provider detected, suggest install of app
+        if (EchoSpot.currentEngineProvider == null) {
+            launchDefaultTopPanelCheckbox.setVisibility(View.GONE);
+            listHeaderExtraNoThunderwordDetected.setVisibility(View.VISIBLE);
+        } else {
+            listHeaderExtraNoThunderwordDetected.setVisibility(View.GONE);
+            launchDefaultTopPanelCheckbox.setVisibility(View.VISIBLE);
         }
 
         if (StoryListSpot.showHeadingExpanded) {

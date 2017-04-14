@@ -122,6 +122,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         return new VerticalItemHolder(root, this);
     }
 
+    
     private TextAppearanceSpan headlineStyle;
 
     @Override
@@ -146,11 +147,17 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         itemHolder.setStoryAuthors(item.getAuthor(context));
 
+        String outEngine = "?";
+
         boolean isDownloaded = item.isDownloaded(context);
         boolean isDownloading = item.isDownloadingNow();
         boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
         if (isDownloaded) {
+            outEngine = "Z";
+            if (item.isGlulx(context)) {
+                outEngine = "G";
+            }
             final File coverImage = item.getCoverImageFile(context);
             if (coverImage.exists()) {
                 image = StoryListSpot.coverImageCache.get(storyName);
@@ -170,12 +177,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         itemHolder.setStoryDescription(item.getDescription(context));
 
-        String outEngine = "Z";
-        if (item.isGlulx(context)) {
-            outEngine = "G";
-        }
         itemHolder.setStoryEngine(outEngine);
     }
+
 
     @Override
     public int getItemCount() {
