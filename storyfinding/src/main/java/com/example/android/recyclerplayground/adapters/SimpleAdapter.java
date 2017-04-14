@@ -136,7 +136,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         itemHolder.setLeftBottomNumber("p" + position);
         itemHolder.setLeftTopNumber("2.0");
 
-        Context context = itemHolder.mStoryTitle.getContext();
+        Context context = parentActivity;
         SpannableStringBuilder sb = new SpannableStringBuilder(item.getName(context));
         String storyHeadline = item.getHeadline(context);
         if (storyHeadline != null) {
@@ -154,7 +154,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         itemHolder.setStoryAuthors(item.getAuthor(context));
 
-        itemHolder.setCoverImage(item);
+        itemHolder.setCoverImage(item, position);
 
         itemHolder.setStoryDescription(item.getDescription(context));
     }
@@ -183,7 +183,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         super.onViewDetachedFromWindow(holder);
         // Recycling want to remove these.
         Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
-        holder.buttons.setOnClickListener(null);
+        holder.clearEverythingLoss();
     }
 
     public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -197,13 +197,35 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private View itemViewContainer;
         private String storyName = "";
         private TextView storyDescription;
+        private int reuseViewCount = 0;
 
         private SimpleAdapter mAdapter;
 
+        public void clearEverythingLoss() {
+            if (itemViewContainer != null)
+                itemViewContainer.setOnLongClickListener(null);
+            if (buttons != null)
+                buttons.setOnClickListener(null);
+            if (mStoryTitle != null)
+                mStoryTitle.setText("");
+            if (storyDescription != null)
+                storyDescription.setText("");
+            if (progressBar != null) {
+                progressBar.setVisibility(View.GONE);
+            }
+            if (cover != null) {
+                cover.setVisibility(View.GONE);
+            }
+            if (play != null) {
+                play.setVisibility(View.GONE);
+            }
+        }
+
         public VerticalItemHolder(View itemView, SimpleAdapter adapter) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            reuseViewCount++;
 
+            itemView.setOnClickListener(this);
             mAdapter = adapter;
 
             mLeftTopNumber = (TextView) itemView.findViewById(R.id.text_score_home);
@@ -250,7 +272,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         /*
         ToDo: all this ImageCache is based on story name - would be better to use SHA256 hash of story.
          */
-        public void setCoverImage(final Story story) {
+        public void setCoverImage(final Story story, final int onPosition) {
 
             // Set non-visible so if all conditions aren't right there will be nothing.
             cover.setVisibility(View.GONE);
@@ -304,7 +326,6 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                                 @Override
                                 public void run() {
                                     if (story == cover.getTag()) {
-                                        // play.setVisibility(View.GONE);
                                         cover.setVisibility(View.VISIBLE);
                                         cover.setImageBitmap(bitmap);
                                         cover.setTag(null);
@@ -322,6 +343,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                     //play.setOnClickListener(launchStoryClickListener);
                 }
             } else {
+                //  final int saveOnPositon = onPosition;
+                final String storyNameSaved = storyName;
                 play.setVisibility(View.GONE);
                 cover.setVisibility(View.GONE);
                 synchronized (DownloadSpot.downloading) {
@@ -330,6 +353,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                         progressBar.setVisibility(View.VISIBLE);
                         itemViewContainer.setOnClickListener(null);
                     } else {
+                        progressBar.setTag(R.id.downloadPositionTag, onPosition);
                         download.setVisibility(View.VISIBLE);
                         download.setText(R.string.download_story);
                         Log.i(TAG, "[RVlist][RVlistClick] setting download listner " + storyName);
@@ -350,28 +374,38 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                                         try {
                                             if (!story.download(context)) {
                                                 Log.w(TAG, "download_invalid " + story.getName(context));
-                                                error = context.getString(R.string.download_invalid, story.getName(context));
+                                                error = context.getString(R.string.download_invalid, storyNameSaved);
                                             }
                                         } catch (Exception e) {
                                             Log.wtf(TAG,e);
-                                            error = context.getString(R.string.download_failed, story.getName(context));
+                                            error = context.getString(R.string.download_failed, storyNameSaved);
                                         }
                                         synchronized (DownloadSpot.downloading) {
                                             DownloadSpot.downloading.remove(storyName);
                                             DownloadSpot.downloading.notifyAll();
-                                            if (progressBar != null) {
+                                            //if (progressBar != null) {
                                                 progressBar.post(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        if (progressBar != null) {
-                                                            progressBar.setVisibility(View.GONE);
-                                                            // call self to show icon?
-                                                            // Not really recursive, as we are on a runnable.
-                                                            setCoverImage(story);
+                                                        int progressBarTag = -1;
+                                                        Object getTag =  progressBar.getTag(R.id.downloadPositionTag);
+                                                        if (getTag != null) {
+                                                            progressBarTag = (int) getTag;
+                                                        }
+                                                        if (progressBarTag == onPosition) {
+                                                            //if (progressBar != null) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                // call self to show icon?
+                                                                // Not really recursive, as we are on a runnable.
+                                                                setCoverImage(story, onPosition);
+                                                            Log.d(TAG, "[RVlist][coverImage][RVrecycled] calling setCoverImage after download " + progressBarTag + " vs " + onPosition + " story " + storyName);
+                                                            //}
+                                                        } else {
+                                                            Log.w(TAG, "[RVlist][coverImage][RVrecycled] detected change of reuseViewCount, " + progressBarTag + " vs " + onPosition + " skipping update. story " + storyName + " ==? " + storyNameSaved);
                                                         }
                                                     }
                                                 });
-                                            }
+                                            //}
                                         }
                                         if (error != null) {
                                             Log.w(TAG, "download error " + error);
@@ -391,6 +425,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                     }
                 }
             }
+        }
+
+        public void setStoryDescriptionMaxLines(int maxTextViewwWrappedLines) {
+            storyDescription.setMaxLines(maxTextViewwWrappedLines);
         }
     }
 }
