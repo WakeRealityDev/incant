@@ -139,13 +139,15 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         Context context = itemHolder.mStoryTitle.getContext();
         SpannableStringBuilder sb = new SpannableStringBuilder(item.getName(context));
         String storyHeadline = item.getHeadline(context);
-        if (storyHeadline.length() > 0) {
-            sb.append(" (");
-            int start = sb.length();
-            sb.append(storyHeadline);
-            // sb.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            sb.setSpan(headlineStyle, start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            sb.append(")");
+        if (storyHeadline != null) {
+            if (storyHeadline.length() > 0) {
+                sb.append(" (");
+                int start = sb.length();
+                sb.append(storyHeadline);
+                // sb.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                sb.setSpan(headlineStyle, start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                sb.append(")");
+            }
         }
         itemHolder.setStoryTitle(sb);
         // itemHolder.setStoryDescription("storyDescription");
