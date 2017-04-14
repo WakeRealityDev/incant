@@ -25,6 +25,7 @@ import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineProvider;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
+import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,16 +70,7 @@ public class StoryDetails extends Activity {
         }
     }
 
-    public static void animateClickedView(final View view) {
-        // Poor man's animation to show visual feedback of click.
-        view.setAlpha(0.2f);
-        view.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                view.setAlpha(1.0f);
-            }
-        }, 1200L);
-    }
+
 
     public final Runnable setView = new Runnable() {
         private Thread downloadingObserver = null;
@@ -251,7 +243,7 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_suggestion).setVisibility(View.GONE);
-                    redrawEngineProvider();
+                    pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status));
                 } else {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.GONE);
@@ -272,62 +264,8 @@ public class StoryDetails extends Activity {
         }
     };
 
-    private void redrawEngineProvider() {
-        CharSequence extraA = "";
-        if (EchoSpot.detectedEngineProviders.size() > 0) {
-            // Phrase library seems to drop the leading space that is in the string resource, so add it back here.
-            extraA = " " + Phrase.from(getResources(), R.string.engine_provider_detected_extra).put("quantity", EchoSpot.detectedEngineProviders.size()).format();
-            // show current index.
-            if (EchoSpot.detectedEngineProviders.size() > 1) {
-                extraA = extraA + "/" + EchoSpot.currentEngineProviderIndex;
-            };
-        }
 
-        TextView engineProviderStatus = (TextView) findViewById(R.id.engine_provider_status);
-        engineProviderStatus.setText(Phrase.from(getResources(), R.string.engine_provider_detected_named)
-                .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality.") )
-                .put("extra_a", extraA )
-                .format()
-        );
-
-        // Switch providers with touch if multiple available
-        // ToDo: make this smarter about not picking the one that is already visible on first touch.
-        if (EchoSpot.detectedEngineProviders.size() > 1) {
-            Log.v("StoryDetails", "[engineProviderPick] onClick assign, on index " + EchoSpot.currentEngineProviderIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
-            engineProviderStatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*
-                    Don't want to assign number ID to engines, they are strings and want to allow any value.
-                     */
-                    int newIndex = EchoSpot.currentEngineProviderIndex + 1;
-                    if (newIndex >= EchoSpot.detectedEngineProviders.size()) {
-                        // wrap back to zero
-                        newIndex = 0;
-                    }
-
-                    Log.v("StoryDetails", "[engineProviderPick] click, on index " + EchoSpot.currentEngineProviderIndex + " to " + newIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
-
-                    // Match index up to entry.
-                    int onLoopIndex = 0;
-                    for (Map.Entry<String, EngineProvider> entry : EchoSpot.detectedEngineProviders.entrySet()) {
-                        if (onLoopIndex == newIndex) {
-                            EchoSpot.currentEngineProvider = entry.getValue();
-                            Log.w("StoryDetails", "[engineProviderPick] current changed from index " + EchoSpot.currentEngineProviderIndex + " to " + newIndex + " [" + EchoSpot.currentEngineProvider.providerAppPackage + "] size " + EchoSpot.detectedEngineProviders.size());
-                            EchoSpot.currentEngineProviderIndex = newIndex;
-                            break;
-                        }
-                        onLoopIndex++;
-                    }
-
-                    // ToDo: save to shared preferences?
-                    // redraw
-                    redrawEngineProvider();
-                    animateClickedView(v);
-                }
-            });
-        }
-    }
+    PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
 
     private SpannableStringBuilder makeName() {
         SpannableStringBuilder sb = new SpannableStringBuilder();
@@ -369,6 +307,6 @@ public class StoryDetails extends Activity {
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
-        redrawEngineProvider();
+        pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status));
     }
 }

@@ -59,6 +59,9 @@
     <string name="action_scroll_max">Scroll End</string>
     <string name="action_smooth_max">Smooth Scroll End</string>
 
+    <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
+    <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
+
     <!-- RecyclerView Playground End -->
 
 </resources>

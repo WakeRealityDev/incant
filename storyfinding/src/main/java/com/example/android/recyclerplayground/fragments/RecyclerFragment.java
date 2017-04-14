@@ -11,7 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.recyclerplayground.NumberPickerDialog;
@@ -20,6 +24,8 @@ import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
+import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
+import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 import com.yrek.incant.DownloadSpot;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.yrek.incant.ParamConst;
@@ -42,6 +48,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     protected abstract RecyclerView.ItemDecoration getItemDecoration();
     protected abstract int getDefaultItemCount();
     protected abstract SimpleAdapter getAdapter();
+    protected Animation myFadeInOutAnimation;
+    protected Animation myTouchWobbleAnimation;
+    protected CheckBox launchDefaultTopPanelCheckbox;
+
+    PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,12 +80,66 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         mAdapter.setOnItemLongClickListener(this);
         mList.setAdapter(mAdapter);
 
+        myFadeInOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_fade_out_repeat_2sec);
+        myTouchWobbleAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+
+        launchDefaultTopPanelCheckbox = (CheckBox) rootView.findViewById(R.id.storylist_header_extra_checkenginelaunch);
+
+        pickEngineProviderHelper.redrawEngineProvider((TextView) rootView.findViewById(R.id.engine_provider_status));
+
+        headerSectionSetup(rootView);
+
         return rootView;
     }
+
+    protected boolean doHeaderOnce = false;
+
+    protected static boolean showExapnded = true;
+
+    protected void headerSectionSetup(final View rootView) {
+        TextView expandControl = (TextView) rootView.findViewById(R.id.storyList_header_expand_control);
+        View expandableHolder = rootView.findViewById(R.id.storylist_header_expandholder);
+
+        if (! doHeaderOnce) {
+            doHeaderOnce = true;
+            expandControl.startAnimation(myFadeInOutAnimation);
+            expandControl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showExapnded = ! showExapnded;
+                    headerSectionSetup(rootView);
+                }
+            });
+            launchDefaultTopPanelCheckbox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CheckBox viewAsCheckbox = (CheckBox) v;
+                    viewAsCheckbox.setChecked(viewAsCheckbox.isChecked());
+                    if (actionLaunchExternal != null) {
+                        actionLaunchExternal.setChecked(viewAsCheckbox.isChecked());
+                    }
+                    StoryListSpot.optionLaunchExternal = viewAsCheckbox.isChecked();
+                    // Redraw to show launch icon change.
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        if (showExapnded) {
+            expandControl.setText(getText(R.string.storyList_header_contract));
+            expandableHolder.setVisibility(View.VISIBLE);
+        } else {
+            expandControl.setText(getText(R.string.storyList_header_expand));
+            expandableHolder.setVisibility(View.GONE);
+        }
+    }
+
+    protected MenuItem actionLaunchExternal;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.grid_options, menu);
+        actionLaunchExternal = menu.findItem(R.id.action_launch_external);
     }
 
     @Override
@@ -110,6 +175,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         } else if (i == R.id.action_launch_external) {
             item.setChecked(! item.isChecked());
             StoryListSpot.optionLaunchExternal = item.isChecked();
+            launchDefaultTopPanelCheckbox.setChecked(item.isChecked());
             mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_scroll_zero) {
@@ -141,6 +207,8 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         if (story.isDownloaded(getContext())) {
             // click means launch
             if (StoryListSpot.optionLaunchExternal) {
+                // There is a visual delay, nothing seems to happen, on Launching to Thunderword - so animate.
+                view.startAnimation(myTouchWobbleAnimation);
                 EventBus.getDefault().post(new EventExternalEngineStoryLaunch(getActivity(), story, StoryListSpot.optionLaunchExternalActivityCode,  StoryListSpot.optionaLaunchInterruptEngine));
             } else {
                 EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
@@ -230,5 +298,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             Toast.makeText(getContext(), "Download error: " + event.downloadStory.getDownloadErrorDetail(), Toast.LENGTH_SHORT).show();
         }
         storyNonListDownload();
+    }
+
+    /*
+    Main thread to touch GUI.
+    */
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventEngineProviderChange event) {
+        pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status));
     }
 }
