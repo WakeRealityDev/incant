@@ -70,6 +70,10 @@ Developers are welcome to hack on this.
 12. Thunderword can publish SHA-256 hash of stories it has found on storage (not just the one path that Incant populates). Add a way to import and run those listings.
 13. ~~Incant does not preserve the file extensions when downloading off it's list, so it makes sharing the downloaded stories nearly impossible to find for outside apps searching the storage.~~ Copy is made in a Keep folder.
 14. Add a Thunderword Command Code dialog so users can prep settings before a launch. Also serves to document the protocol for command codes for developers who wish to enhance their own apps. This code addition can be shared with the Thunderstrike app here on GitHub.
-15. Twisty 2.0 is an example of a type of launcher client that Icant could act as download and launcher for - that does not support RemGlk. The current concept of an "Engine Provider" assumes that it serves both as launcher target and RemGlk provider. Add a capabilities concept and code to Twisty 2.0 to demonstrate a launcher-only target.
+15. Twisty 2.0 is an example of a type of launcher client that Incant could act as download and launcher for - that does not support RemGlk. The current concept of an "Engine Provider" assumes that it serves both as launcher target and RemGlk provider. Add a capabilities concept and code to Twisty 2.0 to demonstrate a launcher-only target.
+
+16. known failing stories on the internal engines of Incant:
+  The Waves Chock the Wind - screen flashes and no error
+  The Moon Watch - divide by zero error
 
 Discussion topic here on forums: http://www.intfiction.org/forum/viewtopic.php?f=38&t=21075
