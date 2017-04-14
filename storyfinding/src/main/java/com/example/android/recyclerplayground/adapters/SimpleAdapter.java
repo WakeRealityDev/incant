@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -29,8 +30,10 @@ import com.yrek.incant.StoryListSpot;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalItemHolder> {
@@ -40,6 +43,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     private ArrayList<Story> mItems;
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
+    private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 
     private Activity parentActivity;
 
@@ -84,7 +88,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
      * the view. However, this method will not trigger any of the RecyclerView
      * animation features.
      */
-    public void setItemCount(int count, Context context) {
+    public void setAdapterContent(Context context) {
         mItems.clear();
         try {
             mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
@@ -137,7 +141,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         itemHolder.setLeftTopNumber("2.0");
 
         Context context = parentActivity;
-        SpannableStringBuilder sb = new SpannableStringBuilder(item.getName(context));
+        final String storyName = item.getName(context);
+        SpannableStringBuilder sb = new SpannableStringBuilder(storyName);
         String storyHeadline = item.getHeadline(context);
         if (storyHeadline != null) {
             if (storyHeadline.length() > 0) {
@@ -154,7 +159,24 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         itemHolder.setStoryAuthors(item.getAuthor(context));
 
-        itemHolder.setCoverImage(item, position);
+        // itemHolder.setButtonAreaBehavior(item, position);
+
+        Bitmap image = null;
+        if (item.isDownloaded(context)) {
+            final File coverImage = item.getCoverImageFile(context);
+            if (coverImage.exists()) {
+                image = StoryListSpot.coverImageCache.get(storyName);
+                if (image == null) {
+                    image = item.getCoverImageBitmap(context);
+                    if (image != null) {
+                        StoryListSpot.coverImageCache.put(storyName, image);
+                    }
+                }
+            }
+        }
+
+        // null is good, it will remove image from recycled views
+        itemHolder.setCoverImage(image);
 
         itemHolder.setStoryDescription(item.getDescription(context));
     }
@@ -175,18 +197,29 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         }
     }
 
+    public void setOnItemLongClickListener(AdapterView.OnItemLongClickListener onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
+    }
 
+    private boolean onItemHolderLongClick(VerticalItemHolder itemHolder) {
+        Log.d(TAG, "[RVlongClick] onItemHolderLongClick");
+        if (mOnItemLongClickListener != null) {
+            return mOnItemLongClickListener.onItemLongClick(null, itemHolder.itemView,
+                    itemHolder.getAdapterPosition(), itemHolder.getItemId());
+        }
+        return false;
+    }
 
 
     @Override
     public void onViewDetachedFromWindow(VerticalItemHolder holder) {
         super.onViewDetachedFromWindow(holder);
         // Recycling want to remove these.
-        Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
-        holder.clearEverythingLoss();
+        //Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
+        //holder.clearEverythingLoss();
     }
 
-    public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView mLeftTopNumber, mLeftBottomNumber;
         private TextView mHomeName, mStoryTitle;
         private ImageView cover;
@@ -202,23 +235,14 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private SimpleAdapter mAdapter;
 
         public void clearEverythingLoss() {
-            if (itemViewContainer != null)
-                itemViewContainer.setOnLongClickListener(null);
-            if (buttons != null)
-                buttons.setOnClickListener(null);
-            if (mStoryTitle != null)
-                mStoryTitle.setText("");
-            if (storyDescription != null)
-                storyDescription.setText("");
-            if (progressBar != null) {
-                progressBar.setVisibility(View.GONE);
-            }
-            if (cover != null) {
-                cover.setVisibility(View.GONE);
-            }
-            if (play != null) {
-                play.setVisibility(View.GONE);
-            }
+            itemViewContainer.setOnLongClickListener(null);
+            buttons.setOnClickListener(null);
+            mStoryTitle.setText("");
+            mHomeName.setText("");
+            storyDescription.setText("");
+            progressBar.setVisibility(View.GONE);
+            cover.setVisibility(View.GONE);
+            play.setVisibility(View.GONE);
         }
 
         public VerticalItemHolder(View itemView, SimpleAdapter adapter) {
@@ -226,6 +250,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             reuseViewCount++;
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             mAdapter = adapter;
 
             mLeftTopNumber = (TextView) itemView.findViewById(R.id.text_score_home);
@@ -249,6 +274,11 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mAdapter.onItemHolderClick(this);
         }
 
+        @Override
+        public boolean onLongClick(View v) {
+            return mAdapter.onItemHolderLongClick(this);
+        }
+
         public void setLeftTopNumber(CharSequence homeScore) {
             mLeftTopNumber.setText(homeScore);
         }
@@ -265,14 +295,43 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mStoryTitle.setText(awayName);
         }
 
-        public void setStoryDescription(CharSequence storyDescriptionValue) {
-            storyDescription.setText(storyDescriptionValue);
+        // No spans are sent, so parma is not CharSequence - it is always string, as often this needs trim
+        public void setStoryDescription(String storyDescriptionValue) {
+            // ToDo: CSV file indicate if HTML, static prep-time check instead of runtime check
+            if (storyDescriptionValue == null) {
+                storyDescription.setText("");
+            } else {
+                // Simple HTML can be found, the easiest way to detect is a close tag like "</b>" as that pattern isn't likely to happen in non-HTML. See ToDo: above.
+                if (storyDescriptionValue.contains("</")) {
+                    // Going to HTML will strip whitespace behavior, so re-add newlines.  description of story "Gaucho" is a good test.
+                    // Trim leading and trailing too, we only want inner newlines.
+                    // ToDo: prep of CSV needs to trim. story example: "bsifhw1ik8524evd","Under the Bed"
+                    String outReworkedHTML = storyDescriptionValue.trim().replace("<p>", "\n").replace("\n\n", "\n").replace("\n", "<br />");
+                    Log.i(TAG, "[RVdescHTML] '" + outReworkedHTML + "'");
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        storyDescription.setText(android.text.Html.fromHtml(outReworkedHTML, android.text.Html.FROM_HTML_MODE_LEGACY));
+                    } else {
+                        storyDescription.setText(android.text.Html.fromHtml(outReworkedHTML));
+                    }
+                } else {
+                    storyDescription.setText(storyDescriptionValue.trim().replace("\n\n", "\n"));
+                }
+            }
+        }
+
+        public void setCoverImage(Bitmap image) {
+            cover.setImageBitmap(image);
+            if (image == null) {
+                play.setVisibility(View.VISIBLE);
+            } else {
+                play.setVisibility(View.GONE);
+            }
         }
 
         /*
         ToDo: all this ImageCache is based on story name - would be better to use SHA256 hash of story.
          */
-        public void setCoverImage(final Story story, final int onPosition) {
+        public void setButtonAreaBehavior(final Story story, final int onPosition) {
 
             // Set non-visible so if all conditions aren't right there will be nothing.
             cover.setVisibility(View.GONE);
@@ -397,7 +456,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                                                                 progressBar.setVisibility(View.GONE);
                                                                 // call self to show icon?
                                                                 // Not really recursive, as we are on a runnable.
-                                                                setCoverImage(story, onPosition);
+                                                                setButtonAreaBehavior(story, onPosition);
                                                             Log.d(TAG, "[RVlist][coverImage][RVrecycled] calling setCoverImage after download " + progressBarTag + " vs " + onPosition + " story " + storyName);
                                                             //}
                                                         } else {

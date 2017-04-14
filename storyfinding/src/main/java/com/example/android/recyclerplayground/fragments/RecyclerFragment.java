@@ -17,14 +17,13 @@ import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
-import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.incant.DownloadSpot;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener {
+public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private RecyclerView mList;
     private SimpleAdapter mAdapter;
@@ -57,8 +56,9 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         mList.getItemAnimator().setRemoveDuration(1000);
 
         mAdapter = getAdapter();
-        mAdapter.setItemCount(getDefaultItemCount(), getContext());
+        mAdapter.setAdapterContent(getContext());
         mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnItemLongClickListener(this);
         mList.setAdapter(mAdapter);
 
         return rootView;
@@ -100,16 +100,16 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
             return true;
         } else if (i == R.id.action_empty) {
-            mAdapter.setItemCount(0, getContext());
+            mAdapter.setAdapterContent(getContext());
             return true;
         } else if (i == R.id.action_small) {
-            mAdapter.setItemCount(5, getContext());
+            mAdapter.setAdapterContent(getContext());
             return true;
         } else if (i == R.id.action_medium) {
-            mAdapter.setItemCount(25, getContext());
+            mAdapter.setAdapterContent(getContext());
             return true;
         } else if (i == R.id.action_large) {
-            mAdapter.setItemCount(196, getContext());
+            mAdapter.setAdapterContent(getContext());
             return true;
         } else if (i == R.id.action_scroll_zero) {
             mList.scrollToPosition(0);
@@ -127,6 +127,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         Toast.makeText(getActivity(),
                 "Clicked: " + position + ", index " + mList.indexOfChild(view),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity(),
+                "LONG Clicked: " + position + ", index " + mList.indexOfChild(view),
+                Toast.LENGTH_SHORT).show();
+        return true;
     }
 
 
