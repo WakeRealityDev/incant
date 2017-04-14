@@ -20,22 +20,6 @@
         android:layout_rowSpan="3"
         >
 
-        <TextView
-            android:id="@+id/text_score_away"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            tools:text="100"/>
-
-        <TextView
-            android:id="@+id/text_score_home"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="200"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,7 +61,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/text_team_away"
+        android:id="@+id/text_story_title"
         android:layout_width="10dp"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
@@ -87,7 +71,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
-        android:id="@+id/text_team_home"
+        android:id="@+id/text_story_authors"
         android:layout_width="10dp"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"

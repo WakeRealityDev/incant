@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -134,10 +133,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {
-        Story item = mItems.get(position);
-
-        itemHolder.setLeftBottomNumber("p" + position);
-        itemHolder.setLeftTopNumber("2.0");
+        final Story item = mItems.get(position);
 
         Context context = parentActivity;
         final String storyName = item.getName(context);
@@ -154,11 +150,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             }
         }
         itemHolder.setStoryTitle(sb);
-        // itemHolder.setStoryDescription("storyDescription");
 
         itemHolder.setStoryAuthors(item.getAuthor(context));
-
-        // itemHolder.setButtonAreaBehavior(item, position);
 
         boolean isDownloaded = item.isDownloaded(context);
         boolean isDownloading = item.isDownloadingNow();
@@ -183,6 +176,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         itemHolder.setCoverImage(image, isDownloaded, isDownloading, isDownloadError);
 
         itemHolder.setStoryDescription(item.getDescription(context));
+
+        String outEngine = "Z";
+        if (item.isGlulx(context)) {
+            outEngine = "G";
+        }
+        itemHolder.setStoryEngine(outEngine);
     }
 
     @Override
@@ -214,22 +213,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         return false;
     }
 
-
-    @Override
-    public void onViewDetachedFromWindow(VerticalItemHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        // Recycling want to remove these.
-        //Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
-        //holder.clearEverythingLoss();
-    }
-
     public Story getStoryForPosition(int position) {
         return mItems.get(position);
     }
 
+
     public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private TextView mLeftTopNumber, mLeftBottomNumber;
-        private TextView mHomeName, mStoryTitle;
+        private TextView mStoryAuthors, mStoryTitle;
         private ImageView cover;
         private TextView download;
         private ProgressBar progressBar;
@@ -238,43 +228,29 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private View itemViewContainer;
         private String storyName = "";
         private TextView storyDescription;
-        private int reuseViewCount = 0;
+        private TextView storyEngine;
 
         private SimpleAdapter mAdapter;
 
-        public void clearEverythingLoss() {
-            itemViewContainer.setOnLongClickListener(null);
-            buttons.setOnClickListener(null);
-            mStoryTitle.setText("");
-            mHomeName.setText("");
-            storyDescription.setText("");
-            progressBar.setVisibility(View.GONE);
-            cover.setVisibility(View.GONE);
-            play.setVisibility(View.GONE);
-        }
 
         public VerticalItemHolder(View itemView, SimpleAdapter adapter) {
             super(itemView);
-            reuseViewCount++;
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             mAdapter = adapter;
 
-            mLeftTopNumber = (TextView) itemView.findViewById(R.id.text_score_home);
-            mLeftBottomNumber = (TextView) itemView.findViewById(R.id.text_score_away);
-            mHomeName = (TextView) itemView.findViewById(R.id.text_team_home);
-            mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
+            mStoryAuthors = (TextView) itemView.findViewById(R.id.text_story_authors);
+            mStoryTitle = (TextView) itemView.findViewById(R.id.text_story_title);
             storyDescription = (TextView) itemView.findViewById(R.id.text_story_description);
             cover = (ImageView) itemView.findViewById(R.id.cover);
             download = (TextView) itemView.findViewById(R.id.download);
-            download.setVisibility(View.GONE);
             play = (TextView) itemView.findViewById(R.id.play);
-            play.setVisibility(View.GONE);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
-            progressBar.setVisibility(View.GONE);
-            itemViewContainer = itemView;
             buttons = (ViewGroup) itemView.findViewById(R.id.buttons);
+            storyEngine = (TextView) itemView.findViewById(R.id.engine_detail);
+
+            itemViewContainer = itemView;
         }
 
         @Override
@@ -287,20 +263,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             return mAdapter.onItemHolderLongClick(this);
         }
 
-        public void setLeftTopNumber(CharSequence homeScore) {
-            mLeftTopNumber.setText(homeScore);
+
+        public void setStoryAuthors(CharSequence storyAuthors) {
+            mStoryAuthors.setText(storyAuthors);
         }
 
-        public void setLeftBottomNumber(CharSequence awayScore) {
-            mLeftBottomNumber.setText(awayScore);
-        }
-
-        public void setStoryAuthors(CharSequence homeName) {
-            mHomeName.setText(homeName);
-        }
-
-        public void setStoryTitle(CharSequence awayName) {
-            mStoryTitle.setText(awayName);
+        public void setStoryTitle(CharSequence storyTitle) {
+            mStoryTitle.setText(storyTitle);
         }
 
         // No spans are sent, so parma is not CharSequence - it is always string, as often this needs trim
@@ -527,6 +496,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             } else {
                 progressBar.setVisibility(View.GONE);
             }
+        }
+
+        public void setStoryEngine(CharSequence engineString) {
+            storyEngine.setText(engineString);
         }
     }
 }

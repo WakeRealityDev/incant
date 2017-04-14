@@ -5,8 +5,6 @@ import android.util.AttributeSet;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-import com.wakereality.storyfinding.R;
-
 
 public class StoryItemView extends GridLayout {
 
@@ -22,14 +20,6 @@ public class StoryItemView extends GridLayout {
 
     public StoryItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        mStoryTitle = (TextView) findViewById(R.id.text_score_home);
-        mStoryAuthor = (TextView) findViewById(R.id.text_score_away);
     }
 
     @Override
