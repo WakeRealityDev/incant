@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:id="@+id/buttons"
+        android:paddingRight="5dp"
         >
 
         <TextView
@@ -51,11 +52,22 @@
             android:indeterminate="true"
             />
 
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/play"
+            android:text="@string/play"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="#C5E1A5"
+            />
+
+        <!-- City of Secrets is a good example to test scaleType -->
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:id="@+id/cover"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/cover_image"
             />
 

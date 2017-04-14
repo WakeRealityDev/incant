@@ -54,7 +54,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                             try {
                                 DownloadSpot.downloading.wait();
                             } catch (Exception e) {
-                                Log.wtf(TAG,e);
+                                Log.wtf(TAG, e);
                             }
                             downloadingObserver = null;
                             // ToDo: how do we invalidate the ONE item on RecyclerView list to update, not the entire list?
@@ -168,6 +168,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private ImageView cover;
         private TextView download;
         private ProgressBar progressBar;
+        private TextView play;
         private View itemViewContainer;
 
         private SimpleAdapter mAdapter;
@@ -184,6 +185,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
             cover = (ImageView) itemView.findViewById(R.id.cover);
             download = (TextView) itemView.findViewById(R.id.download);
+            play = (TextView) itemView.findViewById(R.id.play);
+            play.setVisibility(View.GONE);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
             progressBar.setVisibility(View.GONE);
             itemViewContainer = itemView;
@@ -217,7 +220,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             final Context context = cover.getContext();
             final String storyName = story == null ? null : story.getName(context);
 
-            if (story.isDownloaded(cover.getContext())) {
+            if (story.isDownloaded(context)) {
                 download.setVisibility(View.GONE);
 
                 if (story.getCoverImageFile(context).exists()) {
@@ -247,9 +250,11 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                             });
                         }
                     });
+                } else {
+                    play.setVisibility(View.VISIBLE);
                 }
             } else {
-                // play.setVisibility(View.GONE);
+                play.setVisibility(View.GONE);
                 cover.setVisibility(View.GONE);
                 synchronized (DownloadSpot.downloading) {
                     if (DownloadSpot.downloading.contains(storyName)) {
@@ -285,6 +290,19 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                                         synchronized (DownloadSpot.downloading) {
                                             DownloadSpot.downloading.remove(storyName);
                                             DownloadSpot.downloading.notifyAll();
+                                            if (progressBar != null) {
+                                                progressBar.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (progressBar != null) {
+                                                            progressBar.setVisibility(View.GONE);
+                                                            // call self to show icon?
+                                                            // Not really recursive, as we are on a runnable.
+                                                            setCoverImage(story);
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                         if (error != null) {
                                             Log.w(TAG, "download error " + error);
