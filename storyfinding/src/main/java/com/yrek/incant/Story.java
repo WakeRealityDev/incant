@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -19,9 +21,13 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.util.zip.ZipFile;
 
+import org.greenrobot.eventbus.EventBus;
 import org.xmlpull.v1.XmlSerializer;
 
 import com.wakereality.apphelpersa.fileutils.FileCopy;
+import com.wakereality.storyfinding.EventStoryListDownloadResult;
+import com.wakereality.storyfinding.EventStoryNonListDownload;
+import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.ifstd.blorb.Blorb;
 import com.yrek.incant.gamelistings.StoryHelper;
@@ -304,7 +310,60 @@ public class Story implements Serializable {
         return returnVal.toUpperCase();
     }
 
+    private boolean downloadError = false;
+    private String downloadErrorDetail = "";
+    private boolean downloadingThreadRunning = false;
 
+    public String getDownloadErrorDetail() {
+        return downloadErrorDetail;
+    }
+
+    public boolean getDownloadError() {
+        return downloadError;
+    }
+
+    /*
+    downloadingNow should be set by caller before calling this method, it will be cleared at end.
+    check downloadError after downloadingNow is false.
+     */
+    public boolean startDownloadThread(final Context context) {
+        if (!downloadingThreadRunning) {
+            downloadingThreadRunning = true;
+            downloadError = false;
+            final String storyName = Story.this.getName(context);
+            Thread downloadThreadA = new Thread() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "[storyDownload] run() " + Thread.currentThread());
+                    String error = null;
+                    try {
+                        if (! download(context)) {
+                            Log.w(TAG, "[storyDownload] download_invalid " + storyName);
+                            error = context.getString(R.string.download_invalid, storyName);
+                        }
+                    } catch (Exception e) {
+                        Log.wtf(TAG, e);
+                        error = context.getString(R.string.download_failed, storyName);
+                    }
+
+                    if (error != null) {
+                        Log.w(TAG, "[storyDownload] download error " + error);
+                        // EventBus to fragment holding story list
+                        downloadError = true;
+                        downloadErrorDetail = error;
+                    }
+                    downloadingThreadRunning = false;
+                    downloadingNow = false;
+                    // ToDo: another event, as this is LIST download, not Non-List
+                    EventBus.getDefault().post(new EventStoryListDownloadResult((error != null), Story.this));
+                }
+            };
+            downloadThreadA.setName("downloadStoryA");
+            downloadThreadA.start();
+            return true;
+        }
+        return false;
+    }
 
 
     public static int MAGIC_FILE_ZIP0 = 0x504b0304;

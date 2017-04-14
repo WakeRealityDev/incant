@@ -163,6 +163,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         boolean isDownloaded = item.isDownloaded(context);
         boolean isDownloading = item.isDownloadingNow();
+        boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
         if (isDownloaded) {
             final File coverImage = item.getCoverImageFile(context);
@@ -180,7 +181,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         itemHolder.setDownloadProgress(item.isDownloadingNow());
 
         // null is good, it will remove image from recycled views
-        itemHolder.setCoverImage(image, isDownloaded, isDownloading);
+        itemHolder.setCoverImage(image, isDownloaded, isDownloading, isDownloadError);
 
         itemHolder.setStoryDescription(item.getDescription(context));
     }
@@ -327,7 +328,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             }
         }
 
-        public void setCoverImage(Bitmap image, boolean isDownloaded, boolean isDownloading) {
+        public void setCoverImage(Bitmap image, boolean isDownloaded, boolean isDownloading, boolean isDownloadError) {
             cover.setImageBitmap(image);
 
                 if (isDownloaded) {
@@ -348,8 +349,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                         progressBar.setVisibility(View.VISIBLE);
                     } else {
                         download.setVisibility(View.VISIBLE);
-                        download.setText("Download");
                         download.setBackgroundColor(Color.parseColor("#BBDEFB"));
+                        download.setText("Download");
+                        if (isDownloadError) {
+                            download.append("\n(Retry)");
+                            download.setBackgroundColor(Color.parseColor("#FFF9C4"));
+                        }
                         progressBar.setVisibility(View.GONE);
                     }
                 }

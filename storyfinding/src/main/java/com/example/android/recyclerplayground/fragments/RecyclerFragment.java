@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
@@ -133,8 +134,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         if (story.isDownloaded(getContext())) {
             // click means launch
         } else {
-            story.setDownloadingNow(! story.isDownloadingNow());
-            mAdapter.notifyDataSetChanged();
+            if (story.isDownloadingNow()) {
+                // Cancel download?
+            } else {
+                story.setDownloadingNow(true);
+                mAdapter.notifyDataSetChanged();
+                // Will clear downloadingNow when done
+                story.startDownloadThread(getContext());
+            }
         }
     }
 
@@ -190,6 +197,19 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventStoryNonListDownload event) {
         Log.i("RVfrag", "[storyDownload] EventStoryNonListDownload");
+        storyNonListDownload();
+    }
+
+    /*
+    Main thread to touch GUI.
+    */
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventStoryListDownloadResult event) {
+        Log.i("RVfrag", "[storyDownload] EventStoryListDownloadResult, error: " + event.downloadResultError);
+        if (event.downloadResultError) {
+            Toast.makeText(getContext(), "Download error: " + event.downloadStory.getDownloadErrorDetail(), Toast.LENGTH_SHORT).show();
+        }
         storyNonListDownload();
     }
 }
