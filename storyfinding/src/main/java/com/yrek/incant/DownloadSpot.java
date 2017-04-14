@@ -7,5 +7,6 @@ import java.util.HashSet;
  */
 
 public class DownloadSpot {
-    public static final HashSet<String> downloading = new HashSet<String>();
+    public static final HashSet<String> downloading = new HashSet<>();
+    public static boolean storyNonListDownloadFlag = false;
 }

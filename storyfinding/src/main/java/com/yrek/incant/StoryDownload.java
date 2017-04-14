@@ -11,7 +11,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -192,6 +195,8 @@ public class StoryDownload extends Activity {
                     }
                     if (story.isDownloaded(StoryDownload.this)) {
                         progressbar.post(gotoStoryDetails);
+                        DownloadSpot.storyNonListDownloadFlag = true;
+                        EventBus.getDefault().post(new EventStoryNonListDownload());
                     } else {
                         progressbar.post(resetView);
                     }

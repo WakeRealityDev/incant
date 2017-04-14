@@ -5,5 +5,5 @@ package com.yrek.incant;
  */
 
 public class ParamConst {
-    static final String SERIALIZE_KEY_STORY = "SERIALIZE_KEY_STORY";
+    public static final String SERIALIZE_KEY_STORY = "SERIALIZE_KEY_STORY";
 }

@@ -3,6 +3,7 @@ package com.example.android.recyclerplayground.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +15,14 @@ import android.widget.Toast;
 
 import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
+import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
+import com.yrek.incant.DownloadSpot;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -119,5 +127,51 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         Toast.makeText(getActivity(),
                 "Clicked: " + position + ", index " + mList.indexOfChild(view),
                 Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (! EventBus.getDefault().isRegistered(this)) {
+            Log.i("RVfrag", "[storyDownload] EventBus register");
+            EventBus.getDefault().register(this);
+            if (DownloadSpot.storyNonListDownloadFlag) {
+                // convention is to clear flag vars immediate
+                DownloadSpot.storyNonListDownloadFlag = false;
+                storyNonListDownload();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (EventBus.getDefault().isRegistered(this)) {
+            Log.i("RVfrag", "[storyDownload] EventBus unRegister");
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+
+     /*
+        An activity, typically StoryDownload.java or StoryDetails.java
+        Did a download that impacted this list while this list was not visible.
+     */
+    public void storyNonListDownload() {
+        if (mAdapter != null) {
+            Log.i("RVfrag", "[storyDownload] storyNonListDownload notifyDataSetChanged");
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /*
+   Main thread to touch GUI.
+   */
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventStoryNonListDownload event) {
+        Log.i("RVfrag", "[storyDownload] EventStoryNonListDownload");
+        storyNonListDownload();
     }
 }

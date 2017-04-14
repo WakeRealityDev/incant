@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.phrase.Phrase;
+import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineProvider;
@@ -99,6 +100,9 @@ public class StoryDetails extends Activity {
                                 }
                                 downloadingObserver = null;
                                 findViewById(R.id.progressbar).post(setView);
+                                Log.i(TAG, "[storyDownload] StoryDetails page download");
+                                DownloadSpot.storyNonListDownloadFlag = true;
+                                EventBus.getDefault().post(new EventStoryNonListDownload());
                             }
                         }
                     };

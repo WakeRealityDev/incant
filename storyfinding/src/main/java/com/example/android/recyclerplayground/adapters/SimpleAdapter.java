@@ -2,6 +2,7 @@ package com.example.android.recyclerplayground.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -18,11 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.recyclerplayground.MainActivity;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
 import com.yrek.incant.EventLocalStoryLaunch;
+import com.yrek.incant.ParamConst;
 import com.yrek.incant.Story;
+import com.yrek.incant.StoryDetails;
 import com.yrek.incant.StoryListSpot;
 
 import org.greenrobot.eventbus.EventBus;
@@ -169,6 +171,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         }
     }
 
+
+
+
     @Override
     public void onViewDetachedFromWindow(VerticalItemHolder holder) {
         super.onViewDetachedFromWindow(holder);
@@ -249,6 +254,16 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                     EventBus.getDefault().post(new EventLocalStoryLaunch(parentActivity, story));
                 }
             };
+
+            itemViewContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override public boolean onLongClick(View v) {
+                    Log.d(TAG, "OnLongClick SPOT_A");
+                    Intent intent = new Intent(parentActivity, StoryDetails.class);
+                    intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
+                    parentActivity.startActivity(intent);
+                    return true;
+                }
+            });
 
             if (story.isDownloaded(context)) {
                 download.setVisibility(View.GONE);
