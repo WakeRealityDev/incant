@@ -169,6 +169,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         }
     }
 
+    @Override
+    public void onViewDetachedFromWindow(VerticalItemHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        // Recycling want to remove these.
+        Log.i(TAG, "[RVlist][RVlistClick] onViewDetachedFromWindow to null " + holder.storyName);
+        holder.buttons.setOnClickListener(null);
+    }
 
     public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mLeftTopNumber, mLeftBottomNumber;
@@ -177,7 +184,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private TextView download;
         private ProgressBar progressBar;
         private TextView play;
+        private ViewGroup buttons;
         private View itemViewContainer;
+        private String storyName = "";
 
         private SimpleAdapter mAdapter;
 
@@ -193,11 +202,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
             cover = (ImageView) itemView.findViewById(R.id.cover);
             download = (TextView) itemView.findViewById(R.id.download);
+            download.setVisibility(View.GONE);
             play = (TextView) itemView.findViewById(R.id.play);
             play.setVisibility(View.GONE);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
             progressBar.setVisibility(View.GONE);
             itemViewContainer = itemView;
+            buttons = (ViewGroup) itemView.findViewById(R.id.buttons);
         }
 
         @Override
@@ -221,12 +232,15 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mStoryTitle.setText(awayName);
         }
 
+        /*
+        ToDo: all this ImageCache is based on story name - would be better to use SHA256 hash of story.
+         */
         public void setCoverImage(final Story story) {
 
             // Set non-visible so if all conditions aren't right there will be nothing.
             cover.setVisibility(View.GONE);
             final Context context = cover.getContext();
-            final String storyName = story == null ? null : story.getName(context);
+            storyName = story == null ? null : story.getName(context);
 
             View.OnClickListener launchStoryClickListener = new View.OnClickListener() {
                 @Override
@@ -240,7 +254,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                 download.setVisibility(View.GONE);
 
                 // Make the entire section, left button layout, clickable
-                itemView.findViewById(R.id.buttons).setOnClickListener(launchStoryClickListener);
+                buttons.setOnClickListener(launchStoryClickListener);
+                Log.i(TAG, "[RVlist][RVlistClick] setting launch click listner " + storyName);
 
                 if (story.getCoverImageFile(context).exists()) {
                     cover.setTag(story);
@@ -251,6 +266,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                             if (image == null) {
                                 image = story.getCoverImageBitmap(context);
                                 if (image == null) {
+                                    Log.i(TAG, "[RVlist][coverImage] imageLost " + storyName);
+                                    if (play != null) {
+                                        play.setVisibility(View.VISIBLE);
+                                    }
                                     return;
                                 }
                                 StoryListSpot.coverImageCache.put(storyName, image);
@@ -264,6 +283,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                                         cover.setVisibility(View.VISIBLE);
                                         cover.setImageBitmap(bitmap);
                                         cover.setTag(null);
+                                        if (play != null) {
+                                            play.setVisibility(View.GONE);
+                                        }
                                     }
                                 }
                             });
@@ -285,7 +307,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
                     } else {
                         download.setVisibility(View.VISIBLE);
                         download.setText(R.string.download_story);
-                        itemViewContainer.setOnClickListener(new View.OnClickListener() {
+                        Log.i(TAG, "[RVlist][RVlistClick] setting download listner " + storyName);
+                        buttons.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(final View v) {
                                 Log.d(TAG, "[downloadStory] OnClick SPOT_D download");
                                 download.setVisibility(View.GONE);

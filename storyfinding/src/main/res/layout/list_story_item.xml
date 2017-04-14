@@ -43,6 +43,7 @@
             android:text="@string/download_story"
             android:textSize="20sp"
             android:gravity="center"
+            android:background="#BBDEFB"
             />
 
         <ProgressBar
