@@ -6,6 +6,9 @@ import android.view.View;
 import com.wakereality.storyfinding.R;
 
 
+/*
+Thoughts: we have two sizes of images to work with
+ */
 public class SimpleStaggeredAdapter extends SimpleAdapter {
 
     public SimpleStaggeredAdapter(Context context) {

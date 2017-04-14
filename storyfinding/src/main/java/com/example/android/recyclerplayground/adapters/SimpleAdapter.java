@@ -1,20 +1,24 @@
 package com.example.android.recyclerplayground.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wakereality.storyfinding.R;
+import com.yrek.incant.DownloadSpot;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
 
@@ -24,6 +28,8 @@ import java.util.ArrayList;
 
 public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalItemHolder> {
 
+    public static final String TAG = "RecylerViewAdap";
+
     private ArrayList<Story> mItems;
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
@@ -31,6 +37,35 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     public SimpleAdapter(Context context) {
         mItems = new ArrayList<>();
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
+    }
+
+
+    private Thread downloadingObserver = null;
+
+
+    private void setDownloadingObserver() {
+        synchronized (DownloadSpot.downloading) {
+            if (downloadingObserver == null && ! DownloadSpot.downloading.isEmpty()) {
+                downloadingObserver = new Thread() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "setDownloadingObserver run() " + Thread.currentThread());
+                        synchronized (DownloadSpot.downloading) {
+                            try {
+                                DownloadSpot.downloading.wait();
+                            } catch (Exception e) {
+                                Log.wtf(TAG,e);
+                            }
+                            downloadingObserver = null;
+                            // ToDo: how do we invalidate the ONE item on RecyclerView list to update, not the entire list?
+                            // storyList.post(refreshStoryListRunnable);
+                        }
+                    }
+                };
+                downloadingObserver.setName("downloadingObserver");
+                downloadingObserver.start();
+            }
+        }
     }
 
     /*
@@ -77,7 +112,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     @Override
     public VerticalItemHolder onCreateViewHolder(ViewGroup container, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(container.getContext());
-        View root = inflater.inflate(R.layout.view_match_item, container, false);
+        View root = inflater.inflate(R.layout.list_story_item, container, false);
 
         return new VerticalItemHolder(root, this);
     }
@@ -106,6 +141,8 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         // itemHolder.setStoryDescription("storyDescription");
 
         itemHolder.setStoryAuthors(item.getAuthor(itemHolder.mStoryTitle.getContext()));
+
+        itemHolder.setCoverImage(item);
     }
 
     @Override
@@ -125,9 +162,13 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     }
 
 
-    public static class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class VerticalItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mLeftTopNumber, mLeftBottomNumber;
         private TextView mHomeName, mStoryTitle;
+        private ImageView cover;
+        private TextView download;
+        private ProgressBar progressBar;
+        private View itemViewContainer;
 
         private SimpleAdapter mAdapter;
 
@@ -141,6 +182,11 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mLeftBottomNumber = (TextView) itemView.findViewById(R.id.text_score_away);
             mHomeName = (TextView) itemView.findViewById(R.id.text_team_home);
             mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
+            cover = (ImageView) itemView.findViewById(R.id.cover);
+            download = (TextView) itemView.findViewById(R.id.download);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressbar);
+            progressBar.setVisibility(View.GONE);
+            itemViewContainer = itemView;
         }
 
         @Override
@@ -162,6 +208,102 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         public void setStoryDescription(CharSequence awayName) {
             mStoryTitle.setText(awayName);
+        }
+
+        public void setCoverImage(final Story story) {
+
+            // Set non-visible so if all conditions aren't right there will be nothing.
+            cover.setVisibility(View.GONE);
+            final Context context = cover.getContext();
+            final String storyName = story == null ? null : story.getName(context);
+
+            if (story.isDownloaded(cover.getContext())) {
+                download.setVisibility(View.GONE);
+
+                if (story.getCoverImageFile(context).exists()) {
+                    cover.setTag(story);
+                    cover.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bitmap image = StoryListSpot.coverImageCache.get(storyName);
+                            if (image == null) {
+                                image = story.getCoverImageBitmap(context);
+                                if (image == null) {
+                                    return;
+                                }
+                                StoryListSpot.coverImageCache.put(storyName, image);
+                            }
+                            final Bitmap bitmap = image;
+                            cover.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (story == cover.getTag()) {
+                                        // play.setVisibility(View.GONE);
+                                        cover.setVisibility(View.VISIBLE);
+                                        cover.setImageBitmap(bitmap);
+                                        cover.setTag(null);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            } else {
+                // play.setVisibility(View.GONE);
+                cover.setVisibility(View.GONE);
+                synchronized (DownloadSpot.downloading) {
+                    if (DownloadSpot.downloading.contains(storyName)) {
+                        download.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        itemViewContainer.setOnClickListener(null);
+                    } else {
+                        download.setVisibility(View.VISIBLE);
+                        download.setText(R.string.download_story);
+                        itemViewContainer.setOnClickListener(new View.OnClickListener() {
+                            @Override public void onClick(final View v) {
+                                Log.d(TAG, "[downloadStory] OnClick SPOT_D download");
+                                download.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.VISIBLE);
+                                progressBar.setBackgroundColor(Color.parseColor("#E1BEE7"));
+                                synchronized (DownloadSpot.downloading) {
+                                    DownloadSpot.downloading.add(storyName);
+                                    setDownloadingObserver();
+                                }
+                                Thread downloadThreadA = new Thread() {
+                                    @Override public void run() {
+                                        Log.d(TAG, "run() " + Thread.currentThread());
+                                        String error = null;
+                                        try {
+                                            if (!story.download(context)) {
+                                                Log.w(TAG, "download_invalid " + story.getName(context));
+                                                error = context.getString(R.string.download_invalid, story.getName(context));
+                                            }
+                                        } catch (Exception e) {
+                                            Log.wtf(TAG,e);
+                                            error = context.getString(R.string.download_failed, story.getName(context));
+                                        }
+                                        synchronized (DownloadSpot.downloading) {
+                                            DownloadSpot.downloading.remove(storyName);
+                                            DownloadSpot.downloading.notifyAll();
+                                        }
+                                        if (error != null) {
+                                            Log.w(TAG, "download error " + error);
+                                            final String msg = error;
+                                            v.post(new Runnable() {
+                                                @Override public void run() {
+                                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                };
+                                downloadThreadA.setName("downloadA");
+                                downloadThreadA.start();
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
 }

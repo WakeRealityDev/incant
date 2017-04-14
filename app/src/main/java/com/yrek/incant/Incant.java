@@ -62,7 +62,6 @@ public class Incant extends Activity {
 
     private Handler handler;
     private HandlerThread handlerThread;
-    private LruCache<String,Bitmap> coverImageCache;
     protected SharedPreferences spref;
 
     protected static boolean useStyledIntroStrings = true;
@@ -104,7 +103,9 @@ public class Incant extends Activity {
         saveTimeStyle = new TextAppearanceSpan(this, R.style.story_save_time);
         downloadTimeStyle = new TextAppearanceSpan(this, R.style.story_download_time);
 
-        coverImageCache = new LruCache<String,Bitmap>(10);
+        if (StoryListSpot.coverImageCache == null) {
+            StoryListSpot.coverImageCache = new LruCache<String, Bitmap>(10);
+        }
 
         findViewById(R.id.main_top_intro_button_label0).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -510,12 +511,14 @@ public class Incant extends Activity {
             progressBar.setVisibility(View.GONE);
             final View finalConvertView1 = convertView;
 
+            // The one final "Get More" entry?
             if (story == null) {
                 info.setVisibility(View.GONE);
                 play.setVisibility(View.GONE);
                 cover.setVisibility(View.GONE);
                 convertView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override public boolean onLongClick(View v) {
+                        // How to reach this code path: long-press on the the space RIGHT OF the "Get More"
                         Log.d(TAG, "[downloadStory] OnLongClick SPOT_B");
                         startActivity(new Intent(Incant.this, StoryDownload.class));
                         return true;
@@ -613,13 +616,13 @@ public class Incant extends Activity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Bitmap image = coverImageCache.get(storyName);
+                                    Bitmap image = StoryListSpot.coverImageCache.get(storyName);
                                     if (image == null) {
                                         image = story.getCoverImageBitmap(Incant.this);
                                         if (image == null) {
                                             return;
                                         }
-                                        coverImageCache.put(storyName, image);
+                                        StoryListSpot.coverImageCache.put(storyName, image);
                                     }
                                     final Bitmap bitmap = image;
                                     cover.post(new Runnable() {
@@ -648,7 +651,6 @@ public class Incant extends Activity {
                         } else {
                             download.setVisibility(View.VISIBLE);
                             download.setText(R.string.download_story);
-                            final View finalConvertView = convertView;
                             convertView.setOnClickListener(new View.OnClickListener() {
                                 @Override public void onClick(final View v) {
                                     Log.d(TAG, "[downloadStory] OnClick SPOT_D download");
