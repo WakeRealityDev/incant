@@ -147,12 +147,14 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             sb.setSpan(headlineStyle, start, sb.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             sb.append(")");
         }
-        itemHolder.setStoryDescription(sb);
+        itemHolder.setStoryTitle(sb);
         // itemHolder.setStoryDescription("storyDescription");
 
-        itemHolder.setStoryAuthors(item.getAuthor(itemHolder.mStoryTitle.getContext()));
+        itemHolder.setStoryAuthors(item.getAuthor(context));
 
         itemHolder.setCoverImage(item);
+
+        itemHolder.setStoryDescription(item.getDescription(context));
     }
 
     @Override
@@ -192,6 +194,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private ViewGroup buttons;
         private View itemViewContainer;
         private String storyName = "";
+        private TextView storyDescription;
 
         private SimpleAdapter mAdapter;
 
@@ -205,6 +208,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mLeftBottomNumber = (TextView) itemView.findViewById(R.id.text_score_away);
             mHomeName = (TextView) itemView.findViewById(R.id.text_team_home);
             mStoryTitle = (TextView) itemView.findViewById(R.id.text_team_away);
+            storyDescription = (TextView) itemView.findViewById(R.id.text_story_description);
             cover = (ImageView) itemView.findViewById(R.id.cover);
             download = (TextView) itemView.findViewById(R.id.download);
             download.setVisibility(View.GONE);
@@ -233,8 +237,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
             mHomeName.setText(homeName);
         }
 
-        public void setStoryDescription(CharSequence awayName) {
+        public void setStoryTitle(CharSequence awayName) {
             mStoryTitle.setText(awayName);
+        }
+
+        public void setStoryDescription(CharSequence storyDescriptionValue) {
+            storyDescription.setText(storyDescriptionValue);
         }
 
         /*
