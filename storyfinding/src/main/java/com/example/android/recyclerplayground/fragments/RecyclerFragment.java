@@ -2,6 +2,7 @@ package com.example.android.recyclerplayground.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -92,9 +93,8 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         return rootView;
     }
 
+    
     protected boolean doHeaderOnce = false;
-
-    protected static boolean showExapnded = true;
 
     protected void headerSectionSetup(final View rootView) {
         TextView expandControl = (TextView) rootView.findViewById(R.id.storyList_header_expand_control);
@@ -106,10 +106,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             expandControl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showExapnded = ! showExapnded;
+                    StoryListSpot.showHeadingExpanded = !StoryListSpot.showHeadingExpanded;
                     headerSectionSetup(rootView);
                 }
             });
+            launchDefaultTopPanelCheckbox.setChecked(StoryListSpot.optionLaunchExternal);
             launchDefaultTopPanelCheckbox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,13 +120,28 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                         actionLaunchExternal.setChecked(viewAsCheckbox.isChecked());
                     }
                     StoryListSpot.optionLaunchExternal = viewAsCheckbox.isChecked();
+                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_launchexternal", StoryListSpot.optionLaunchExternal).commit();
                     // Redraw to show launch icon change.
                     mAdapter.notifyDataSetChanged();
                 }
             });
+            // This is little bit confusing: remember there are two controls, one can expand nad open without changing default, The other sets default for next app startup or activity open.
+            final CheckBox hideExpandDefault = (CheckBox) rootView.findViewById(R.id.storylist_header_extra_checkhide);
+            // checkbox is a negative meaning, "hide"
+            hideExpandDefault.setChecked(StoryListSpot.showHeadingExpandedHideByDefault);
+            hideExpandDefault.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StoryListSpot.showHeadingExpandedHideByDefault = ! StoryListSpot.showHeadingExpandedHideByDefault;
+                    // checkbox is a negative meaning, "hide"
+                    hideExpandDefault.setChecked(StoryListSpot.showHeadingExpandedHideByDefault);
+                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_expand_default", StoryListSpot.showHeadingExpandedHideByDefault).commit();
+                    // This will not expand or contract, only adjusting the default for future.
+                }
+            });
         }
 
-        if (showExapnded) {
+        if (StoryListSpot.showHeadingExpanded) {
             expandControl.setText(getText(R.string.storyList_header_contract));
             expandableHolder.setVisibility(View.VISIBLE);
         } else {
@@ -140,6 +156,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.grid_options, menu);
         actionLaunchExternal = menu.findItem(R.id.action_launch_external);
+        actionLaunchExternal.setChecked(StoryListSpot.optionLaunchExternal);
     }
 
     @Override
@@ -176,6 +193,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             item.setChecked(! item.isChecked());
             StoryListSpot.optionLaunchExternal = item.isChecked();
             launchDefaultTopPanelCheckbox.setChecked(item.isChecked());
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_launchexternal", StoryListSpot.optionLaunchExternal).commit();
             mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_scroll_zero) {

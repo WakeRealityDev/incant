@@ -17,4 +17,7 @@ public class StoryListSpot {
     public static boolean optionLaunchExternal = false;
     public static int optionLaunchExternalActivityCode = 0;
     public static boolean optionaLaunchInterruptEngine = true;
+
+    public static boolean showHeadingExpanded = true;
+    public static boolean showHeadingExpandedHideByDefault = true;
 }

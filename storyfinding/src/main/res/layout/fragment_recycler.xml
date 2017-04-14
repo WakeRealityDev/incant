@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
+        android:paddingRight="2dp"
         android:paddingTop="3dp"
         android:paddingBottom="2dp"
         >
@@ -70,7 +71,7 @@
                     android:id="@+id/storylist_header_extra_info2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User interface Tips: 1) Long-press on the story item to get a full page of options and information. 2) If more than one engine provider is detected, you can click on the bold name and switch the default provider."
+                    android:text="User interface Tips: 1) Long-press on the story item to get a full page of options and information. 2) If more than one engine provider is detected, you can click on the bold name and switch the default provider. 3) Touching at the upper left where it currently says 'Contract, hide options.' will hide and show this top options panel. It starts out winking to highlight itself."
                     android:layout_below="@id/storylist_header_extra_info1"
                     />
 
