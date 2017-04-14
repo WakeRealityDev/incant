@@ -1,5 +1,6 @@
 package com.example.android.recyclerplayground.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,10 @@ import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.DownloadSpot;
+import com.yrek.incant.EventLocalStoryLaunch;
+import com.yrek.incant.ParamConst;
 import com.yrek.incant.Story;
+import com.yrek.incant.StoryDetails;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -127,12 +131,15 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Story story = mAdapter.getStoryForPosition(position);
-        Toast.makeText(getActivity(),
-                "Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
-                Toast.LENGTH_SHORT).show();
+        if (1==2) {
+            Toast.makeText(getActivity(),
+                    "Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
+                    Toast.LENGTH_SHORT).show();
+        }
 
         if (story.isDownloaded(getContext())) {
             // click means launch
+            EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
         } else {
             if (story.isDownloadingNow()) {
                 // Cancel download?
@@ -148,9 +155,16 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Story story = mAdapter.getStoryForPosition(position);
-        Toast.makeText(getActivity(),
-                "LONG Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
-                Toast.LENGTH_SHORT).show();
+        if (1==2) {
+            Toast.makeText(getActivity(),
+                    "LONG Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        Intent intent = new Intent(getContext(), StoryDetails.class);
+        intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
+        getActivity().startActivity(intent);
+
         return true;
     }
 
