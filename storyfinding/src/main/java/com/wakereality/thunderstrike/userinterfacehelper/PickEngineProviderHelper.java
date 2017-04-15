@@ -2,14 +2,19 @@ package com.wakereality.thunderstrike.userinterfacehelper;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.squareup.phrase.Phrase;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineProvider;
+import com.yrek.incant.StoryListSpot;
 
 import java.util.Map;
 
@@ -95,5 +100,29 @@ public class PickEngineProviderHelper {
                 }
             });
         }
+    }
+
+    public void spinnerForThunderwordActivity(Spinner spinnerView, CheckBox checkboxView) {
+        Context context = spinnerView.getContext();
+        final TypedArray selectedActivityValues = context.getResources().obtainTypedArray(R.array.thunderword_activity_values);
+
+        spinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                StoryListSpot.optionLaunchExternalActivityCode = selectedActivityValues.getInt(position, -1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                StoryListSpot.optionLaunchExternalActivityCode = 0;
+            }
+        });
+
+        checkboxView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StoryListSpot.optionaLaunchInterruptEngine = ((CheckBox) v).isChecked();
+            }
+        });
     }
 }

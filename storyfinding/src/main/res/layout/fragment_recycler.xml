@@ -12,6 +12,7 @@
         android:paddingRight="2dp"
         android:paddingTop="3dp"
         android:paddingBottom="2dp"
+        android:layout_marginBottom="2dp"
         >
 
         <TextView
@@ -47,7 +48,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:padding="4dp"
+                android:paddingTop="3dp"
+                android:paddingRight="4dp"
+                android:paddingLeft="4dp"
+                android:paddingBottom="2dp"
                 android:background="#BBDEFB"
                 >
 
@@ -59,13 +63,50 @@
                     android:autoLink="web"
                     />
 
-                <TextView
+
+                <RelativeLayout
                     android:id="@+id/storylist_header_extra_info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ToDo: pick activity, launch, and even command codes?"
                     android:layout_below="@id/storylist_header_extra_info0"
-                    />
+                    >
+                    <TextView
+                        android:id="@+id/external_provider_label0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thunderword launch: "
+                        android:layout_alignBaseline="@+id/external_provider_activity"
+                        />
+                    <Spinner
+                        android:id="@+id/external_provider_activity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/thunderword_activity_names"
+                        android:entryValues="@array/thunderword_activity_values"
+                        android:layout_toRightOf="@id/external_provider_label0"
+                        />
+                    <TextView
+                        android:id="@+id/external_provider_activity_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/external_provider_activity"
+                        android:layout_alignBaseline="@+id/external_provider_activity"
+                        android:paddingLeft="4dp"
+                        android:text="@string/external_provider_activity_label"
+                        />
+                    <CheckBox android:id="@+id/external_provider_noprompt"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_marginLeft="4dp"
+                              android:paddingLeft="2dp"
+                              android:paddingRight="3dp"
+                              android:text="@string/external_provider_noprompt"
+                              android:background="#E8FFFF"
+                              android:layout_toRightOf="@+id/external_provider_activity_label"
+                              android:layout_alignBaseline="@+id/external_provider_activity"
+                              android:checked="true"
+                        />
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/storylist_header_extra_info2"

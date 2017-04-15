@@ -58,9 +58,9 @@
     <string name="action_small">Small Grid</string>
     <string name="action_medium">Medium Grid</string>
     <string name="action_large">Large Grid</string>
-    <string name="action_scroll_zero">Scroll Home</string>
+    <string name="action_scroll_zero">Jump Home</string>
     <string name="action_smooth_zero">Smooth Scroll Home</string>
-    <string name="action_scroll_max">Scroll End</string>
+    <string name="action_scroll_max">Jump End</string>
     <string name="action_smooth_max">Smooth Scroll End</string>
 
     <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>

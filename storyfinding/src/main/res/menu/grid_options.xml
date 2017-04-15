@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_add"
-        android:title="Add"
+        android:title="Get More"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_remove"
         android:title="Remove"
@@ -14,23 +14,6 @@
           android:checkable="true"
           android:checked="false"
           app:showAsAction="never" />
-
-    <item android:id="@+id/action_empty"
-        android:title="@string/action_empty"
-        android:orderInCategory="90"
-        app:showAsAction="never" />
-    <item android:id="@+id/action_small"
-        android:title="@string/action_small"
-        android:orderInCategory="91"
-        app:showAsAction="never" />
-    <item android:id="@+id/action_medium"
-        android:title="@string/action_medium"
-        android:orderInCategory="92"
-        app:showAsAction="never" />
-    <item android:id="@+id/action_large"
-        android:title="@string/action_large"
-        android:orderInCategory="93"
-        app:showAsAction="never" />
 
     <item android:id="@+id/action_scroll_zero"
         android:title="@string/action_scroll_zero"

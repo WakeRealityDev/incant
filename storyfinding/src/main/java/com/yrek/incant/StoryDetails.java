@@ -71,7 +71,6 @@ public class StoryDetails extends Activity {
     }
 
 
-
     public final Runnable setView = new Runnable() {
         private Thread downloadingObserver = null;
 
@@ -188,19 +187,7 @@ public class StoryDetails extends Activity {
                     }
                 });
 
-                final TypedArray selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
-
-                ((Spinner) findViewById(R.id.external_provider_activity)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        StoryListSpot.optionLaunchExternalActivityCode = selectedActivityValues.getInt(position, -1);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        StoryListSpot.optionLaunchExternalActivityCode = 0;
-                    }
-                });
+                pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) findViewById(R.id.external_provider_activity), (CheckBox) findViewById((R.id.external_provider_noprompt)));
 
                 int outEngine = story.isZcode(StoryDetails.this) ? R.string.play_zcode : R.string.play_glulx;
                 ((TextView) findViewById(R.id.play_text)).setText(outEngine);
@@ -294,10 +281,6 @@ public class StoryDetails extends Activity {
         }
         sb.setSpan(authorStyle, start, sb.length(), 0);
         return sb;
-    }
-
-    public void onProviderInterruptClicked(View view) {
-        StoryListSpot.optionaLaunchInterruptEngine = ((CheckBox) view).isChecked();
     }
 
 

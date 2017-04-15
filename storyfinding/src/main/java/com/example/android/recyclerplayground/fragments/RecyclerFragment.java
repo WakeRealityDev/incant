@@ -16,11 +16,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
@@ -160,6 +162,8 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             expandControl.setText(getText(R.string.storyList_header_expand));
             expandableHolder.setVisibility(View.GONE);
         }
+
+        pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) rootView.findViewById(R.id.external_provider_activity), (CheckBox) rootView.findViewById(R.id.external_provider_noprompt));
     }
 
     protected MenuItem actionLaunchExternal;
@@ -176,17 +180,9 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         NumberPickerDialog dialog;
         int i = item.getItemId();
         if (i == R.id.action_add) {
-            dialog = new NumberPickerDialog(getActivity());
-            dialog.setTitle("Position to Add");
-            dialog.setPickerRange(0, mAdapter.getItemCount());
-            dialog.setOnNumberSelectedListener(new NumberPickerDialog.OnNumberSelectedListener() {
-                @Override
-                public void onNumberSelected(int value) {
-                    mAdapter.addItem(value);
-                }
-            });
-            dialog.show();
-
+            AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getContext());
+            mAdapter.setAdapterContent(getContext());
+            mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_remove) {
             dialog = new NumberPickerDialog(getActivity());

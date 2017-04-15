@@ -37,6 +37,7 @@ import java.util.List;
 
 import com.example.android.recyclerplayground.MainActivity;
 import com.wakereality.incant.AboutAppActivity;
+import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
@@ -537,7 +538,7 @@ public class Incant extends Activity {
                         convertView.setOnClickListener(new View.OnClickListener() {
                             @Override public void onClick(View v) {
                                 if (SettingsCurrent.getGetMoreBypassLiveScrape()) {
-                                    processAssetsCommaSeparatedValuesList();
+                                    AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getApplicationContext());
                                 }
                                 else {
                                     Log.d(TAG, "[downloadStory] OnClick SPOT_B (scrape fetch)");
@@ -764,7 +765,8 @@ public class Incant extends Activity {
                 sprefEditor.putBoolean("glk_auto_enter_char", SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
                 break;
             case R.id.action_story_database_test:
-                processAssetsCommaSeparatedValuesList();
+                AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getApplicationContext());
+                refreshStoryList();
                 break;
             case R.id.action_storylist_not_downloaded:
                 SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
@@ -782,15 +784,7 @@ public class Incant extends Activity {
 
 
 
-    public void processAssetsCommaSeparatedValuesList() {
-        if (StoryListSpot.readCommaSepValuesFile == null) {
-            StoryListSpot.readCommaSepValuesFile = new ReadCommaSepValuesFile();
-        }
-        // readCommaSepValuesFile.readComplexSetOfFilesCSV(getApplicationContext());
-        StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(getApplicationContext());
-        System.gc();
-        refreshStoryList();
-    }
+
 
     /*
     ================================================================================================
