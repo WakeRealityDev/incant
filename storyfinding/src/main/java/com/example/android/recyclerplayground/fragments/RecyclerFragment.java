@@ -36,6 +36,7 @@ import com.yrek.incant.ParamConst;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryDetails;
 import com.yrek.incant.StoryListSpot;
+import com.yrek.runconfig.SettingsCurrent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -185,17 +186,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_remove) {
-            dialog = new NumberPickerDialog(getActivity());
-            dialog.setTitle("Position to Remove");
-            dialog.setPickerRange(0, mAdapter.getItemCount() - 1);
-            dialog.setOnNumberSelectedListener(new NumberPickerDialog.OnNumberSelectedListener() {
-                @Override
-                public void onNumberSelected(int value) {
-                    mAdapter.removeItem(value);
-                }
-            });
-            dialog.show();
-
+            SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
+            if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
+                item.setTitle("Show Downloaded");
+            } else {
+                item.setTitle("Hide Downloaded");
+            }
+            mAdapter.setAdapterContent(getContext());
+            mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_launch_external) {
             item.setChecked(! item.isChecked());

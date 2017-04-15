@@ -6,7 +6,7 @@
         android:title="Get More"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_remove"
-        android:title="Remove"
+        android:title="Hide Downloaded"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_launch_external"
