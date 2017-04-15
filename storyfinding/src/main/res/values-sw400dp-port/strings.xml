@@ -8,4 +8,11 @@
 
   <string name="external_provider_activity_label"></string>
 
+  <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
+  <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
+
+  <!-- uses Square library Phrase -->
+  <string name="engine_provider_detected_named">IF engine provider: <b>{engine}</b>{extra_a}</string>
+  <string name="engine_provider_detected_extra"> [{quantity} found]</string>
+  
 </resources>
