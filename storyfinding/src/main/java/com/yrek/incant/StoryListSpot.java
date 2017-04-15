@@ -20,4 +20,6 @@ public class StoryListSpot {
 
     public static boolean showHeadingExpanded = true;
     public static boolean showHeadingExpandedHideByDefault = true;
+
+    public static boolean showInterfaceTipsA = true;
 }

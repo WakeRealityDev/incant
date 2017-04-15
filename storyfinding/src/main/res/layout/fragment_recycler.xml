@@ -111,21 +111,13 @@
                         />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/storylist_header_extra_info2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/storylist_header_interface_tips0"
-                    android:layout_below="@id/storylist_header_extra_info1"
-                    />
-
                 <CheckBox
                     android:id="@+id/storylist_header_extra_checkhide"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
                     android:text="@string/storylist_header_extra_hidetop"
-                    android:layout_below="@id/storylist_header_extra_info2"
+                    android:layout_below="@id/storylist_header_extra_info1"
                     />
 
                 <CheckBox
@@ -137,6 +129,15 @@
                     android:layout_alignBaseline="@id/storylist_header_extra_checkhide"
                     android:layout_toRightOf="@id/storylist_header_extra_checkhide"
                     />
+
+                <TextView
+                    android:id="@+id/storylist_header_extra_info2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/storylist_header_interface_tips0"
+                    android:layout_below="@id/storylist_header_extra_checkhide"
+                    />
+
 
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>

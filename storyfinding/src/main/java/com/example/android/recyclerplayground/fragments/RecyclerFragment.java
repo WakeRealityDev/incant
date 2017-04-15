@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -151,6 +156,28 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     expandableHolder.startAnimation(myTouchWobbleAnimation);
                 }
             });
+
+            final TextView storylist_header_extra_info2 = (TextView) rootView.findViewById(R.id.storylist_header_extra_info2);
+            if (! StoryListSpot.showInterfaceTipsA) {
+                storylist_header_extra_info2.setVisibility(View.GONE);
+            } else {
+                storylist_header_extra_info2.setVisibility(View.VISIBLE);
+                // Appending keeps word wrapping, two textViews would not
+
+                String outMessage = " :hide.";
+                Spannable span = Spannable.Factory.getInstance().newSpannable(outMessage);
+                span.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View v) {
+                        StoryListSpot.showInterfaceTipsA = false;
+                        storylist_header_extra_info2.setVisibility(View.GONE);
+                        headerSectionSetup(rootView);
+                    }
+                }, 0, outMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                storylist_header_extra_info2.append(span);
+                storylist_header_extra_info2.setMovementMethod(LinkMovementMethod.getInstance());
+            }
         }
 
         // If no engine provider detected, suggest install of app
