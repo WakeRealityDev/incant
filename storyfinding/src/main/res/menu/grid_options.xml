@@ -9,6 +9,10 @@
         android:title="Hide Downloaded"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_expand"
+          android:title="Expand options"
+          app:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_launch_external"
           android:title="Launch Thunderword"
           android:checkable="true"

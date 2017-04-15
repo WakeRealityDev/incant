@@ -10,20 +10,22 @@
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
         android:paddingRight="2dp"
-        android:paddingTop="3dp"
         android:paddingBottom="2dp"
         android:layout_marginBottom="2dp"
         >
 
+        <!-- Padding moved here on each element instead of parent layout to give slightly more touch surface -->
         <TextView
             android:id="@+id/storyList_header_expand_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="3dp"
             android:text="@string/storyList_header_expand"
             />
 
         <TextView
             android:id="@+id/storyList_header_expand_info0"
+            android:paddingTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="see me? header"
@@ -33,6 +35,7 @@
 
         <TextView
             android:id="@+id/engine_provider_status"
+            android:paddingTop="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/storyList_header_expand_info0"

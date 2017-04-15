@@ -106,6 +106,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         TextView expandControl = (TextView) rootView.findViewById(R.id.storyList_header_expand_control);
         final View expandableHolder = rootView.findViewById(R.id.storylist_header_expandholder);
 
+        // Menu item reflect open or closed
+        if (actionExpandOptions != null) {
+            actionExpandOptions.setChecked(StoryListSpot.showHeadingExpanded);
+        }
+
         if (! doHeaderOnce) {
             doHeaderOnce = true;
             expandControl.startAnimation(myFadeInOutAnimation);
@@ -169,12 +174,15 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     }
 
     protected MenuItem actionLaunchExternal;
+    protected MenuItem actionExpandOptions;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.grid_options, menu);
         actionLaunchExternal = menu.findItem(R.id.action_launch_external);
         actionLaunchExternal.setChecked(StoryListSpot.optionLaunchExternal);
+        actionExpandOptions = menu.findItem(R.id.action_expand);
+        actionExpandOptions.setChecked(StoryListSpot.showHeadingExpanded);
     }
 
     @Override
@@ -216,6 +224,10 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             return true;
         } else if (i == R.id.action_smooth_max) {
             mList.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+            return true;
+        } else if (i == R.id.action_expand) {
+            StoryListSpot.showHeadingExpanded = ! StoryListSpot.showHeadingExpanded;
+            headerSectionSetup(getView());
             return true;
         } else {
             return super.onOptionsItemSelected(item);
