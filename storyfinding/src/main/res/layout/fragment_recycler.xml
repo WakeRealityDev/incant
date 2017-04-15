@@ -74,7 +74,7 @@
                         android:id="@+id/external_provider_label0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Thunderword launch: "
+                        android:text="@string/play_via_external_engine_provider"
                         android:layout_alignBaseline="@+id/external_provider_activity"
                         />
                     <Spinner
@@ -112,7 +112,7 @@
                     android:id="@+id/storylist_header_extra_info2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User interface Tips: 1) Long-press on the story item to get a full page of options and information. 2) If more than one engine provider is detected, you can click on the bold name and switch the default provider. 3) Touching at the upper left where it currently says 'Contract, hide options.' will hide and show this top options panel. It starts out winking to highlight itself."
+                    android:text="@string/storylist_header_interface_tips0"
                     android:layout_below="@id/storylist_header_extra_info1"
                     />
 
@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
-                    android:text="Hide these top options by default"
+                    android:text="@string/storylist_header_extra_hidetop"
                     android:layout_below="@id/storylist_header_extra_info2"
                     />
 
@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
-                    android:text="Thunderword launch on touch"
+                    android:text="@string/storylist_header_enginelaunch"
                     android:layout_alignBaseline="@id/storylist_header_extra_checkhide"
                     android:layout_toRightOf="@id/storylist_header_extra_checkhide"
                     />

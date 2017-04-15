@@ -65,6 +65,9 @@
 
     <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
     <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
+    <string name="storylist_header_extra_hidetop">Hide these top options by default</string>
+    <string name="storylist_header_enginelaunch">Thunderword launch on touch</string>
+    <string name="storylist_header_interface_tips0">User interface Tips: 1) Long-press on the story item to get a full page of options and information. 2) If more than one engine provider is detected, touch on the bold name and switch default provider. 3) Touching at the upper left where it currently says \'Contract, hide options.\' will hide and show this top options panel. It starts out winking to highlight itself.</string>
 
     <!-- RecyclerView Playground End -->
 

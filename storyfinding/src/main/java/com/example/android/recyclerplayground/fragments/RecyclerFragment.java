@@ -104,7 +104,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
     protected void headerSectionSetup(final View rootView) {
         TextView expandControl = (TextView) rootView.findViewById(R.id.storyList_header_expand_control);
-        View expandableHolder = rootView.findViewById(R.id.storylist_header_expandholder);
+        final View expandableHolder = rootView.findViewById(R.id.storylist_header_expandholder);
 
         if (! doHeaderOnce) {
             doHeaderOnce = true;
@@ -143,6 +143,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     hideExpandDefault.setChecked(StoryListSpot.showHeadingExpandedHideByDefault);
                     PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_expand_default", StoryListSpot.showHeadingExpandedHideByDefault).commit();
                     // This will not expand or contract, only adjusting the default for future.
+                    expandableHolder.startAnimation(myTouchWobbleAnimation);
                 }
             });
         }
@@ -181,11 +182,13 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         NumberPickerDialog dialog;
         int i = item.getItemId();
         if (i == R.id.action_add) {
+            mList.startAnimation(myTouchWobbleAnimation);
             AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getContext());
             mAdapter.setAdapterContent(getContext());
             mAdapter.notifyDataSetChanged();
             return true;
         } else if (i == R.id.action_remove) {
+            mList.startAnimation(myTouchWobbleAnimation);
             SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
             if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
                 item.setTitle("Show Downloaded");
@@ -331,5 +334,6 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
         pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status));
+        headerSectionSetup(getView());
     }
 }
