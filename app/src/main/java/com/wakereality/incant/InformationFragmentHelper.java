@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
@@ -20,6 +21,7 @@ import com.yrek.incant.Incant;
 import com.yrek.incant.R;
 import com.yrek.incant.StoryListSpot;
 import com.yrek.incant.StoryLister;
+import com.yrek.runconfig.SettingsCurrent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -106,9 +108,72 @@ public class InformationFragmentHelper {
                 event.holdingActivity.startActivity(new Intent(event.holdingActivity, Incant.class));
             }
         });
-
         rootViewGroup.addView(legacyList);
 
+        TextView aboutApp = new TextView(viewContext);
+        aboutApp.setText("3. About Incant! for Thunderword app, licensing and other information");
+        aboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                event.holdingActivity.startActivity(new Intent(event.holdingActivity, AboutAppActivity.class));
+            }
+        });
+        rootViewGroup.addView(aboutApp);
+
+        TextView incantSpeechLabel = new TextView(viewContext);
+        incantSpeechLabel.setText("4. The Incant! app you are currently using has local engines with speech recognition and output options:");
+        rootViewGroup.addView(incantSpeechLabel);
+
+
+        final CheckBox incantSpeechA = new CheckBox(viewContext);
+        incantSpeechA.setText("Incant! app speech output enable");
+        incantSpeechA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsCurrent.flipSpeechEnabled();
+                incantSpeechA.setChecked(SettingsCurrent.getSpeechEnabled());
+            }
+        });
+        incantSpeechA.setChecked(SettingsCurrent.getSpeechEnabled());
+        rootViewGroup.addView(incantSpeechA);
+
+        final CheckBox incantSpeechB = new CheckBox(viewContext);
+        incantSpeechB.setText("Incant! app speech recognition enable");
+        incantSpeechB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsCurrent.flipSpeechRecognizerEnabled();
+                incantSpeechB.setChecked(SettingsCurrent.getSpeechRecognizerEnabled());
+            }
+        });
+        incantSpeechB.setChecked(SettingsCurrent.getSpeechRecognizerEnabled());
+        rootViewGroup.addView(incantSpeechB);
+
+        final CheckBox incantSpeechC = new CheckBox(viewContext);
+        incantSpeechC.setText("Incant! app speech recognition squelch beep");
+        incantSpeechC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsCurrent.flipSpeechRecognizerMute();
+                incantSpeechC.setChecked(SettingsCurrent.getSpeechRecognizerMute());
+            }
+        });
+        incantSpeechC.setChecked(SettingsCurrent.getSpeechRecognizerMute());
+        rootViewGroup.addView(incantSpeechC);
+
+        final CheckBox incantAutoKey = new CheckBox(viewContext);
+        incantAutoKey.setText("Incant! app automatic keystroke entry");
+        incantAutoKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsCurrent.flipEnableAutoEnterOnGlkCharInput();
+                incantAutoKey.setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
+            }
+        });
+        incantAutoKey.setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
+        rootViewGroup.addView(incantAutoKey);
+
+        // ToDo: add Thunderword spinner from other fragments for picking Activity?
 
         populateThunderwordInformation(rootViewGroup);
     }
