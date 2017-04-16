@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- for xlarge-width screens, (screen widw = sw) 760dp, use largest strings
+  <!-- for xlarge-width screens, (screen width = sw) 760dp, use largest strings
       BN Nook HD+ is sw787dp, Pixel C in emulator is sw852dp
    -->
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- for large-width screens, (screen widw = sw) 580dp, use largest strings
+  <!-- for large-width screens, (screen width = sw) 580dp, use largest strings
       LG-V520 is sw600dp, ZTE K88 is sw600dp
 
       It tries to fit the same layout as sw760, but it uses smaller strings (liked sw320dp), compare strings with sw760
@@ -18,8 +18,10 @@
   <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
   <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
 
-  <!-- uses Square library Phrase -->
-  <string name="engine_provider_detected_named">IF engine provider: <b>{engine}</b>{extra_a}</string>
-  <string name="engine_provider_detected_extra"> [{quantity} found]</string>
+  <!-- uses Square library Phrase
+        some punctuation removed on sw580dp, fits fine on sw600dp when experimental is engine provider, but tight, so stripped these a bit.
+  -->
+  <string name="engine_provider_detected_named">IF engine provider <b>{engine}</b>{extra_a}</string>
+  <string name="engine_provider_detected_extra"> {quantity} found</string>
 
 </resources>
