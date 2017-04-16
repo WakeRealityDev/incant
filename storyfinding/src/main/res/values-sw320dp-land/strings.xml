@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- for medium-width screens, 400dp, use larger strings -->
+
+  <string name="play_via_external_engine_provider">Via Thunderword</string>
+  <string name="external_provider_noprompt">Interrupt</string>
+
+  <string name="external_provider_activity_label"></string>
+
+  <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
+  <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
+
+  <!-- uses Square library Phrase -->
+  <string name="engine_provider_detected_named">IF engine provider: <b>{engine}</b>{extra_a}</string>
+  <string name="engine_provider_detected_extra"> [{quantity} found]</string>
+
+</resources>

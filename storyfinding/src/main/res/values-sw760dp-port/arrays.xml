@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Value 0 means headless, and we aren't going to give the user that choice in this app's GUI. -->
+    <string-array name="thunderword_activity_names">
+        <item>Bi-directional scrolling</item>
+        <item>Scrolling</item>
+        <item>Flexible (incomplete)</item>
+        <item>Two-Window classic</item>
+        <item>5 (future)</item>
+        <item>6 (future)</item>
+        <item>7 (future)</item>
+        <item>8 (future)</item>
+    </string-array>
+    <string-array name="thunderword_activity_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+</resources>
