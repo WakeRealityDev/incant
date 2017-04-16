@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- for large-width screens, (screen widw = sw) 580dp, use largest strings
+      LG-V520 is sw600dp, ZTE K88 is sw600dp
+
+      It tries to fit the same layout as sw760, but it uses smaller strings (liked sw320dp), compare strings with sw760
+   -->
+
+  <string name="play_via_external_engine_provider">Thunderword</string>
+  <string name="external_provider_noprompt">Kill</string>
+
+  <string name="external_provider_activity_label"></string>
+
+  <string name="storylist_header_extra_hidetop">Hide by default</string>
+  <string name="storylist_header_enginelaunch">⚡⚡ launch</string>
+
+  <string name="storyList_header_expand">"<b>Expand, show options.</b> "</string>
+  <string name="storyList_header_contract">"<b>Contract, hide options.</b> "</string>
+
+  <!-- uses Square library Phrase -->
+  <string name="engine_provider_detected_named">IF engine provider: <b>{engine}</b>{extra_a}</string>
+  <string name="engine_provider_detected_extra"> [{quantity} found]</string>
+
+</resources>
