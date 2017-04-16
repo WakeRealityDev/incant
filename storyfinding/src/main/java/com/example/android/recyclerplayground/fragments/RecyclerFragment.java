@@ -48,7 +48,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     public RecyclerFragment() {
-        // Fragments should hvae empty https://github.com/devunwired/recyclerview-playground/issues/28
+        // Fragments should have empty https://github.com/devunwired/recyclerview-playground/issues/28
     }
 
     private RecyclerView mList;

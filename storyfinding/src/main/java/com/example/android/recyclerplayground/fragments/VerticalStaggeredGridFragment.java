@@ -12,7 +12,7 @@ import com.yrek.incant.StoryListSpot;
 public class VerticalStaggeredGridFragment extends RecyclerFragment {
 
     public VerticalStaggeredGridFragment() {
-        // Fragments should hvae empty https://github.com/devunwired/recyclerview-playground/issues/28
+        // Fragments should have empty https://github.com/devunwired/recyclerview-playground/issues/28
     }
 
     public static VerticalStaggeredGridFragment newInstance() {

@@ -11,7 +11,7 @@ import com.example.android.recyclerplayground.layout.FixedGridLayoutManager;
 public class FixedTwoWayFragment extends RecyclerFragment{
 
     public FixedTwoWayFragment() {
-        // Fragments should hvae empty https://github.com/devunwired/recyclerview-playground/issues/28
+        // Fragments should have empty https://github.com/devunwired/recyclerview-playground/issues/28
     }
 
     public static FixedTwoWayFragment newInstance() {
