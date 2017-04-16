@@ -24,7 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.example.android.recyclerplayground.adapters.StoryBrowseAdapter;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
@@ -52,14 +52,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     }
 
     private RecyclerView mList;
-    private SimpleAdapter mAdapter;
+    private StoryBrowseAdapter mAdapter;
 
     /** Required Overrides for Sample Fragments */
 
     protected abstract RecyclerView.LayoutManager getLayoutManager();
     protected abstract RecyclerView.ItemDecoration getItemDecoration();
     protected abstract int getDefaultItemCount();
-    protected abstract SimpleAdapter getAdapter();
+    protected abstract StoryBrowseAdapter getAdapter();
     protected Animation myFadeInOutAnimation;
     protected Animation myTouchWobbleAnimation;
     protected CheckBox launchDefaultTopPanelCheckbox;

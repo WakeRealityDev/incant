@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.android.recyclerplayground.InsetDecoration;
-import com.example.android.recyclerplayground.adapters.SimpleAdapter;
+import com.example.android.recyclerplayground.adapters.StoryBrowseAdapter;
 import com.example.android.recyclerplayground.layout.FixedGridLayoutManager;
 
 
@@ -40,7 +40,7 @@ public class FixedTwoWayFragment extends RecyclerFragment{
     }
 
     @Override
-    protected SimpleAdapter getAdapter() {
-        return new SimpleAdapter(getActivity(), getActivity());
+    protected StoryBrowseAdapter getAdapter() {
+        return new StoryBrowseAdapter(getActivity(), getActivity());
     }
 }

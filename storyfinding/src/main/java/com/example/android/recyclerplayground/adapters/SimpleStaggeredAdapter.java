@@ -11,7 +11,7 @@ import com.wakereality.storyfinding.R;
 Thoughts: we have two sizes of images to work with
 // ToDo: fast scrolling and download, and it gets confused on target
  */
-public class SimpleStaggeredAdapter extends SimpleAdapter {
+public class SimpleStaggeredAdapter extends StoryBrowseAdapter {
 
     public SimpleStaggeredAdapter(Context context, Activity launchParentActivity) {
         super(context, launchParentActivity);

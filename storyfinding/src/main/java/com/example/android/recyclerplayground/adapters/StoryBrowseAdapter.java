@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wakereality.storyfinding.R;
-import com.yrek.incant.DownloadSpot;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
 
@@ -28,9 +27,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalItemHolder> {
+/*
+Testing and experimenting with this vs. the original Incant LIST implementation:
+The major advance of this RecyclerView in testing is that it seems to only invalidate the visible items.
+  It is much smatter of detecting what is on screen at the time and only rebuilding those when dataset changes.
+ */
+public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.VerticalItemHolder> {
 
-    public static final String TAG = "RecylerViewAdap";
+    public static final String TAG = "RecyclerViewAdap";
 
     private ArrayList<Story> mItems;
 
@@ -40,7 +44,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     private Activity parentActivity;
 
-    public SimpleAdapter(Context context, Activity launchParentActivity) {
+    public StoryBrowseAdapter(Context context, Activity launchParentActivity) {
         mItems = new ArrayList<>();
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
         parentActivity = launchParentActivity;
@@ -59,7 +63,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         try {
             mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
         } catch (IOException e) {
-            Log.e("SimpleAdapter", "Exception ", e);
+            Log.e(TAG, "Exception ", e);
         }
 
         notifyDataSetChanged();
@@ -204,10 +208,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         private TextView storyEngine;
         private View externalLaunchIndicator;
 
-        private SimpleAdapter mAdapter;
+        private StoryBrowseAdapter mAdapter;
 
 
-        public VerticalItemHolder(View itemView, SimpleAdapter adapter) {
+        public VerticalItemHolder(View itemView, StoryBrowseAdapter adapter) {
             super(itemView);
 
             itemView.setOnClickListener(this);

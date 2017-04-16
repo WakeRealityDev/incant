@@ -123,6 +123,8 @@ public class StoryDetails extends Activity {
                     @Override public void onClick(final View v) {
                         v.setVisibility(View.INVISIBLE);
                         findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
+
+                        // ToDo: replace this download logic here with the new call to   story.startDownloadThread(StoryDetails.this);
                         synchronized (DownloadSpot.downloading) {
                             DownloadSpot.downloading.add(storyName);
                             setDownloadingObserver();
