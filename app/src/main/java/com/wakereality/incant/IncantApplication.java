@@ -39,6 +39,7 @@ public class IncantApplication extends Application {
         // false, do not hide by default
         StoryListSpot.showHeadingExpandedHideByDefault = spref.getBoolean("storylist_expand_default", false);
 
+        StoryListSpot.showInterfaceTipsA = spref.getBoolean("storylist_intro_tips", true);
 
         StoryEngineLaunchHelper storyEngineLaunchHelper = new StoryEngineLaunchHelper();
     }

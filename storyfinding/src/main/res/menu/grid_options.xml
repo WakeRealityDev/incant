@@ -23,19 +23,25 @@
 
     <item android:id="@+id/action_scroll_zero"
         android:title="@string/action_scroll_zero"
-        android:orderInCategory="100"
+        android:orderInCategory="70"
         app:showAsAction="never" />
     <item android:id="@+id/action_smooth_zero"
         android:title="@string/action_smooth_zero"
-        android:orderInCategory="100"
+        android:orderInCategory="70"
         app:showAsAction="never" />
 
     <item android:id="@+id/action_scroll_max"
           android:title="@string/action_scroll_max"
-          android:orderInCategory="100"
+          android:orderInCategory="70"
           app:showAsAction="never" />
     <item android:id="@+id/action_smooth_max"
           android:title="@string/action_smooth_max"
-          android:orderInCategory="100"
+          android:orderInCategory="70"
           app:showAsAction="never" />
+
+    <item android:id="@+id/action_restore_tips"
+          android:title="@string/action_restore_tips"
+          android:orderInCategory="80"
+          app:showAsAction="never" />
+
 </menu>

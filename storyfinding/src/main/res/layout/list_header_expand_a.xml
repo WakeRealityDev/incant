@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/storylist_header_expandholder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/engine_provider_status"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingTop="3dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:paddingBottom="2dp"
+        android:background="#BBDEFB"
+        >
+
+        <TextView
+            android:id="@+id/storylist_header_extra_info0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/storylist_header_extra_thunderwordapp0"
+            android:autoLink="web"
+            />
+
+
+        <RelativeLayout
+            android:id="@+id/storylist_header_extra_info1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/storylist_header_extra_info0"
+            >
+            <TextView
+                android:id="@+id/external_provider_label0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/play_via_external_engine_provider"
+                android:layout_alignBaseline="@+id/external_provider_activity"
+                />
+            <Spinner
+                android:id="@+id/external_provider_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/thunderword_activity_names"
+                android:entryValues="@array/thunderword_activity_values"
+                android:layout_toRightOf="@id/external_provider_label0"
+                />
+            <TextView
+                android:id="@+id/external_provider_activity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/external_provider_activity"
+                android:layout_alignBaseline="@+id/external_provider_activity"
+                android:paddingLeft="4dp"
+                android:text="@string/external_provider_activity_label"
+                />
+            <CheckBox android:id="@+id/external_provider_noprompt"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginLeft="4dp"
+                      android:paddingLeft="2dp"
+                      android:paddingRight="3dp"
+                      android:text="@string/external_provider_noprompt"
+                      android:background="#E8FFFF"
+                      android:layout_toRightOf="@+id/external_provider_activity_label"
+                      android:layout_alignBaseline="@+id/external_provider_activity"
+                      android:checked="true"
+                />
+        </RelativeLayout>
+
+        <CheckBox
+            android:id="@+id/storylist_header_extra_checkhide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/storylist_header_extra_hidetop"
+            android:layout_below="@id/storylist_header_extra_info1"
+            />
+
+        <CheckBox
+            android:id="@+id/storylist_header_extra_checkenginelaunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/storylist_header_enginelaunch"
+            android:layout_alignBaseline="@id/storylist_header_extra_checkhide"
+            android:layout_toRightOf="@id/storylist_header_extra_checkhide"
+            />
+
+        <TextView
+            android:id="@+id/storylist_header_extra_info2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/storylist_header_interface_tips0"
+            android:layout_below="@id/storylist_header_extra_checkhide"
+            />
+
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

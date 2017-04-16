@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -25,7 +24,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.recyclerplayground.NumberPickerDialog;
 import com.example.android.recyclerplayground.adapters.SimpleAdapter;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
@@ -107,6 +105,33 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
     protected boolean doHeaderOnce = false;
 
+
+    protected void headerSectionTipsSetup(final View rootView) {
+        final TextView storylist_header_extra_info2 = (TextView) rootView.findViewById(R.id.storylist_header_extra_info2);
+        if (! StoryListSpot.showInterfaceTipsA) {
+            storylist_header_extra_info2.setVisibility(View.GONE);
+        } else {
+            storylist_header_extra_info2.setVisibility(View.VISIBLE);
+            // Appending keeps word wrapping, two textViews would not
+
+            String outMessage = " :hide.";
+            Spannable span = Spannable.Factory.getInstance().newSpannable(outMessage);
+            span.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View v) {
+                    StoryListSpot.showInterfaceTipsA = false;
+                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_intro_tips", StoryListSpot.showInterfaceTipsA).commit();
+                    storylist_header_extra_info2.setVisibility(View.GONE);
+                    headerSectionSetup(rootView);
+                }
+            }, 0, outMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            storylist_header_extra_info2.setText(getText(R.string.storylist_header_interface_tips0));
+            storylist_header_extra_info2.append(span);
+            storylist_header_extra_info2.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+
     protected void headerSectionSetup(final View rootView) {
         TextView expandControl = (TextView) rootView.findViewById(R.id.storyList_header_expand_control);
         final View expandableHolder = rootView.findViewById(R.id.storylist_header_expandholder);
@@ -157,27 +182,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                 }
             });
 
-            final TextView storylist_header_extra_info2 = (TextView) rootView.findViewById(R.id.storylist_header_extra_info2);
-            if (! StoryListSpot.showInterfaceTipsA) {
-                storylist_header_extra_info2.setVisibility(View.GONE);
-            } else {
-                storylist_header_extra_info2.setVisibility(View.VISIBLE);
-                // Appending keeps word wrapping, two textViews would not
-
-                String outMessage = " :hide.";
-                Spannable span = Spannable.Factory.getInstance().newSpannable(outMessage);
-                span.setSpan(new ClickableSpan() {
-                    @Override
-                    public void onClick(View v) {
-                        StoryListSpot.showInterfaceTipsA = false;
-                        storylist_header_extra_info2.setVisibility(View.GONE);
-                        headerSectionSetup(rootView);
-                    }
-                }, 0, outMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                storylist_header_extra_info2.append(span);
-                storylist_header_extra_info2.setMovementMethod(LinkMovementMethod.getInstance());
-            }
+            headerSectionTipsSetup(rootView);
         }
 
         // If no engine provider detected, suggest install of app
@@ -214,7 +219,6 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        NumberPickerDialog dialog;
         int i = item.getItemId();
         if (i == R.id.action_add) {
             mList.startAnimation(myTouchWobbleAnimation);
@@ -255,6 +259,12 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         } else if (i == R.id.action_expand) {
             StoryListSpot.showHeadingExpanded = ! StoryListSpot.showHeadingExpanded;
             headerSectionSetup(getView());
+            return true;
+        } else if (i == R.id.action_restore_tips) {
+            StoryListSpot.showInterfaceTipsA = true;
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_intro_tips", StoryListSpot.showInterfaceTipsA).commit();
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("intro_dismiss", false).commit();
+            headerSectionTipsSetup(getView());
             return true;
         } else {
             return super.onOptionsItemSelected(item);

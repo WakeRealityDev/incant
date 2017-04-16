@@ -62,6 +62,7 @@
     <string name="action_smooth_zero">Smooth Scroll Home</string>
     <string name="action_scroll_max">Jump End</string>
     <string name="action_smooth_max">Smooth Scroll End</string>
+    <string name="action_restore_tips">Restore Tips</string>
 
     <!-- RecyclerView Playground End -->
 

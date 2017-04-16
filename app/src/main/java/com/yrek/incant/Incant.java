@@ -429,9 +429,7 @@ public class Incant extends Activity {
     }
 
     public void hideIntroMessageClick(View view) {
-        SharedPreferences.Editor sprefEditor = spref.edit();
-        sprefEditor.putBoolean("intro_dismiss", true);
-        sprefEditor.commit();
+        spref.edit().putBoolean("intro_dismiss", true).commit();
         refreshStoryList();
     }
 
