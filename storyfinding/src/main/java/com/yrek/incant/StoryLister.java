@@ -27,7 +27,7 @@ public class StoryLister {
     private Context context;
     private Scraper[] scrapers;
 
-    StoryLister(Context context) {
+    public StoryLister(Context context) {
         this.context = context;
         // IFArchive scraping is more primitive, as we have only filenames and some folder-context of category.
         if (SettingsCurrent.getScrapeIFArchive()) {

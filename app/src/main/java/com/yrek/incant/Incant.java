@@ -37,6 +37,7 @@ import java.util.List;
 
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.wakereality.incant.AboutAppActivity;
+import com.wakereality.incant.InformationFragmentHelper;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
@@ -138,14 +139,6 @@ public class Incant extends Activity {
     }
 
 
-    public void queryRemoteStoryEngineProviders() {
-        // Query for Interactive Fiction engine providers.
-        Intent intent = new Intent();
-        // Tell Android to start Thunderword app if not already running.
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.setAction("interactivefiction.enginemeta.runstory");
-        getApplicationContext().sendBroadcast(intent);
-    }
 
     public void createDiskPathsOnce()
     {
@@ -313,7 +306,7 @@ public class Incant extends Activity {
             EventBus.getDefault().register(this);
         }
 
-        queryRemoteStoryEngineProviders();
+        InformationFragmentHelper.queryRemoteStoryEngineProviders(getApplicationContext());
         refreshStoryList();
     }
 

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.yrek.incant.StoryListSpot;
 
 /**
- * Created by adminsag on 4/14/17.
+ * Created by Stephen A. Gutknecht on 4/14/17.
  */
 
 public class AddStoriesToStoryList {

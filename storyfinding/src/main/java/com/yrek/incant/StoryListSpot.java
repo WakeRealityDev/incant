@@ -6,7 +6,7 @@ import android.util.LruCache;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 
 /**
- * Created by adminsag on 4/13/17.
+ * Created by Stephen A. Gutknecht on 4/13/17.
  */
 
 public class StoryListSpot {

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.View;
 
 /**
- * Created by adminsag on 4/16/17.
+ * Created by Stephen A. Gutknecht on 4/16/17.
  */
 
 public class EventInformationFragmentPopulate {

@@ -1,7 +1,7 @@
 package com.yrek.incant;
 
 /**
- * Created by adminsag on 4/5/17.
+ * Created by Stephen A. Gutknecht on 4/5/17.
  */
 
 public class ParamConst {

@@ -1,6 +1,7 @@
 package com.example.android.recyclerplayground.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,13 @@ public class InformationFragment extends android.support.v4.app.Fragment {
      */
 
     public void populateViewInParentApp(View rootView) {
+        Log.d("InformationFrag", "[IncantApp] EventInformationFragmentPopulate");
         EventBus.getDefault().post(new EventInformationFragmentPopulate(rootView, getActivity()));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        populateViewInParentApp(getView());
     }
 }

@@ -1,7 +1,7 @@
 package com.wakereality.storyfinding;
 
 /**
- * Created by adminsag on 4/1/17.
+ * Created by Stephen A. Gutknecht on 4/1/17.
  */
 
 public class StoryEntryIFDB {

@@ -39,4 +39,15 @@
 
   <string name="main_top_error_storagepermission">Incant! needs public write storage permission to download stories and launch Thunderword.</string>
   <string name="main_top_error_storage_try">[ Try Again ]</string>
+  <string name="information_page_thunderword_html"><![CDATA[
+    <h2>What is Thunderword?</h2>
+
+    Thunderword is built around the concept of multiple apps and Interactive Fiction interpreters engines working together. Story information is exchanged app to app in JSON using the RemGlk protocol.
+
+    <ul>
+       <li> &nbsp; You are currently using <b>Incant!</b>, which can act as a story download and launcher tool for Thunderword or other apps. This app is entirely free software and the source code is <a href=\"https://github.com/WakeRealityDev/incant\">available on GitHub</a></li>
+       <li> &nbsp; <b>Thunderword</b> app is new in 2017 and in testing on <a href=\"https://play.google.com/apps/testing/com.wakereality.thunderword\">Google Play store</a></li>
+       <li> &nbsp; <b>Text Fiction</b> is a popular open source app for Android that has a unique text-messaging presentation for Interactive Fiction, an enhanced Thunderword connected version can be installed from the <a href=\"https://play.google.com/apps/testing/com.wakereality.textfiction\">Google Play store</a></li>
+    </ul>
+  ]]></string>
 </resources>

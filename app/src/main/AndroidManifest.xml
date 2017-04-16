@@ -21,16 +21,27 @@
 
      android:name="com.wakereality.incant.IncantApplication"
      >
+
     <activity
        android:name="Incant"
        android:label="@string/app_name"
        android:theme="@style/incant_theme"
        >
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
     </activity>
+
+        <!-- LandingActivity is a stub to switch and possibly launch library activities. noHistory so back doesn't come to it -->
+        <activity
+            android:name="com.wakereality.incant.LandingActivity"
+            android:label="@string/app_name"
+            android:theme="@style/incant_theme"
+            android:noHistory="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
     <activity
        android:name="Viewer"
        android:label="@string/app_name"

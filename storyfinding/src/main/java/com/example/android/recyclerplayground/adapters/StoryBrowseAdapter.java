@@ -61,7 +61,9 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     public void setAdapterContent(Context context) {
         mItems.clear();
         try {
-            mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
+            if (StoryListSpot.storyLister != null){
+                mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
+            }
         } catch (IOException e) {
             Log.e(TAG, "Exception ", e);
         }

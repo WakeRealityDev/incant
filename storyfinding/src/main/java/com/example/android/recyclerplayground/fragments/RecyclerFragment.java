@@ -65,7 +65,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     protected CheckBox launchDefaultTopPanelCheckbox;
     protected TextView listHeaderExtraNoThunderwordDetected;
 
-    PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
+    protected PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
