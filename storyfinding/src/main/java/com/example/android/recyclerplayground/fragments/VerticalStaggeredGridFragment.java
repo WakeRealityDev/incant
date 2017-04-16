@@ -10,6 +10,10 @@ import com.example.android.recyclerplayground.adapters.SimpleStaggeredAdapter;
 
 public class VerticalStaggeredGridFragment extends RecyclerFragment {
 
+    public VerticalStaggeredGridFragment() {
+        // Fragments should hvae empty https://github.com/devunwired/recyclerview-playground/issues/28
+    }
+
     public static VerticalStaggeredGridFragment newInstance() {
         VerticalStaggeredGridFragment fragment = new VerticalStaggeredGridFragment();
         Bundle args = new Bundle();

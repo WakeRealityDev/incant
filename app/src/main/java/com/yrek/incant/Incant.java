@@ -35,11 +35,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import com.example.android.recyclerplayground.MainActivity;
+import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
-import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.runconfig.SettingsCurrent;
 
@@ -771,7 +770,7 @@ public class Incant extends Activity {
                 refreshStoryList();
                 break;
             case R.id.action_list_test:
-                startActivity(new Intent(Incant.this, MainActivity.class));
+                startActivity(new Intent(Incant.this, BrowseStoriesActivity.class));
                 return true;
         }
 

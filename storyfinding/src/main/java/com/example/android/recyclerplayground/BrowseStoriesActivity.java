@@ -18,7 +18,11 @@ import com.example.android.recyclerplayground.fragments.VerticalStaggeredGridFra
 import com.wakereality.storyfinding.R;
 
 
-public class MainActivity extends AppCompatActivity implements
+/*
+Git commit history will show the evolution from the base RecyclerPlayground from
+  https://github.com/devunwired/recyclerview-playground
+ */
+public class BrowseStoriesActivity extends AppCompatActivity implements
         NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -51,24 +55,26 @@ public class MainActivity extends AppCompatActivity implements
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        // These need to be in the same index order as the setAdapter
         switch (position) {
             case 0:
                 ft.replace(R.id.container, VerticalFragment.newInstance());
                 break;
-            case 1:
+            case 4:
                 ft.replace(R.id.container, HorizontalFragment.newInstance());
                 break;
             case 2:
                 ft.replace(R.id.container, VerticalGridFragment.newInstance());
                 break;
-            case 3:
+            case 1:
                 ft.replace(R.id.container, VerticalStaggeredGridFragment.newInstance());
                 break;
-            case 4:
+            case 3:
                 ft.replace(R.id.container, FixedTwoWayFragment.newInstance());
                 break;
             default:
                 //Do nothing
+                // ToDo: another menu choice to have VerticalStaggeredGridFragment have 3 columns for large screens
                 break;
         }
 
@@ -77,10 +83,12 @@ public class MainActivity extends AppCompatActivity implements
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(mTitle);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     @Override

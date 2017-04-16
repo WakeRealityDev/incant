@@ -9,6 +9,10 @@ import com.example.android.recyclerplayground.adapters.SimpleAdapter;
 
 public class VerticalGridFragment extends RecyclerFragment {
 
+    public VerticalGridFragment() {
+        // Fragments should hvae empty https://github.com/devunwired/recyclerview-playground/issues/28
+    }
+
     public static VerticalGridFragment newInstance() {
         VerticalGridFragment fragment = new VerticalGridFragment();
         Bundle args = new Bundle();

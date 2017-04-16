@@ -9,7 +9,7 @@
     >
 
         <activity
-            android:name="com.example.android.recyclerplayground.MainActivity"
+            android:name="com.example.android.recyclerplayground.BrowseStoriesActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light"
             >
