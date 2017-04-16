@@ -232,7 +232,7 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.VISIBLE);
                     findViewById(R.id.engine_provider_suggestion).setVisibility(View.GONE);
-                    pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status));
+                    pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status), null /* Clear */);
                 } else {
                     findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                     findViewById(R.id.engine_provider_status).setVisibility(View.GONE);
@@ -292,6 +292,6 @@ public class StoryDetails extends Activity {
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
-        pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status));
+        pickEngineProviderHelper.redrawEngineProvider((TextView) findViewById(R.id.engine_provider_status), null /* Clear */);
     }
 }

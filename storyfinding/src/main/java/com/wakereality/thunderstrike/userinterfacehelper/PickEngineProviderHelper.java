@@ -35,13 +35,13 @@ public class PickEngineProviderHelper {
         }, 1200L);
     }
 
-    public void redrawEngineProvider(final TextView engineProviderStatus) {
+    public void redrawEngineProvider(final TextView engineProviderStatus, final CharSequence prefixText) {
         if (engineProviderStatus == null) {
             return;
         }
 
-        Context context = engineProviderStatus.getContext();
-        Resources res = context.getResources();
+        final Context context = engineProviderStatus.getContext();
+        final Resources res = context.getResources();
 
         CharSequence extraA = "";
         if (EchoSpot.detectedEngineProviders.size() > 0) {
@@ -53,14 +53,20 @@ public class PickEngineProviderHelper {
             };
         }
 
+        if (prefixText == null) {
+            engineProviderStatus.setText("");
+        } else {
+            engineProviderStatus.setText(prefixText);
+        }
+
         if (EchoSpot.currentEngineProvider != null) {
-            engineProviderStatus.setText(Phrase.from(res, R.string.engine_provider_detected_named)
+            engineProviderStatus.append(Phrase.from(res, R.string.engine_provider_detected_named)
                     .put("engine", EchoSpot.currentEngineProvider.providerAppPackage.replace("com.wakereality.", "wakereality."))
                     .put("extra_a", extraA)
                     .format()
             );
         } else {
-            engineProviderStatus.setText(R.string.engine_none_detected_shorter);
+            engineProviderStatus.append(res.getText(R.string.engine_none_detected_shorter));
         }
 
         // Switch providers with touch if multiple available
@@ -95,7 +101,7 @@ public class PickEngineProviderHelper {
 
                     // ToDo: save to shared preferences?
                     // redraw
-                    redrawEngineProvider(engineProviderStatus);
+                    redrawEngineProvider(engineProviderStatus, prefixText);
                     animateClickedView(v);
                 }
             });

@@ -9,12 +9,14 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
+import com.yrek.incant.Incant;
 import com.yrek.incant.R;
 import com.yrek.incant.StoryListSpot;
 import com.yrek.incant.StoryLister;
@@ -71,7 +73,7 @@ public class InformationFragmentHelper {
     */
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(EventInformationFragmentPopulate event) {
+    public void onEventMainThread(final EventInformationFragmentPopulate event) {
         Log.i(TAG, "received EventInformationFragmentPopulate");
 
         ViewGroup rootViewGroup = (ViewGroup) event.rootView.findViewById(R.id.information_layout0);
@@ -93,7 +95,20 @@ public class InformationFragmentHelper {
 
         engine_provider_status = new TextView(viewContext);
         rootViewGroup.addView(engine_provider_status);
-        pickEngineProviderHelper.redrawEngineProvider(engine_provider_status);
+        pickEngineProviderHelper.redrawEngineProvider(engine_provider_status, resourceContext.getText(R.string.information_providerchange_prefix));
+
+
+        TextView legacyList = new TextView(viewContext);
+        legacyList.setText("2. Legacy story list");
+        legacyList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                event.holdingActivity.startActivity(new Intent(event.holdingActivity, Incant.class));
+            }
+        });
+
+        rootViewGroup.addView(legacyList);
+
 
         populateThunderwordInformation(rootViewGroup);
     }
@@ -126,7 +141,7 @@ public class InformationFragmentHelper {
         Log.i(TAG, "EventEngineProviderChange");
 
         if (engine_provider_status != null) {
-            pickEngineProviderHelper.redrawEngineProvider(engine_provider_status);
+            pickEngineProviderHelper.redrawEngineProvider(engine_provider_status, engine_provider_status.getResources().getText(R.string.information_providerchange_prefix));
         }
     }
 }

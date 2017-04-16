@@ -50,4 +50,6 @@
        <li> &nbsp; <b>Text Fiction</b> is a popular open source app for Android that has a unique text-messaging presentation for Interactive Fiction, an enhanced Thunderword connected version can be installed from the <a href=\"https://play.google.com/apps/testing/com.wakereality.textfiction\">Google Play store</a></li>
     </ul>
   ]]></string>
+
+  <string name="information_providerchange_prefix">"1. click to change "</string>
 </resources>

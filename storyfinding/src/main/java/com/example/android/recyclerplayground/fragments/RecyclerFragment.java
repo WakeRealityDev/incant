@@ -99,7 +99,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         launchDefaultTopPanelCheckbox = (CheckBox) rootView.findViewById(R.id.storylist_header_extra_checkenginelaunch);
         listHeaderExtraNoThunderwordDetected = (TextView) rootView.findViewById(R.id.storylist_header_extra_info0);
 
-        pickEngineProviderHelper.redrawEngineProvider((TextView) rootView.findViewById(R.id.engine_provider_status));
+        pickEngineProviderHelper.redrawEngineProvider((TextView) rootView.findViewById(R.id.engine_provider_status), null /* Clear */);
 
         headerSectionSetup(rootView);
 
@@ -391,7 +391,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
-        pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status));
+        pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status), null /* Clear */);
         headerSectionSetup(getView());
     }
 }
