@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -25,6 +26,8 @@ Git commit history will show the evolution from the base RecyclerPlayground from
  */
 public class BrowseStoriesActivity extends AppCompatActivity implements
         NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static final String TAG = "BrowseStories";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -53,6 +56,7 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        Log.d(TAG, "onNavigationDrawerItemSelected " + position);
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
