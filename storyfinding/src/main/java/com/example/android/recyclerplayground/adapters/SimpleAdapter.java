@@ -2,6 +2,7 @@ package com.example.android.recyclerplayground.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
+    private Resources res;
 
     private Activity parentActivity;
 
@@ -42,36 +44,9 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
         mItems = new ArrayList<>();
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
         parentActivity = launchParentActivity;
+        res = launchParentActivity.getResources();
     }
 
-
-    private Thread downloadingObserver = null;
-
-
-    private void setDownloadingObserver() {
-        synchronized (DownloadSpot.downloading) {
-            if (downloadingObserver == null && ! DownloadSpot.downloading.isEmpty()) {
-                downloadingObserver = new Thread() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "setDownloadingObserver run() " + Thread.currentThread());
-                        synchronized (DownloadSpot.downloading) {
-                            try {
-                                DownloadSpot.downloading.wait();
-                            } catch (Exception e) {
-                                Log.wtf(TAG, e);
-                            }
-                            downloadingObserver = null;
-                            // ToDo: how do we invalidate the ONE item on RecyclerView list to update, not the entire list?
-                            // storyList.post(refreshStoryListRunnable);
-                        }
-                    }
-                };
-                downloadingObserver.setName("downloadingObserver");
-                downloadingObserver.start();
-            }
-        }
-    }
 
     /*
      * A common adapter modification or reset mechanism. As with ListAdapter,
@@ -125,6 +100,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
     
     private TextAppearanceSpan headlineStyle;
 
+
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {
         final Story item = mItems.get(position);
@@ -147,16 +123,16 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.VerticalIt
 
         itemHolder.setStoryAuthors(item.getAuthor(context));
 
-        String outEngine = "?";
+        CharSequence outEngine = "?";
 
         boolean isDownloaded = item.isDownloaded(context);
         boolean isDownloading = item.isDownloadingNow();
         boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
         if (isDownloaded) {
-            outEngine = "Z";
+            outEngine = res.getText(R.string.storylist_entry_engine_zmachine);
             if (item.isGlulx(context)) {
-                outEngine = "G";
+                outEngine = res.getText(R.string.storylist_entry_engine_glulx);
             }
             final File coverImage = item.getCoverImageFile(context);
             if (coverImage.exists()) {

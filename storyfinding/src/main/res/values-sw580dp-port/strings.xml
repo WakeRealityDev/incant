@@ -24,4 +24,8 @@
   <string name="engine_provider_detected_named">IF engine provider <b>{engine}</b>{extra_a}</string>
   <string name="engine_provider_detected_extra"> {quantity} found</string>
 
+  <!-- Use longer strings for bigger screens -->
+  <string name="storylist_entry_engine_zmachine">Z-Machine</string>
+  <string name="storylist_entry_engine_glulx">Glulx</string>
+
 </resources>
