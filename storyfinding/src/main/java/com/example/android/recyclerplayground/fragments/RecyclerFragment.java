@@ -185,14 +185,19 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             headerSectionTipsSetup(rootView);
         }
 
-        // If no engine provider detected, suggest install of app
+        // If no engine provider detected, suggest install of app and remove controls related to Thunderword
+        int providerViewHideOrShow = View.VISIBLE;
         if (EchoSpot.currentEngineProvider == null) {
-            launchDefaultTopPanelCheckbox.setVisibility(View.GONE);
             listHeaderExtraNoThunderwordDetected.setVisibility(View.VISIBLE);
+            providerViewHideOrShow = View.GONE;
         } else {
             listHeaderExtraNoThunderwordDetected.setVisibility(View.GONE);
-            launchDefaultTopPanelCheckbox.setVisibility(View.VISIBLE);
         }
+        launchDefaultTopPanelCheckbox.setVisibility(providerViewHideOrShow);
+        rootView.findViewById(R.id.external_provider_label0).setVisibility(providerViewHideOrShow);
+        rootView.findViewById(R.id.external_provider_activity).setVisibility(providerViewHideOrShow);
+        rootView.findViewById(R.id.external_provider_activity_label).setVisibility(providerViewHideOrShow);
+        rootView.findViewById(R.id.external_provider_noprompt).setVisibility(providerViewHideOrShow);
 
         if (StoryListSpot.showHeadingExpanded) {
             expandControl.setText(getText(R.string.storyList_header_contract));
