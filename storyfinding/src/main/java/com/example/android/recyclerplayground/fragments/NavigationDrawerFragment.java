@@ -99,10 +99,13 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
+                // Note: indexes are 1 based here, and 0 based on switch/case; only thing that really matters is the array order. string names are not indexed to usage.
                 new String[] {
                         getString(R.string.title_section1),
                         getString(R.string.title_section4),
+                        getString(R.string.title_section6),
                         getString(R.string.title_section3),
+                        getString(R.string.title_section7),
                         getString(R.string.title_section5),
                         getString(R.string.title_section2),
                 }));

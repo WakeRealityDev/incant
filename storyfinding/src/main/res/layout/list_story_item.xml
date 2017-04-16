@@ -126,6 +126,8 @@
         android:layout_height="wrap_content"
         android:layout_column="2"
         android:layout_row="1"
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
         android:text="!"
         />
 

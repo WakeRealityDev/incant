@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.example.android.recyclerplayground.InsetDecoration;
 import com.example.android.recyclerplayground.adapters.StoryBrowseAdapter;
 import com.example.android.recyclerplayground.adapters.SimpleStaggeredAdapter;
+import com.yrek.incant.StoryListSpot;
 
 public class VerticalStaggeredGridFragment extends RecyclerFragment {
 
@@ -23,7 +24,7 @@ public class VerticalStaggeredGridFragment extends RecyclerFragment {
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        return new StaggeredGridLayoutManager(StoryListSpot.listNumberOfColumns, StaggeredGridLayoutManager.VERTICAL);
     }
 
     @Override

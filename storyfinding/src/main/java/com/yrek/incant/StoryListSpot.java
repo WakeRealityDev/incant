@@ -22,4 +22,6 @@ public class StoryListSpot {
     public static boolean showHeadingExpandedHideByDefault = true;
 
     public static boolean showInterfaceTipsA = true;
+
+    public static int listNumberOfColumns = 2;
 }

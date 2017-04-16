@@ -16,6 +16,7 @@ import com.example.android.recyclerplayground.fragments.VerticalFragment;
 import com.example.android.recyclerplayground.fragments.VerticalGridFragment;
 import com.example.android.recyclerplayground.fragments.VerticalStaggeredGridFragment;
 import com.wakereality.storyfinding.R;
+import com.yrek.incant.StoryListSpot;
 
 
 /*
@@ -60,21 +61,30 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
             case 0:
                 ft.replace(R.id.container, VerticalFragment.newInstance());
                 break;
-            case 4:
+            case 6:
                 ft.replace(R.id.container, HorizontalFragment.newInstance());
                 break;
-            case 2:
+            case 3:
+                StoryListSpot.listNumberOfColumns = 2;
+                ft.replace(R.id.container, VerticalGridFragment.newInstance());
+                break;
+            case 4:
+                StoryListSpot.listNumberOfColumns = 3;
                 ft.replace(R.id.container, VerticalGridFragment.newInstance());
                 break;
             case 1:
+                StoryListSpot.listNumberOfColumns = 2;
                 ft.replace(R.id.container, VerticalStaggeredGridFragment.newInstance());
                 break;
-            case 3:
+            case 2:
+                StoryListSpot.listNumberOfColumns = 3;
+                ft.replace(R.id.container, VerticalStaggeredGridFragment.newInstance());
+                break;
+            case 5:
                 ft.replace(R.id.container, FixedTwoWayFragment.newInstance());
                 break;
             default:
-                //Do nothing
-                // ToDo: another menu choice to have VerticalStaggeredGridFragment have 3 columns for large screens
+                // Do nothing
                 break;
         }
 

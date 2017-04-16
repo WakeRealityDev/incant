@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.android.recyclerplayground.InsetDecoration;
 import com.example.android.recyclerplayground.adapters.StoryBrowseAdapter;
+import com.yrek.incant.StoryListSpot;
 
 public class VerticalGridFragment extends RecyclerFragment {
 
@@ -22,7 +23,7 @@ public class VerticalGridFragment extends RecyclerFragment {
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
+        return new GridLayoutManager(getActivity(), StoryListSpot.listNumberOfColumns, GridLayoutManager.VERTICAL, false);
     }
 
     @Override

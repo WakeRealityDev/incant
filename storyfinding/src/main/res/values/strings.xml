@@ -48,8 +48,10 @@
 
     <string name="title_section1">Vertical List</string>
     <string name="title_section2">Horizontal List</string>
-    <string name="title_section3">Vertical Grid</string>
-    <string name="title_section4">Vertical Staggered Grid</string>
+    <string name="title_section3">Vertical List 2 columns</string>
+    <string name="title_section7">Vertical List 3 columns</string>
+    <string name="title_section4">Vertical Staggered 2 col</string>
+    <string name="title_section6">Vertical Staggered 3 col</string>
     <string name="title_section5">Fixed Two-Way List</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
