@@ -76,5 +76,6 @@
 
     <string name="storylist_entry_engine_zmachine">Z</string>
     <string name="storylist_entry_engine_glulx">G</string>
+    <string name="title_section_information">More settings</string>
 
 </resources>

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.example.android.recyclerplayground.fragments.FixedTwoWayFragment;
 import com.example.android.recyclerplayground.fragments.HorizontalFragment;
+import com.example.android.recyclerplayground.fragments.InformationFragment;
 import com.example.android.recyclerplayground.fragments.NavigationDrawerFragment;
 import com.example.android.recyclerplayground.fragments.VerticalFragment;
 import com.example.android.recyclerplayground.fragments.VerticalGridFragment;
@@ -86,6 +87,9 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
                 break;
             case 5:
                 ft.replace(R.id.container, FixedTwoWayFragment.newInstance());
+                break;
+            case 7:
+                ft.replace(R.id.container, InformationFragment.newInstance());
                 break;
             default:
                 // Do nothing
