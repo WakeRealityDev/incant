@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
@@ -579,6 +581,26 @@ public class Story implements Serializable {
                     shareDownloadIntent.putExtra("sender", EchoSpot.sending_APPLICATION_ID);
                     shareDownloadIntent.putExtra("file", keepFile.getPath());
                     context.sendBroadcast(shareDownloadIntent);
+
+                    // Testing on Android 7.1.1 emulator shows that if no providers are installed, they will not see
+                    //  files downloaded by Incant when they are later installed.
+                    //  Solution is to tell MediaStore to index them
+                    MediaScannerConnection.scanFile(
+                            context,
+                            new String[]{ keepFile.getPath() },
+                            null,
+                            new MediaScannerConnection.MediaScannerConnectionClient()
+                            {
+                                @Override
+                                public void onMediaScannerConnected()
+                                {
+                                }
+                                @Override
+                                public void onScanCompleted(String path, Uri uri)
+                                {
+                                    Log.d(TAG, "[mediaStoreScan] onScanCompleted " + path + " uri " + uri.toString());
+                                }
+                            });
                 }
             } else {
                 Log.w(TAG, "[storyFileShare] downloaded false");
