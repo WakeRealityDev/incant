@@ -3,25 +3,22 @@ package com.wakereality.incant;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
-import com.wakereality.storyfinding.CommonSetup;
+import com.wakereality.storyfinding.CommonAppSetup;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 import com.yrek.incant.Incant;
 import com.yrek.incant.R;
 import com.yrek.incant.StoryListSpot;
-import com.yrek.incant.StoryLister;
 import com.yrek.runconfig.SettingsCurrent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -48,7 +45,7 @@ public class InformationFragmentHelper {
             EventBus.getDefault().register(this);
         }
 
-        CommonSetup.prepareList(appContext);
+        CommonAppSetup.prepareList(appContext);
 
         activityContext = activityContextForResources;
     }

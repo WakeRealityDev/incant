@@ -1,14 +1,10 @@
 package com.yrek.incant;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -34,9 +30,8 @@ import java.util.List;
 
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.wakereality.incant.AboutAppActivity;
-import com.wakereality.incant.InformationFragmentHelper;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
-import com.wakereality.storyfinding.CommonSetup;
+import com.wakereality.storyfinding.CommonAppSetup;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.runconfig.SettingsCurrent;
@@ -139,7 +134,6 @@ public class Incant extends Activity {
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -162,7 +156,7 @@ public class Incant extends Activity {
             EventBus.getDefault().register(this);
         }
 
-        CommonSetup.queryRemoteStoryEngineProviders(getApplicationContext());
+        CommonAppSetup.queryRemoteStoryEngineProviders(getApplicationContext());
         refreshStoryList();
     }
 

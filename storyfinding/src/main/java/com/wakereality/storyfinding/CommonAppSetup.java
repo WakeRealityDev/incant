@@ -3,16 +3,20 @@ package com.wakereality.storyfinding;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 
+import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
 import com.yrek.incant.StoryLister;
+
+import java.io.File;
 
 /**
  * Created by Stephen A. Gutknecht on 4/16/17.
  */
 
-public class CommonSetup {
+public class CommonAppSetup {
 
     public static void prepareList(Context appContext) {
         if (StoryListSpot.storyLister == null) {
@@ -22,6 +26,7 @@ public class CommonSetup {
             StoryListSpot.coverImageCache = new LruCache<String, Bitmap>(10);
         }
 
+        createDiskPathsOnce(appContext);
         queryRemoteStoryEngineProviders(appContext);
     }
 
@@ -34,4 +39,15 @@ public class CommonSetup {
         context.sendBroadcast(intent);
     }
 
+
+
+    public static void createDiskPathsOnce(Context appContext)
+    {
+        File rootPath = Story.getRootDir(appContext);
+        if (! rootPath.exists())
+        {
+            rootPath.mkdirs();
+        }
+        Log.i("StoryFinding", "[rootPath] exists? " + rootPath.exists() + " " + rootPath + " free " + rootPath.getFreeSpace() + " writable " + rootPath.canWrite());
+    }
 }

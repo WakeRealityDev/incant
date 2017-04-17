@@ -17,10 +17,7 @@ import android.widget.Toast;
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.yrek.incant.Incant;
 import com.yrek.incant.R;
-import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
-
-import java.io.File;
 
 
 /**
@@ -47,9 +44,6 @@ public class LandingActivity extends Activity {
 
     public void openTargetActivity() {
         if (StoryListSpot.storagePermissionReady) {
-            // We may need to create paths
-            createDiskPathsOnce();
-
             if (!startActivityOnce) {
                 startActivityOnce = true;
 
@@ -83,8 +77,6 @@ public class LandingActivity extends Activity {
     // Identifier for the permission request
     private static final int WRITE_STORAGE_PERMISSIONS_REQUEST = 1;
     private static final int RECORD_AUDIO_PERMISSION_REQUEST = 2;
-    private static final int SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST = 3;
-    private static final int SYSTEM_OVERLAY_WINDOW_PERMISSION_REQUEST = 4;
 
     public void confirmPermissionToUseStorage() {
         if (ContextCompat.checkSelfPermission(this,
@@ -148,46 +140,6 @@ public class LandingActivity extends Activity {
         }
     }
 
-    public void checkDrawOverlayPermission() {
-        /** check if we already  have permission to draw over other apps */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                /** if not construct intent to request permission */
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                /** request permission via start activity for result */
-                startActivityForResult(intent, SYSTEM_OVERLAY_WINDOW_PERMISSION_REQUEST);
-            }
-        }
-    }
-
-
-    public void getPermissionToUseWindow() {
-        checkDrawOverlayPermission();
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
-
-            Log.w("Incant", "Permission not granted SYSTEM_ALERT_WINDOW");
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SYSTEM_ALERT_WINDOW)) {
-
-                // Show an explanation to the user *asynchronously* -- don't
-                // block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[] { Manifest.permission.SYSTEM_ALERT_WINDOW },
-                        SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST);
-
-            }
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -229,22 +181,10 @@ public class LandingActivity extends Activity {
                     StoryListSpot.recordAudioPermissionReady = false;
                 }
                 return;
-            case SYSTEM_ALERT_WINDOW_PERMISSION_REQUEST:
-                return;
 
             // other 'case' lines to check for other
             // permissions this app might request
         }
     }
 
-
-    public void createDiskPathsOnce()
-    {
-        File rootPath = Story.getRootDir(getApplicationContext());
-        if (! rootPath.exists())
-        {
-            rootPath.mkdirs();
-        }
-        Log.i(TAG, "exists? " + rootPath.exists() + " " + rootPath + " free " + rootPath.getFreeSpace() + " writable " + rootPath.canWrite());
-    }
 }
