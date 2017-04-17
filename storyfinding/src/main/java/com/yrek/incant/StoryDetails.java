@@ -2,14 +2,12 @@ package com.yrek.incant;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -17,13 +15,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.phrase.Phrase;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
-import com.wakereality.thunderstrike.dataexchange.EngineProvider;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 
@@ -31,7 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Map;
 
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
