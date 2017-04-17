@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
+import com.wakereality.storyfinding.CommonSetup;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 import com.yrek.incant.Incant;
@@ -47,27 +48,12 @@ public class InformationFragmentHelper {
             EventBus.getDefault().register(this);
         }
 
-        if (StoryListSpot.storyLister == null) {
-            StoryListSpot.storyLister = new StoryLister(appContext);
-        }
-        if (StoryListSpot.coverImageCache == null) {
-            StoryListSpot.coverImageCache = new LruCache<String, Bitmap>(10);
-        }
-
-        queryRemoteStoryEngineProviders(appContext);
+        CommonSetup.prepareList(appContext);
 
         activityContext = activityContextForResources;
     }
 
 
-    public static void queryRemoteStoryEngineProviders(Context context) {
-        // Query for Interactive Fiction engine providers.
-        Intent intent = new Intent();
-        // Tell Android to start Thunderword app if not already running.
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.setAction("interactivefiction.enginemeta.runstory");
-        context.sendBroadcast(intent);
-    }
 
 
     /*

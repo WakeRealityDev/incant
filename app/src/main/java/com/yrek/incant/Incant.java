@@ -36,6 +36,7 @@ import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.wakereality.incant.AboutAppActivity;
 import com.wakereality.incant.InformationFragmentHelper;
 import com.wakereality.storyfinding.AddStoriesToStoryList;
+import com.wakereality.storyfinding.CommonSetup;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.yrek.runconfig.SettingsCurrent;
@@ -161,7 +162,7 @@ public class Incant extends Activity {
             EventBus.getDefault().register(this);
         }
 
-        InformationFragmentHelper.queryRemoteStoryEngineProviders(getApplicationContext());
+        CommonSetup.queryRemoteStoryEngineProviders(getApplicationContext());
         refreshStoryList();
     }
 
