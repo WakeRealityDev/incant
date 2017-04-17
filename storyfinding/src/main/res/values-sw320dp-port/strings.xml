@@ -14,7 +14,7 @@
   <string name="storyList_header_expand">"<b>Expand.</b> "</string>
   <string name="storyList_header_contract">"<b>Contract.</b> "</string>
 
-  <string name="storylist_header_interface_tips0">Interface Tips: 1) Long-press on story item gets full page of options. 2) If > 1 engine provider is detected, press on the bold name to switch. 3) Touch  upper left where it currently says \'Contract,\' - this toggles top options panel. It is winking to highlight itself. 4) "Get More" menu choice will add 300 more stories to the list.</string>
+  <string name="storylist_header_interface_tips0">Interface Tips: 1) Long-press on story item gets full page of options. 2) If > 1 engine provider is detected, press on the bold name to switch. 3) Touch  upper left where it currently says \'Contract,\' - this toggles top options panel. It is winking to highlight itself. 4) \'Get More\' menu choice will add 300 more stories to the list. 5) Settings for speech, etc: left Drawer menu under \'More settings\'.</string>
 
   <!-- uses Square library Phrase -->
   <string name="engine_provider_detected_named">IF engine: <b>{engine}</b>{extra_a}</string>

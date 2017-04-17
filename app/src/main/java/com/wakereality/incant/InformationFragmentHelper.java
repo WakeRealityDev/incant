@@ -173,9 +173,38 @@ public class InformationFragmentHelper {
         incantAutoKey.setChecked(SettingsCurrent.getEnableAutoEnterOnGlkCharInput());
         rootViewGroup.addView(incantAutoKey);
 
+        final CheckBox incantProfilePerformance = new CheckBox(viewContext);
+        incantProfilePerformance.setText("Incant! app profile engine performance");
+        incantProfilePerformance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingsCurrent.flipInterpreterProfileEnabled();
+                incantProfilePerformance.setChecked(SettingsCurrent.getInterpreterProfileEnabled());
+            }
+        });
+        incantProfilePerformance.setChecked(SettingsCurrent.getInterpreterProfileEnabled());
+        rootViewGroup.addView(incantProfilePerformance);
+
         // ToDo: add Thunderword spinner from other fragments for picking Activity?
 
         populateThunderwordInformation(rootViewGroup);
+
+        int marginTop = (int)(4 * resourceContext.getDisplayMetrics().density);
+        View[] viewsList = new View[] { legacyList, aboutApp, incantSpeechLabel };
+        setMargnsForList(viewsList, marginTop);
+    }
+
+
+    /*
+    Assumption?: Using padding instead of margins gives more touch surface.
+     */
+    public void setMargnsForList(View[] viewsList, int pixels) {
+        for (int i = 0; i < viewsList.length; i++) {
+            View targetView = viewsList[i];
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) viewsList[i].getLayoutParams();
+            // int left, int top, int right, int bottom
+            viewsList[i].setPadding(targetView.getPaddingLeft(), pixels, targetView.getPaddingRight(), targetView.getPaddingBottom());
+        }
     }
 
 
