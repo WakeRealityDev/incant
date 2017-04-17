@@ -185,6 +185,12 @@ public class InformationFragmentHelper {
         incantProfilePerformance.setChecked(SettingsCurrent.getInterpreterProfileEnabled());
         rootViewGroup.addView(incantProfilePerformance);
 
+        if (! StoryListSpot.recordAudioPermissionReady) {
+            TextView incantAudioPermission = new TextView(viewContext);
+            incantAudioPermission.setText(R.string.information_audio_permission_warn0);
+            rootViewGroup.addView(incantAudioPermission);
+        }
+
         // ToDo: add Thunderword spinner from other fragments for picking Activity?
 
         populateThunderwordInformation(rootViewGroup);

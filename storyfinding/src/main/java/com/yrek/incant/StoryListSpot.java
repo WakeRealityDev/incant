@@ -24,4 +24,7 @@ public class StoryListSpot {
     public static boolean showInterfaceTipsA = true;
 
     public static int listNumberOfColumns = 2;
+
+    public static boolean storagePermissionReady = false;
+    public static boolean recordAudioPermissionReady = false;
 }

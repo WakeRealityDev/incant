@@ -52,4 +52,5 @@
   ]]></string>
 
   <string name="information_providerchange_prefix">"1. click to change "</string>
+  <string name="information_audio_permission_warn0"><b>WARNING: Audio recording permission</b> has not been granted to this app, the speech recognition requires this permission.</string>
 </resources>
