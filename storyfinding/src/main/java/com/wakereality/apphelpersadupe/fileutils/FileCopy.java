@@ -1,4 +1,4 @@
-package com.wakereality.apphelpersa.fileutils;
+package com.wakereality.apphelpersadupe.fileutils;
 
 import android.util.Log;
 

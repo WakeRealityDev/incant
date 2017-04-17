@@ -8,8 +8,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Xml;
-import android.view.View;
-import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -26,9 +24,9 @@ import java.util.zip.ZipFile;
 import org.greenrobot.eventbus.EventBus;
 import org.xmlpull.v1.XmlSerializer;
 
-import com.wakereality.apphelpersa.fileutils.FileCopy;
+// renaemd package to avoid conflict
+import com.wakereality.apphelpersadupe.fileutils.FileCopy;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
-import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.ifstd.blorb.Blorb;
