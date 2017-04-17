@@ -1,5 +1,6 @@
 package com.example.android.recyclerplayground.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -319,9 +320,12 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     Toast.LENGTH_SHORT).show();
         }
 
-        Intent intent = new Intent(getContext(), StoryDetails.class);
-        intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
-        getActivity().startActivity(intent);
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent intent = new Intent(activity, StoryDetails.class);
+            intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
+            activity.startActivity(intent);
+        }
 
         return true;
     }
