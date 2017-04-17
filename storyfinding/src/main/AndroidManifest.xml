@@ -25,6 +25,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".TestStoryDetailsActivity"
+                  android:theme="@style/Theme.AppCompat.Light"
+                  android:launchMode="singleInstance"
+            >
+        </activity>
+
     </application>
 
 </manifest>

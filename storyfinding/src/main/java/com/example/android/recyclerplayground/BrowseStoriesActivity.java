@@ -43,10 +43,15 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.story_browse_activity_main);
+        boolean originalPlaygroundDrawer = true;
+        if (originalPlaygroundDrawer) {
+            setContentView(R.layout.story_browse_activity_main);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+            mNavigationDrawerFragment = (NavigationDrawerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        } else {
+            setContentView(R.layout.story_browse_activity_main_drawer2);
+        }
         mTitle = getTitle();
 
         // Set up the drawer.
