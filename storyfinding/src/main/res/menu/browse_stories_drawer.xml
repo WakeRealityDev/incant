@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/title_section1" />
+        <item
+            android:id="@+id/nav_photos"
+            android:title="@string/title_section4" />
+        <item
+            android:id="@+id/nav_movies"
+            android:title="@string/title_section6" />
+
+        <item
+            android:id="@+id/nav_section3"
+            android:title="@string/title_section3" />
+
+        <item
+            android:id="@+id/nav_secopm7"
+            android:title="@string/title_section7" />
+
+        <item
+            android:id="@+id/nav_notifications"
+            android:title="@string/title_section5" />
+
+        <item
+            android:id="@+id/nav_section2"
+            android:title="@string/title_section2" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/title_section_information" />
+    </group>
+
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/nav_about_us"
+                android:title="About App" />
+        </menu>
+    </item>
+
+</menu>

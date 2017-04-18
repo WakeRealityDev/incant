@@ -129,6 +129,17 @@ public class BrowseStoriesNewDrawerActivity extends AppCompatActivity implements
             StoryListSpot.listNumberOfColumns = 3;
             fragmentClass = VerticalStaggeredGridFragment.class;
 
+        } else if (i == R.id.nav_list_2col_aligned) {
+            StoryListSpot.listNumberOfColumns = 2;
+            fragmentClass = VerticalGridFragment.class;
+
+        } else if (i == R.id.nav_list_3col_aligned) {
+            StoryListSpot.listNumberOfColumns = 3;
+            fragmentClass = VerticalGridFragment.class;
+
+        } else if (i == R.id.nav_settings) {
+            fragmentClass = InformationFragment.class;
+
         } else {
             fragmentClass = VerticalFragment.class;
         }

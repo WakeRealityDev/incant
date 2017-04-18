@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!-- Tutorial: https://github.com/codepath/android_guides/wiki/Fragment-Navigation-Drawer -->
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:icon="@drawable/ic_nav_one"
+            android:title="Story List" />
+        <item
+            android:id="@+id/nav_second_fragment"
+            android:icon="@drawable/ic_nav_two"
+            android:title="columns Story List, stagger" />
+        <item
+            android:id="@+id/nav_third_fragment"
+            android:icon="@drawable/ic_nav_three"
+            android:title="columns Story List, stagger" />
+        <item
+            android:id="@+id/nav_list_2col_aligned"
+            android:icon="@drawable/ic_nav_two"
+            android:title="columns Story List, align" />
+        <item
+            android:id="@+id/nav_list_3col_aligned"
+            android:icon="@drawable/ic_nav_three"
+            android:title="columns Story List, align" />
+    </group>
+
+    <item android:title="Options and More">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:title="Settings and Information" />
+                <item
+                    android:id="@+id/nav_get_more"
+                    android:icon="@android:drawable/ic_menu_add"
+                    android:title="Get More stories on the list" />
+            </group>
+        </menu>
+    </item>
+
+</menu>
