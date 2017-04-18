@@ -35,9 +35,9 @@ public class PickEngineProviderHelper {
         }, 1200L);
     }
 
-    public void redrawEngineProvider(final TextView engineProviderStatus, final CharSequence prefixText) {
+    public boolean redrawEngineProvider(final TextView engineProviderStatus, final CharSequence prefixText) {
         if (engineProviderStatus == null) {
-            return;
+            return false;
         }
 
         final Context context = engineProviderStatus.getContext();
@@ -65,8 +65,10 @@ public class PickEngineProviderHelper {
                     .put("extra_a", extraA)
                     .format()
             );
+            Log.i("PEPH", "render EventEngineProviderChange setting " + extraA);
         } else {
             engineProviderStatus.append(res.getText(R.string.engine_none_detected_shorter));
+            return false;
         }
 
         // Switch providers with touch if multiple available
@@ -106,6 +108,7 @@ public class PickEngineProviderHelper {
                 }
             });
         }
+        return true;
     }
 
     public void spinnerForThunderwordActivity(Spinner spinnerView, CheckBox checkboxView) {

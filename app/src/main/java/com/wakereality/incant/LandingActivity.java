@@ -53,8 +53,8 @@ public class LandingActivity extends Activity {
                 }
 
                 if (1 == 1) {
-                    // startActivity(new Intent(this, BrowseStoriesActivity.class));
-                    startActivity(new Intent(this, BrowseStoriesNewDrawerActivity.class));
+                    startActivity(new Intent(this, BrowseStoriesActivity.class));
+                    // startActivity(new Intent(this, BrowseStoriesNewDrawerActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(this, Incant.class));

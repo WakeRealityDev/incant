@@ -63,6 +63,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     protected abstract StoryBrowseAdapter getAdapter();
     protected Animation myFadeInOutAnimation;
     protected Animation myTouchWobbleAnimation;
+    protected Animation myGetMoreWobbleAnimation;
     protected CheckBox launchDefaultTopPanelCheckbox;
     protected TextView listHeaderExtraNoThunderwordDetected;
 
@@ -96,6 +97,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
         myFadeInOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_fade_out_repeat_2sec);
         myTouchWobbleAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+        myGetMoreWobbleAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake_1500ms);
 
         launchDefaultTopPanelCheckbox = (CheckBox) rootView.findViewById(R.id.storylist_header_extra_checkenginelaunch);
         listHeaderExtraNoThunderwordDetected = (TextView) rootView.findViewById(R.id.storylist_header_extra_info0);
@@ -184,7 +186,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     hideExpandDefault.setChecked(StoryListSpot.showHeadingExpandedHideByDefault);
                     PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_expand_default", StoryListSpot.showHeadingExpandedHideByDefault).commit();
                     // This will not expand or contract, only adjusting the default for future.
-                    expandableHolder.startAnimation(myTouchWobbleAnimation);
+                    expandableHolder.startAnimation(myGetMoreWobbleAnimation);
                 }
             });
 
@@ -232,14 +234,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.action_add) {
-            mList.startAnimation(myTouchWobbleAnimation);
+        if (i == R.id.action_stories_get_more) {
+            mList.startAnimation(myGetMoreWobbleAnimation);
             AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getContext());
             mAdapter.setAdapterContent(getContext());
             mAdapter.notifyDataSetChanged();
             return true;
-        } else if (i == R.id.action_remove) {
-            mList.startAnimation(myTouchWobbleAnimation);
+        } else if (i == R.id.action_stories_filter_downloaded) {
+            mList.startAnimation(myGetMoreWobbleAnimation);
             SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
             if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
                 item.setTitle("Show Downloaded");
@@ -345,6 +347,9 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                 DownloadSpot.storyNonListDownloadFlag = false;
                 storyNonListDownload();
             }
+            // EventBus could have been unregistered while user installed Thunderword app and now chane in Thunderword status needs to be reflected in this app.
+            boolean goodRedraw = pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status), null /* Clear */);
+            headerSectionSetup(getView());
         }
     }
 
@@ -398,7 +403,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventEngineProviderChange event) {
-        pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status), null /* Clear */);
+        Log.i("RVfrag", "[storyDownload] EventEngineProviderChange event: " + event.toString());
+        boolean goodRedraw = pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status), null /* Clear */);
+        if (! goodRedraw) {
+            Log.e("RVfrag", "[storyDownload] FAILED redraw? EventEngineProviderChange event: " + event.toString());
+        }
         headerSectionSetup(getView());
     }
 }

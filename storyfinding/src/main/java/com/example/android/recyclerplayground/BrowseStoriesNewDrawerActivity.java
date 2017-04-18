@@ -6,19 +6,14 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
+
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.android.recyclerplayground.fragments.FixedTwoWayFragment;
-import com.example.android.recyclerplayground.fragments.HorizontalFragment;
 import com.example.android.recyclerplayground.fragments.InformationFragment;
 import com.example.android.recyclerplayground.fragments.NavigationDrawerFragment;
 import com.example.android.recyclerplayground.fragments.VerticalFragment;

@@ -10,4 +10,9 @@ public class EventEngineProviderChange {
     public EventEngineProviderChange(EngineProvider detectedProvider) {
         engineProvider = detectedProvider;
     }
+
+    @Override
+    public String toString() {
+        return engineProvider.toString();
+    }
 }

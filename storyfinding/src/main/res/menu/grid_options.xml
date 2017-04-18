@@ -2,10 +2,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_add"
+    <item android:id="@+id/action_stories_get_more"
         android:title="Get More"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_remove"
+    <item android:id="@+id/action_stories_filter_downloaded"
         android:title="Hide Downloaded"
         app:showAsAction="ifRoom" />
 
