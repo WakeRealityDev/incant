@@ -2,6 +2,7 @@ package com.example.android.recyclerplayground;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -69,15 +70,85 @@ public class BrowseStoriesNewDrawerActivity extends AppCompatActivity implements
         } else {
             setContentView(R.layout.story_browse_activity_main_drawer2);
 
-            // Set a Toolbar to replace the ActionBar.
+            // Find the toolbar view inside the activity layout
             toolbar = (Toolbar) findViewById(R.id.toolbar);
+            // Sets the Toolbar to act as the ActionBar for this Activity window.
+            // Make sure the toolbar exists in the activity and is not null
             setSupportActionBar(toolbar);
 
             // Find our drawer view
             mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawerToggle = setupDrawerToggle();
+
+            // Tie DrawerLayout events to the ActionBarToggle
+            mDrawer.setDrawerListener(drawerToggle);
+
+            nvDrawer = (NavigationView) findViewById(R.id.nvView);
+            setupDrawerContent(nvDrawer);
         }
 
         mTitle = getTitle();
+    }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        Fragment fragment = null;
+        Class fragmentClass;
+        int i = menuItem.getItemId();
+        if (i == R.id.nav_first_fragment) {
+            fragmentClass = VerticalFragment.class;
+
+        } else if (i == R.id.nav_second_fragment) {
+            StoryListSpot.listNumberOfColumns = 2;
+            fragmentClass = VerticalStaggeredGridFragment.class;
+
+        } else if (i == R.id.nav_third_fragment) {
+            StoryListSpot.listNumberOfColumns = 3;
+            fragmentClass = VerticalStaggeredGridFragment.class;
+
+        } else {
+            fragmentClass = VerticalFragment.class;
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+        setTitle(menuItem.getTitle());
+        // Close the navigation drawer
+        mDrawer.closeDrawers();
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
+import com.example.android.recyclerplayground.BrowseStoriesNewDrawerActivity;
 import com.yrek.incant.Incant;
 import com.yrek.incant.R;
 import com.yrek.incant.StoryListSpot;
@@ -52,7 +53,8 @@ public class LandingActivity extends Activity {
                 }
 
                 if (1 == 1) {
-                    startActivity(new Intent(this, BrowseStoriesActivity.class));
+                    // startActivity(new Intent(this, BrowseStoriesActivity.class));
+                    startActivity(new Intent(this, BrowseStoriesNewDrawerActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(this, Incant.class));
