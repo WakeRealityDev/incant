@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- bigger screen; note that if the user picks another, it will go to their pick. -->
+    <integer name="story_browse_app_opening_choice">1</integer>
+</resources>

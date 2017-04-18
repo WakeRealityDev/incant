@@ -1,11 +1,14 @@
 package com.example.android.recyclerplayground;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +28,7 @@ import com.yrek.incant.StoryListSpot;
 Git commit history will show the evolution from the base RecyclerPlayground from
   https://github.com/devunwired/recyclerview-playground
  */
-public class BrowseStoriesActivity extends AppCompatActivity implements
+public class BrowseStoriesNewDrawerActivity extends AppCompatActivity implements
         NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public static final String TAG = "BrowseStories";
@@ -35,6 +38,14 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    // Make sure to be using android.support.v7.app.ActionBarDrawerToggle version.
+    // The android.support.v4.app.ActionBarDrawerToggle has been deprecated.
+    private ActionBarDrawerToggle drawerToggle;
+
+    private NavigationView nvDrawer;
+    private DrawerLayout mDrawer;
+    private Toolbar toolbar;
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -43,17 +54,30 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.story_browse_activity_main);
+        boolean originalPlaygroundDrawer = false;
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        if (originalPlaygroundDrawer) {
+            setContentView(R.layout.story_browse_activity_main);
+
+            mNavigationDrawerFragment = (NavigationDrawerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
+            // Set up the drawer.
+            mNavigationDrawerFragment.setUp(
+                    R.id.navigation_drawer,
+                    (DrawerLayout) findViewById(R.id.drawer_layout));
+        } else {
+            setContentView(R.layout.story_browse_activity_main_drawer2);
+
+            // Set a Toolbar to replace the ActionBar.
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            // Find our drawer view
+            mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        }
 
         mTitle = getTitle();
-
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     @Override
@@ -112,12 +136,14 @@ public class BrowseStoriesActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            restoreActionBar();
-            return true;
+        if (mNavigationDrawerFragment != null) {
+            if (!mNavigationDrawerFragment.isDrawerOpen()) {
+                // Only show items in the action bar relevant to this screen
+                // if the drawer is not showing. Otherwise, let the drawer
+                // decide what to show in the action bar.
+                restoreActionBar();
+                return true;
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }

@@ -77,9 +77,12 @@ public class NavigationDrawerFragment extends Fragment {
         */
 
         // New logic beyond RecyclerPlayground save preference for next app startup.
+        int appOpeningChoice = getResources().getInteger(R.integer.story_browse_app_opening_choice);
         if (sp.contains(STATE_SELECTED_POSITION)) {
-            mCurrentSelectedPosition = sp.getInt(STATE_SELECTED_POSITION, 0);
+            mCurrentSelectedPosition = sp.getInt(STATE_SELECTED_POSITION, appOpeningChoice);
             mFromSavedInstanceState = true;
+        } else {
+            mCurrentSelectedPosition = appOpeningChoice;
         }
 
         // Select either the default item (0) or the last selected item.
