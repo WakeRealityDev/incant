@@ -309,7 +309,11 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
             }
 
             if (StoryListSpot.optionLaunchExternal) {
-                externalLaunchIndicator.setVisibility(View.VISIBLE);
+                if (isDownloaded) {
+                    externalLaunchIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    externalLaunchIndicator.setVisibility(View.GONE);
+                }
             } else {
                 externalLaunchIndicator.setVisibility(View.GONE);
             }
