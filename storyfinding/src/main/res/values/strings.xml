@@ -67,6 +67,8 @@
     <string name="action_scroll_max">Jump End</string>
     <string name="action_smooth_max">Smooth Scroll End</string>
     <string name="action_restore_tips">Restore Tips</string>
+    <string name="action_expand_options">Expand options</string>
+    <string name="action_contract_options">Contract options</string>
 
     <!-- RecyclerView Playground End -->
 

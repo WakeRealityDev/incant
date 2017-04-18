@@ -144,6 +144,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         // Menu item reflect open or closed
         if (actionExpandOptions != null) {
             actionExpandOptions.setChecked(StoryListSpot.showHeadingExpanded);
+            actionExpandOptions.setTitle((StoryListSpot.showHeadingExpanded) ? R.string.action_contract_options : R.string.action_expand_options);
         }
 
         if (! doHeaderOnce) {
@@ -225,6 +226,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         actionLaunchExternal.setChecked(StoryListSpot.optionLaunchExternal);
         actionExpandOptions = menu.findItem(R.id.action_expand);
         actionExpandOptions.setChecked(StoryListSpot.showHeadingExpanded);
+        actionExpandOptions.setTitle((StoryListSpot.showHeadingExpanded) ? R.string.action_contract_options : R.string.action_expand_options);
     }
 
     @Override

@@ -10,7 +10,7 @@
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_expand"
-          android:title="Expand options"
+          android:title="@string/action_expand_options"
           android:checkable="true"
           android:checked="true"
           app:showAsAction="ifRoom" />
