@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
@@ -192,10 +193,14 @@ public class Incant extends Activity {
         storyListAdapter.setNotifyOnChange(false);
         storyListAdapter.clear();
         try {
-            List<Story> freshList = StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, this);
-            storyListAdapter.addAll(freshList);
+            if (StoryListSpot.storyLister != null) {
+                ArrayList<Story> freshStoriesList = StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA();
+                storyListAdapter.addAll(freshStoriesList);
+            } else {
+                Log.e(TAG, "storyList is null, unable to populate");
+            }
         } catch (Exception e) {
-            Log.wtf(TAG,e);
+            Log.e(TAG, "Exception ", e);
         }
         // What's this null added at end?
         storyListAdapter.add(null);

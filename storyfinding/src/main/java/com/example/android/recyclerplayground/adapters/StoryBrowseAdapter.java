@@ -63,22 +63,12 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
         mItems.clear();
         try {
             if (StoryListSpot.storyLister != null) {
-                ArrayList<Story> stories = new ArrayList<Story>();
-
-                StoryListSpot.storyLister.addDownloadedStories(stories);
-                Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
-                if (! SettingsCurrent.getListingShowLocal()) {
-                    // Featured download links
-                    StoryListSpot.storyLister.addInitialStories(stories);
-                    Log.d(TAG, "[listPopulate] getStories addInitialStories " + stories.size());
-                }
-                StoryListSpot.storyLister.addStoriesCommaSepValuesFile(stories, StoryListSpot.readCommaSepValuesFile, context);
-                stories = (ArrayList<Story>) StoryListSpot.storyLister.getStories(stories, StoryListSpot.storyLister.SortByDefault, context);
-                Log.d(TAG, "[listPopulate] getStories post-sort " + stories.size());
-
+                ArrayList<Story> stories = StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA();
                 mItems.addAll(stories);
+            } else {
+                Log.e(TAG, "storyList is null, unable to populate");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Exception ", e);
         }
 

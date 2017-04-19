@@ -196,4 +196,26 @@ public class StoryLister {
             StoryHelper.addStory(context, new Story(initial[i], initial[i+1], initial[i+2], initial[i+3], new URL(initial[i+4]), initial[i+5].length() > 0 ? initial[i+5] : null, initial[i+6].length() > 0 ? new URL(initial[i+6]) : null), stories, 1);
         }
     }
+
+
+    public ArrayList<Story> generateStoriesListAllSortedArrayListA() {
+        ArrayList<Story> stories = new ArrayList<Story>();
+
+        try {
+            addDownloadedStories(stories);
+            Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
+            if (!SettingsCurrent.getListingShowLocal()) {
+                // Featured download links
+                addInitialStories(stories);
+                Log.d(TAG, "[listPopulate] getStories addInitialStories " + stories.size());
+            }
+            StoryListSpot.storyLister.addStoriesCommaSepValuesFile(stories, StoryListSpot.readCommaSepValuesFile, context);
+            stories = (ArrayList<Story>) getStories(stories, StoryListSpot.storyLister.SortByDefault, context);
+            Log.d(TAG, "[listPopulate] getStories post-sort " + stories.size());
+        } catch (IOException e) {
+            Log.e(TAG, "IOException generating stories list", e);
+        }
+
+        return stories;
+    }
 }
