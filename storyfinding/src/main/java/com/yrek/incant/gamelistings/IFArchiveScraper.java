@@ -33,7 +33,7 @@ public class IFArchiveScraper extends Scraper {
 
     @Override
     void scrape(final DataOutputStream out) throws IOException {
-        Log.i(TAG, "IFArchive scrapeURL " + scrapeURL);
+        Log.i(TAG, "[listPopulate] IFArchive scrapeURL " + scrapeURL);
         scrapeURL(scrapeURL, new PageScraper() {
             @Override public void scrape(String line) throws IOException {
                 Log.d(TAG, "[cacheFile] IFArchive scrapeURL " + scrapeURL + " length " + line.length() + " " + line);

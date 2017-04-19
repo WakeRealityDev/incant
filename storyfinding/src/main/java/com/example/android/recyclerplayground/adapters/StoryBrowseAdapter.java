@@ -72,7 +72,8 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
                     StoryListSpot.storyLister.addInitialStories(stories);
                     Log.d(TAG, "[listPopulate] getStories addInitialStories " + stories.size());
                 }
-                stories = (ArrayList<Story>) StoryListSpot.storyLister.getStories(stories, StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context);
+                StoryListSpot.storyLister.addStoriesCommaSepValuesFile(stories, StoryListSpot.readCommaSepValuesFile, context);
+                stories = (ArrayList<Story>) StoryListSpot.storyLister.getStories(stories, StoryListSpot.storyLister.SortByDefault, context);
                 Log.d(TAG, "[listPopulate] getStories post-sort " + stories.size());
 
                 mItems.addAll(stories);

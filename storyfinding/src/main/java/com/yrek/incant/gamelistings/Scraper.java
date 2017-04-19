@@ -58,8 +58,11 @@ public abstract class Scraper {
         DataInputStream in = null;
         try {
             if (! cacheFile.exists()) {
+                Log.d(TAG, "[listPopulate] Scraper addStories, no cacheFile " + cacheFile.getPath());
                 return;
             }
+
+            Log.d(TAG, "[listPopulate] Scraper addStories, start processing cacheFile " + cacheFile.getPath());
 
             in = new DataInputStream(new FileInputStream(cacheFile));
             for (;;) {
@@ -79,7 +82,7 @@ public abstract class Scraper {
                     }
                 }
                 String cleanedUpName = name.trim().replace("_", " ");
-                Log.d(TAG, "[storyName][cacheFile] setting name from cacheFile '" + name + "'" + " to '" + cleanedUpName + "'");
+                Log.d(TAG, "[storyName][cacheFile][listPopulate] setting name from cacheFile '" + name + "'" + " to '" + cleanedUpName + "'");
                 Story newStory = new Story(cleanedUpName, author.length() == 0 ? null : author, null, null, zzzz, zipFile.length() == 0 ? null : zipFile, imageUrl);
                 StoryHelper.addStory(context, newStory, stories, addCategory);
             }
@@ -101,7 +104,7 @@ public abstract class Scraper {
 
     public void scrape() throws IOException {
         if (cacheFile.lastModified() + cacheTimeout > System.currentTimeMillis()) {
-            Log.i(TAG, "[cacheFile] cacheFile good " + cacheFile);
+            Log.i(TAG, "[cacheFile][listPopulate] cacheFile good " + cacheFile);
             if (SettingsCurrent.getDownloadSkipCachefile()) {
                 return;
             }

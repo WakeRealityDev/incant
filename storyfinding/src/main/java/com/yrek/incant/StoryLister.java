@@ -42,15 +42,8 @@ public class StoryLister {
         }
     }
 
-    public List<Story> getStories(ArrayList<Story> stories, Comparator<Story> sort, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) throws IOException {
-        if (! SettingsCurrent.getListingShowLocal()) {
-            for (Scraper scraper : scrapers) {
-                addDownloadRunIndex++;
-                scraper.addStories(stories, addDownloadRunIndex);
-                Log.d(TAG, "[listPopulate] getStories scraper " + stories.size());
-            }
-        }
 
+    public void addStoriesCommaSepValuesFile(ArrayList<Story> stories, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) {
         if (readCommaSepValuesFile != null) {
             // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
             for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
@@ -75,6 +68,16 @@ public class StoryLister {
 
                 // Scraper.writeStory();
                 // writeStory(out, name, author, extraURL, zipFile, context.getString(R.string.ifdb_cover_image_url, currentStoryID[0]));
+            }
+        }
+    }
+
+    public List<Story> getStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
+        if (! SettingsCurrent.getListingShowLocal()) {
+            for (Scraper scraper : scrapers) {
+                addDownloadRunIndex++;
+                scraper.addStories(stories, addDownloadRunIndex);
+                Log.d(TAG, "[listPopulate] getStories scraper " + stories.size() + " addDownloadRunIndex " + addDownloadRunIndex);
             }
         }
 
