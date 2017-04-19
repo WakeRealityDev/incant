@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.wakereality.storyfinding.CommonAppSetup;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.yrek.incant.BuildConfig;
 import com.yrek.incant.StoryListSpot;
@@ -31,15 +32,7 @@ public class IncantApplication extends Application {
         SettingsCurrent.setSpeechRecognizerEnabled(spref.getBoolean("recognition_enabled", false));
         SettingsCurrent.setSpeechRecognizerMute(spref.getBoolean("recognition_mute_enabled", false));
 
-        StoryListSpot.optionLaunchExternal = spref.getBoolean("storylist_launchexternal", false);
-
-        // true, show by default, negate the hide preference.
-        StoryListSpot.showHeadingExpanded = ! spref.getBoolean("storylist_expand_default", false);
-        // This is default on opening of the app
-        // false, do not hide by default
-        StoryListSpot.showHeadingExpandedHideByDefault = spref.getBoolean("storylist_expand_default", false);
-
-        StoryListSpot.showInterfaceTipsA = spref.getBoolean("storylist_intro_tips", true);
+        CommonAppSetup.appStartupInitializeDefaults(getApplicationContext());
 
         StoryEngineLaunchHelper storyEngineLaunchHelper = new StoryEngineLaunchHelper();
     }

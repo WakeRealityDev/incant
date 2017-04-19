@@ -121,21 +121,32 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             storylist_header_extra_info2.setVisibility(View.VISIBLE);
             // Appending keeps word wrapping, two textViews would not
 
-            String outMessage = " :hide.";
-            Spannable span = Spannable.Factory.getInstance().newSpannable(outMessage);
-            span.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View v) {
-                    StoryListSpot.showInterfaceTipsA = false;
-                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_intro_tips", StoryListSpot.showInterfaceTipsA).commit();
-                    storylist_header_extra_info2.setVisibility(View.GONE);
-                    headerSectionSetup(rootView);
-                }
-            }, 0, outMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             storylist_header_extra_info2.setText(getText(R.string.storylist_header_interface_tips0));
-            storylist_header_extra_info2.append(span);
-            storylist_header_extra_info2.setMovementMethod(LinkMovementMethod.getInstance());
+            if (StoryListSpot.storyListHeaderInterfaceTipReplacement0 != null) {
+                if (StoryListSpot.storyListHeaderInterfaceTipReplacement0.length() == 0) {
+                    storylist_header_extra_info2.setVisibility(View.GONE);
+                } else {
+                    storylist_header_extra_info2.setText(StoryListSpot.storyListHeaderInterfaceTipReplacement0);
+                }
+            }
+
+            if (StoryListSpot.storyListHeaderInterfaceTipAppendHide) {
+                String outMessage = " :hide.";
+                Spannable span = Spannable.Factory.getInstance().newSpannable(outMessage);
+                span.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View v) {
+                        StoryListSpot.showInterfaceTipsA = false;
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("storylist_intro_tips", StoryListSpot.showInterfaceTipsA).commit();
+                        storylist_header_extra_info2.setVisibility(View.GONE);
+                        headerSectionSetup(rootView);
+                    }
+                }, 0, outMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                storylist_header_extra_info2.append(span);
+                storylist_header_extra_info2.setMovementMethod(LinkMovementMethod.getInstance());
+            }
         }
     }
 

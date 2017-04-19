@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.example.android.recyclerplayground.BrowseStoriesActivity;
+import com.example.android.recyclerplayground.BrowseStoriesNewDrawerActivity;
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
 import com.wakereality.storyfinding.CommonAppSetup;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
@@ -167,6 +169,16 @@ public class InformationFragmentHelper {
         });
         incantProfilePerformance.setChecked(SettingsCurrent.getInterpreterProfileEnabled());
         rootViewGroup.addView(incantProfilePerformance);
+
+        TextView storyListNewStyle = new TextView(viewContext);
+        storyListNewStyle.setText("5. Story List alternate style (testing)");
+        storyListNewStyle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                event.holdingActivity.startActivity(new Intent(event.holdingActivity, BrowseStoriesNewDrawerActivity.class));
+            }
+        });
+        rootViewGroup.addView(storyListNewStyle);
 
         if (! StoryListSpot.recordAudioPermissionReady) {
             TextView incantAudioPermission = new TextView(viewContext);

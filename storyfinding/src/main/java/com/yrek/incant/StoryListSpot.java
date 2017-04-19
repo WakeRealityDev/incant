@@ -27,4 +27,9 @@ public class StoryListSpot {
 
     public static boolean storagePermissionReady = false;
     public static boolean recordAudioPermissionReady = false;
+
+    // Will override. put here to allow a 'owning app' of the library to stuff down content.
+    // null means leave original content. empty means remove view. content more than empty will be shown.
+    public static CharSequence storyListHeaderInterfaceTipReplacement0 = null;
+    public static boolean storyListHeaderInterfaceTipAppendHide = true;
 }
