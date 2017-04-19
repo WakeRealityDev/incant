@@ -63,7 +63,11 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
         mItems.clear();
         try {
             if (StoryListSpot.storyLister != null) {
-                ArrayList<Story> stories = StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA();
+                ArrayList<Story> stories = new ArrayList<Story>();
+                if (StoryListSpot.storyListAppAboveHandDown != null) {
+                    stories.addAll(StoryListSpot.storyListAppAboveHandDown);
+                }
+                StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA(stories);
                 mItems.addAll(stories);
             } else {
                 Log.e(TAG, "storyList is null, unable to populate");

@@ -72,15 +72,7 @@ public class StoryLister {
         }
     }
 
-    public List<Story> getStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
-        if (! SettingsCurrent.getListingShowLocal()) {
-            for (Scraper scraper : scrapers) {
-                addDownloadRunIndex++;
-                scraper.addStories(stories, addDownloadRunIndex);
-                Log.d(TAG, "[listPopulate] getStories scraper " + stories.size() + " addDownloadRunIndex " + addDownloadRunIndex);
-            }
-        }
-
+    public List<Story> filterAndSortStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
         if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
             ArrayList<Story> freshList = new ArrayList<>();
             for (int i = 0; i < stories.size(); i++) {
@@ -198,22 +190,38 @@ public class StoryLister {
     }
 
 
-    public ArrayList<Story> generateStoriesListAllSortedArrayListA() {
-        ArrayList<Story> stories = new ArrayList<Story>();
+    public ArrayList<Story> generateStoriesListAllSortedArrayListA(ArrayList<Story> stories) {
+        if (stories == null) {
+            stories = new ArrayList<Story>();
+        }
 
         try {
+            // Find downloaded (expanded Incant ap format) stories
             addDownloadedStories(stories);
             Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
+
             if (!SettingsCurrent.getListingShowLocal()) {
                 // Featured download links
                 addInitialStories(stories);
                 Log.d(TAG, "[listPopulate] getStories addInitialStories " + stories.size());
             }
+
+            // CSV of Inform 7 files
             StoryListSpot.storyLister.addStoriesCommaSepValuesFile(stories, StoryListSpot.readCommaSepValuesFile, context);
-            stories = (ArrayList<Story>) getStories(stories, StoryListSpot.storyLister.SortByDefault, context);
+
+            // XML live (and cached) scraping of IFDB and ifarchive
+            if (! SettingsCurrent.getListingShowLocal()) {
+                for (Scraper scraper : scrapers) {
+                    addDownloadRunIndex++;
+                    scraper.addStories(stories, addDownloadRunIndex);
+                    Log.d(TAG, "[listPopulate] getStories scraper " + stories.size() + " addDownloadRunIndex " + addDownloadRunIndex);
+                }
+            }
+
+            stories = (ArrayList<Story>) filterAndSortStories(stories, StoryListSpot.storyLister.SortByDefault, context);
             Log.d(TAG, "[listPopulate] getStories post-sort " + stories.size());
         } catch (IOException e) {
-            Log.e(TAG, "IOException generating stories list", e);
+            Log.e(TAG, "[listPopulate] IOException generating stories list", e);
         }
 
         return stories;

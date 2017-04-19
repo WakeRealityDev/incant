@@ -5,6 +5,8 @@ import android.util.LruCache;
 
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 
+import java.util.ArrayList;
+
 /**
  * Created by Stephen A. Gutknecht on 4/13/17.
  */
@@ -32,4 +34,6 @@ public class StoryListSpot {
     // null means leave original content. empty means remove view. content more than empty will be shown.
     public static CharSequence storyListHeaderInterfaceTipReplacement0 = null;
     public static boolean storyListHeaderInterfaceTipAppendHide = true;
+
+    public static ArrayList<Story> storyListAppAboveHandDown = null;
 }

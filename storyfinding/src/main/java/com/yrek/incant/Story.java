@@ -29,6 +29,7 @@ import com.wakereality.apphelpersadupe.fileutils.FileCopy;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
+import com.wakereality.thunderstrike.dataexchange.EngineConst;
 import com.yrek.ifstd.blorb.Blorb;
 import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.incant.gamelistings.XMLScraper;
@@ -48,6 +49,8 @@ public class Story implements Serializable {
     private final URL imageURL;
     private transient Metadata metadata;
     private String hashA;
+    private String hashSHA256A = null;
+    private int engineCode = EngineConst.ENGINE_UNKNOWN;
     private String gameid;
     // 0 = unknown
     private int storyCategory = 0;
@@ -63,6 +66,24 @@ public class Story implements Serializable {
         // When dealing with downloads, title may need to be read because DownloadManager does not provide
         this.title = "";
         this.hashA = "";
+        this.gameid = "";
+
+        if (SettingsCurrent.debugLogStoryCreate)
+            Log.v(TAG, "trace Story create " + this.author + ":" + this.name + ":" + this.title);
+    }
+
+    public Story(String name, String author, String headline, String description, String storyHashSHA256, URL imageURL, int storyEngineCode) {
+        this.name = name;
+        this.author = author;
+        this.headline = headline;
+        this.description = description;
+        this.downloadURL = null;
+        this.zipEntry = null;
+        this.imageURL = imageURL;
+        // When dealing with downloads, title may need to be read because DownloadManager does not provide
+        this.title = "";
+        this.hashSHA256A = storyHashSHA256;
+        this.engineCode = storyEngineCode;
         this.gameid = "";
 
         if (SettingsCurrent.debugLogStoryCreate)
@@ -254,6 +275,9 @@ public class Story implements Serializable {
     }
 
     public boolean isDownloaded(Context context) {
+        if (hashSHA256A != null) {
+            return true;
+        }
         return getZcodeFile(context).exists() || getGlulxFile(context).exists();
     }
 
@@ -777,6 +801,14 @@ public class Story implements Serializable {
 
     public void setDownloadingNow(boolean value) {
         downloadingNow = value;
+    }
+
+    public boolean isMetaHashPointer() {
+        return (hashSHA256A != null);
+    }
+
+    public String getStoryHashSHA256() {
+        return hashSHA256A;
     }
 
 
