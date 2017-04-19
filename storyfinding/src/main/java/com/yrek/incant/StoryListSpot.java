@@ -2,6 +2,7 @@ package com.yrek.incant;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;
+import android.view.animation.Animation;
 
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 
@@ -36,4 +37,6 @@ public class StoryListSpot {
     public static boolean storyListHeaderInterfaceTipAppendHide = true;
 
     public static ArrayList<Story> storyListAppAboveHandDown = null;
+
+    public static Animation launchStoryLocalAnimation = null;
 }

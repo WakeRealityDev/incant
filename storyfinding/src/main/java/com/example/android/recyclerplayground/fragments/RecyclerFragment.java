@@ -312,6 +312,9 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                 view.startAnimation(myTouchWobbleAnimation);
                 EventBus.getDefault().post(new EventExternalEngineStoryLaunch(getActivity(), story, StoryListSpot.optionLaunchExternalActivityCode,  StoryListSpot.optionaLaunchInterruptEngine));
             } else {
+                if (StoryListSpot.launchStoryLocalAnimation != null) {
+                    view.startAnimation(StoryListSpot.launchStoryLocalAnimation);
+                }
                 EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
             }
         } else {
