@@ -25,7 +25,7 @@ public class CommonAppSetup {
             StoryListSpot.storyLister = new StoryLister(appContext);
         }
         if (StoryListSpot.coverImageCache == null) {
-            StoryListSpot.coverImageCache = new LruCache<String, Bitmap>(10);
+            StoryListSpot.coverImageCache = new LruCache<String, Bitmap>(16);
         }
 
         createDiskPathsOnce(appContext);

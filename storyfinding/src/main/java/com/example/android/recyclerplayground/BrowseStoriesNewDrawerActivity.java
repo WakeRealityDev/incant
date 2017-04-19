@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.example.android.recyclerplayground.fragments.InformationFragment;
 import com.example.android.recyclerplayground.fragments.NavigationDrawerFragment;
+import com.example.android.recyclerplayground.fragments.StoriesSourceFragment;
 import com.example.android.recyclerplayground.fragments.VerticalFragment;
 import com.example.android.recyclerplayground.fragments.VerticalGridFragment;
 import com.example.android.recyclerplayground.fragments.VerticalStaggeredGridFragment;
@@ -207,7 +208,7 @@ public class BrowseStoriesNewDrawerActivity extends AppCompatActivity {
             fragmentClass = InformationFragment.class;
 
         } else if (i == R.id.nav_get_more) {
-            fragmentClass = InformationFragment.class;
+            fragmentClass = StoriesSourceFragment.class;
 
         } else {
             fragmentClass = VerticalFragment.class;

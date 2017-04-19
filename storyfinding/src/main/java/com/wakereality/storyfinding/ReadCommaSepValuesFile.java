@@ -190,7 +190,7 @@ public class ReadCommaSepValuesFile {
         try {
             String fileSource = "csv/Incant_saveList.csv";
             CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
-            for (; ; ) {
+            for ( ; ; ) {
                 next = reader.readNext();
                 if (next != null) {
                     informStoriesList.add(next);
@@ -199,7 +199,7 @@ public class ReadCommaSepValuesFile {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ReadCSV", "[ReadCSV] IOException", e);
             return false;
         }
 
@@ -231,7 +231,7 @@ public class ReadCommaSepValuesFile {
         try {
             writer = new CSVWriter(new FileWriter("/sdcard/Incant_saveList.csv", true));
         } catch (IOException e) {
-            Log.e("ReadCSV", "Exception saving copy of data to CSV", e);
+            Log.e("ReadCSV", "[ReadCSV] Exception saving copy of data to CSV", e);
             return false;
         }
 
@@ -243,7 +243,7 @@ public class ReadCommaSepValuesFile {
             writer.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ReadCSV", "[ReadCSV] IOException", e);
             return false;
         }
     }

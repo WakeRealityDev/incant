@@ -42,16 +42,8 @@ public class StoryLister {
         }
     }
 
-    public List<Story> getStories(Comparator<Story> sort, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) throws IOException {
-        ArrayList<Story> stories = new ArrayList<Story>();
-        addDownloaded(stories);
-        Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
-
+    public List<Story> getStories(ArrayList<Story> stories, Comparator<Story> sort, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) throws IOException {
         if (! SettingsCurrent.getListingShowLocal()) {
-            // Featured download links
-            addInitial(stories);
-            Log.d(TAG, "[listPopulate] getStories addInitial " + stories.size());
-
             for (Scraper scraper : scrapers) {
                 addDownloadRunIndex++;
                 scraper.addStories(stories, addDownloadRunIndex);
@@ -175,7 +167,7 @@ public class StoryLister {
     /*
     Previously downloaded story files
      */
-    private void addDownloaded(ArrayList<Story> stories) throws IOException {
+    public void addDownloadedStories(ArrayList<Story> stories) throws IOException {
         File[] primaryDirectoryFiles = Story.getRootDir(context).listFiles();
         if (primaryDirectoryFiles == null)
         {
@@ -194,7 +186,7 @@ public class StoryLister {
         }
     }
 
-    private void addInitial(ArrayList<Story> stories) throws IOException {
+    public void addInitialStories(ArrayList<Story> stories) throws IOException {
         String[] initial = context.getResources().getStringArray(R.array.initial_story_list);
         // 7 lines of array per entry.
         for (int i = 0; i + 6 < initial.length; i += 7) {

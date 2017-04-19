@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.wakereality.storyfinding.R;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
+import com.yrek.runconfig.SettingsCurrent;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,8 +62,20 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     public void setAdapterContent(Context context) {
         mItems.clear();
         try {
-            if (StoryListSpot.storyLister != null){
-                mItems.addAll(StoryListSpot.storyLister.getStories(StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context));
+            if (StoryListSpot.storyLister != null) {
+                ArrayList<Story> stories = new ArrayList<Story>();
+
+                StoryListSpot.storyLister.addDownloadedStories(stories);
+                Log.d(TAG, "[listPopulate] getStories addDownloaded " + stories.size());
+                if (! SettingsCurrent.getListingShowLocal()) {
+                    // Featured download links
+                    StoryListSpot.storyLister.addInitialStories(stories);
+                    Log.d(TAG, "[listPopulate] getStories addInitialStories " + stories.size());
+                }
+                stories = (ArrayList<Story>) StoryListSpot.storyLister.getStories(stories, StoryListSpot.storyLister.SortByDefault, StoryListSpot.readCommaSepValuesFile, context);
+                Log.d(TAG, "[listPopulate] getStories post-sort " + stories.size());
+
+                mItems.addAll(stories);
             }
         } catch (IOException e) {
             Log.e(TAG, "Exception ", e);
