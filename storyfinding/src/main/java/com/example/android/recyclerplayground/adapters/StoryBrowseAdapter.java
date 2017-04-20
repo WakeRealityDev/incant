@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wakereality.storyfinding.R;
+import com.wakereality.thunderstrike.dataexchange.EngineConst;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryListSpot;
-import com.yrek.runconfig.SettingsCurrent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -50,6 +50,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
         parentActivity = launchParentActivity;
         res = launchParentActivity.getResources();
+        buildNamesForEngines();
     }
 
 
@@ -114,6 +115,18 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     
     private TextAppearanceSpan headlineStyle;
 
+    public SparseArray<String> engineCodeToNameCrossReference = new SparseArray<>();
+
+    public void buildNamesForEngines() {
+        engineCodeToNameCrossReference.clear();
+        for (int engineIndex = 1; engineIndex < EngineConst.engineTypesFlatIndex.length; engineIndex++) {
+            final int onEngineCode = EngineConst.engineTypesFlatIndex[engineIndex];
+            final String onEngineName = EngineConst.engineTypesFlatNames[engineIndex];
+            // ToDo: could use string resources to localize, but the names of engines are generally known in English globally
+            engineCodeToNameCrossReference.put(onEngineCode, onEngineName);
+        }
+    }
+
 
     @Override
     public void onBindViewHolder(VerticalItemHolder itemHolder, int position) {
@@ -144,9 +157,15 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
         boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
         if (isDownloaded) {
-            outEngine = res.getText(R.string.storylist_entry_engine_zmachine);
-            if (item.isGlulx(context)) {
-                outEngine = res.getText(R.string.storylist_entry_engine_glulx);
+            final int engineCode = item.getEngineCode();
+            if (engineCode == EngineConst.ENGINE_UNKNOWN) {
+                // Legacy Incant app, prep Thunderword integration.
+                outEngine = res.getText(R.string.storylist_entry_engine_zmachine);
+                if (item.isGlulx(context)) {
+                    outEngine = res.getText(R.string.storylist_entry_engine_glulx);
+                }
+            } else {
+                outEngine = engineCodeToNameCrossReference.get(engineCode);
             }
             final File coverImage = item.getCoverImageFile(context);
             if (coverImage.exists()) {
@@ -273,7 +292,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
                     // Trim leading and trailing too, we only want inner newlines.
                     // ToDo: prep of CSV needs to trim. story example: "bsifhw1ik8524evd","Under the Bed"
                     String outReworkedHTML = storyDescriptionValue.trim().replace("<p>", "\n").replace("\n\n", "\n").replace("\n", "<br />");
-                    Log.i(TAG, "[RVdescHTML] '" + outReworkedHTML + "'");
+                    Log.d(TAG, "[RVdescHTML] '" + outReworkedHTML + "'");
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         storyDescription.setText(android.text.Html.fromHtml(outReworkedHTML, android.text.Html.FROM_HTML_MODE_LEGACY));
                     } else {

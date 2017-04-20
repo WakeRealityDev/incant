@@ -811,6 +811,10 @@ public class Story implements Serializable {
         return hashSHA256A;
     }
 
+    public int getEngineCode() {
+        return engineCode;
+    }
+
 
     private class Metadata implements XMLScraper.Handler {
         String ifid;

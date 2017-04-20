@@ -194,7 +194,8 @@ public class Incant extends Activity {
         storyListAdapter.clear();
         try {
             if (StoryListSpot.storyLister != null) {
-                ArrayList<Story> freshStoriesList = StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA();
+                ArrayList<Story> freshStoriesList = new ArrayList<>();
+                StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA(freshStoriesList);
                 storyListAdapter.addAll(freshStoriesList);
             } else {
                 Log.e(TAG, "storyList is null, unable to populate");
