@@ -76,7 +76,7 @@ public class StoryLister {
         if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
             ArrayList<Story> freshList = new ArrayList<>();
             for (int i = 0; i < stories.size(); i++) {
-                if (! stories.get(i).isDownloaded(context)) {
+                if (! stories.get(i).isDownloadedExtensiveCheck(context)) {
                     freshList.add(stories.get(i));
                 }
             }
@@ -115,8 +115,8 @@ public class StoryLister {
                 return 0;
             }
 
-            if (story1.isDownloaded(context)) {
-                if (! story2.isDownloaded(context)) {
+            if (story1.isDownloadedExtensiveCheck(context)) {
+                if (! story2.isDownloadedExtensiveCheck(context)) {
                     // If first is downloaded and second is not push second to bottom.
                     Log.v(TAG, "[sortName] downloadA " + storyName1);
                     return -1;
@@ -139,7 +139,7 @@ public class StoryLister {
 
                 //Log.v(TAG, "[sortName] lastModified? " + storyName1);
                 return (int) (story1.getStoryFile(context).lastModified() - story2.getStoryFile(context).lastModified());
-            } else if (story2.isDownloaded(context)) {
+            } else if (story2.isDownloadedExtensiveCheck(context)) {
                 // Downloaded go before non-downloaded.
                 //Log.v(TAG, "[sortName] story2 downloaded " + storyName1);
                 return 1;
@@ -160,7 +160,7 @@ public class StoryLister {
     public static int addDownloadRunIndex = 2;
 
     /*
-    Previously downloaded story files
+    Previously downloaded story files in Incant app legacy expanded structure
      */
     public void addDownloadedStories(ArrayList<Story> stories) throws IOException {
         File[] primaryDirectoryFiles = Story.getRootDir(context).listFiles();

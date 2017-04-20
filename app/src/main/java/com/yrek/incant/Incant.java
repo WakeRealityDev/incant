@@ -441,7 +441,7 @@ public class Incant extends Activity {
                     }
                 });
 
-                if (story.isDownloaded(Incant.this)) {
+                if (story.isDownloadedExtensiveCheck(Incant.this)) {
                     boolean showThisEntry = true;
                     if (1==2 /* SettingsCurrent.getStoryListFilterOnlyNotDownloaded() */) {
                         convertView.setVisibility(View.GONE);

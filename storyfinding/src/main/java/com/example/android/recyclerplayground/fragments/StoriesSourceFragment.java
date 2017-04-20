@@ -78,6 +78,18 @@ public class StoriesSourceFragment extends android.support.v4.app.Fragment {
         CheckBox foundByFileExtension = new CheckBox(viewContext);
         foundByFileExtension.setText("Found by file extension");
         rootViewGroup.addView(foundByFileExtension);
+
+        TextView sectionHeadExportMyDatabase = new TextView(viewContext);
+        sectionHeadExportMyDatabase.setText("Export listing of story files and SHA-256 file integrity checksums");
+        rootViewGroup.addView(sectionHeadExportMyDatabase);
+
+        TextView exportMyDatabaseA = new TextView(viewContext);
+        exportMyDatabaseA.setText("1. Export my Database to community");
+        rootViewGroup.addView(exportMyDatabaseA);
+
+        TextView exportMyDatabaseB = new TextView(viewContext);
+        exportMyDatabaseB.setText("2. Export my Database to Andriod clipboard");
+        rootViewGroup.addView(exportMyDatabaseB);
     }
 
     @Override

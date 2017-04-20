@@ -305,7 +305,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                     Toast.LENGTH_SHORT).show();
         }
 
-        if (story.isDownloaded(getContext())) {
+        if (story.isDownloadedExtensiveCheck(getContext())) {
             // click means launch
             if (StoryListSpot.optionLaunchExternal) {
                 // There is a visual delay, nothing seems to happen, on Launching to Thunderword - so animate.

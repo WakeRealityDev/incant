@@ -24,8 +24,9 @@ import java.util.zip.ZipFile;
 import org.greenrobot.eventbus.EventBus;
 import org.xmlpull.v1.XmlSerializer;
 
-// renaemd package to avoid conflict
+// renamed package to avoid conflict
 import com.wakereality.apphelpersadupe.fileutils.FileCopy;
+import com.wakereality.apphelpersadupe.fileutils.HashFile;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
@@ -35,6 +36,13 @@ import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.incant.gamelistings.XMLScraper;
 import com.yrek.runconfig.SettingsCurrent;
 
+/*
+ToDo: this might be a heavy object for using as RecyclerView listing of 5000 stories, high RAM usage
+  Maybe make a class underneith this one that is lightweight, only the minimal fields for the listing
+    And expand to a higher class for download/launch/single-story detail
+
+     The CSV import already has a smallr-field object StoryEntryIFDB
+ */
 public class Story implements Serializable {
     private static final long serializableVersionID = 0L;
     private static final String TAG = Story.class.getSimpleName();
@@ -229,9 +237,73 @@ public class Story implements Serializable {
         }
     }
 
+    private boolean isDownloadedCachedAnswer = false;
+    private boolean isDownloadedCachedCheck = false;
+
+    public boolean isDownloadedExtensiveCheck(Context context) {
+        if (isDownloadedCachedCheck) {
+            return isDownloadedCachedAnswer;
+        } else {
+            // First check this run of the app, slower code path, non-cached
+            isDownloadedCachedCheck = true;
+            if (hashSHA256A != null) {
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+            if (getZcodeFile(context).exists()) {
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+            if (getGlulxFile(context).exists()) {
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+
+            // NOW check file system for non-expanded
+
+            // Same logic of download copy filepath
+            final String keepFilePath = generateDownloadFilename(context);
+            File keepFile = getDownloadKeepFile(context);
+
+            if (keepFile.exists()) {
+                if (hashSHA256A == null) {
+                    hashSHA256A = HashFile.hashFileSHA256(keepFile);
+                }
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public File getDownloadKeepFile(Context context) {
+        final String keepFilePath = generateDownloadFilename(context);
+        File keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+        if (! keepFile.exists()) {
+            keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".gblorb"));
+            if (! keepFile.exists()) {
+                keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".zblorb"));
+            }
+        }
+        return keepFile;
+    }
+
+    /*
+    Incant legacy code which doesn't assume object is created.
+     */
     public static boolean isDownloaded(Context context, String name) {
         return getZcodeFile(context, name).exists() || getGlulxFile(context, name).exists();
     }
+
+    @Deprecated
+    public boolean isDownloaded(Context context) {
+        if (hashSHA256A != null) {
+            return true;
+        }
+        return getZcodeFile(context).exists() || getGlulxFile(context).exists();
+    }
+
 
     public File getDir(Context context) {
         return getStoryDir(context, name);
@@ -274,12 +346,7 @@ public class Story implements Serializable {
         return getBlorbFile(context, name);
     }
 
-    public boolean isDownloaded(Context context) {
-        if (hashSHA256A != null) {
-            return true;
-        }
-        return getZcodeFile(context).exists() || getGlulxFile(context).exists();
-    }
+
 
     public boolean isZcode(Context context) {
         return getZcodeFile(context).exists();
@@ -354,6 +421,8 @@ public class Story implements Serializable {
         if (!downloadingThreadRunning) {
             downloadingThreadRunning = true;
             downloadError = false;
+            // invalidate cache
+            isDownloadedCachedCheck = false;
             final String storyName = Story.this.getName(context);
             Thread downloadThreadA = new Thread() {
                 @Override
@@ -378,6 +447,10 @@ public class Story implements Serializable {
                     }
                     downloadingThreadRunning = false;
                     downloadingNow = false;
+
+                    // invalidate cache
+                    isDownloadedCachedCheck = false;
+
                     // ToDo: another event, as this is LIST download, not Non-List
                     EventBus.getDefault().post(new EventStoryListDownloadResult((error != null), Story.this));
                 }
@@ -388,6 +461,22 @@ public class Story implements Serializable {
         }
         return false;
     }
+
+    public String generateDownloadFilename(Context context) {
+        String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
+        String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+
+        switch (fileExtension) {
+            case ".unknown":
+            case ".tmp":
+                Log.w(TAG, "generateDownloadFilename undesired extension for URL: " + downloadURL + " result: " + storyNameTotal);
+                break;
+        }
+
+        return storyNameTotal;
+    }
+
 
 
     public static int MAGIC_FILE_ZIP0 = 0x504b0304;
@@ -400,17 +489,21 @@ public class Story implements Serializable {
 
     protected boolean download(Context context, InputStream inputStream) throws IOException {
         boolean downloaded = false;
+        // invalidate cache
+        isDownloadedCachedCheck = false;
 
         getDir(context).mkdirs();
         getDownloadKeepDir(context).mkdirs();
 
+        // NOTE: Keep this code in sync with method: generateDownloadFilename
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
         String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
         String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
         File endingRenamedTargetFile = null;
+        String keepFilenameTempWithoutExtension = "Incant__" + storyNameSanitized + "__";
         File downloadTargetFile;
         if (!keepDownloadFiles) {
-            downloadTargetFile = File.createTempFile("Incant__" +storyNameSanitized + "__", fileExtension, getDir(context));
+            downloadTargetFile = File.createTempFile(keepFilenameTempWithoutExtension, fileExtension, getDir(context));
         } else {
             downloadTargetFile = new File(getDir(context), storyNameTotal);
         }

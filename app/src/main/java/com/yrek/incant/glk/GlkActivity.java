@@ -436,6 +436,11 @@ public class GlkActivity extends Activity {
             if (suspendedDuringInit) {
                 return;
             }
+
+            if (runMain == null) {
+                return;
+            }
+
             try {
                 runMain.run();
             } catch (Exit e) {

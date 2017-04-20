@@ -27,6 +27,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+
 
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
@@ -104,10 +106,16 @@ public class StoryDetails extends Activity {
 
             TextView storyExtra0 = (TextView) findViewById(R.id.storyextra0);
             storyExtra0.setText("Category " + story.getStoryCategory());
+            File keepFile = story.getDownloadKeepFile(StoryDetails.this);
+            if (keepFile.exists()) {
+                storyExtra0.append("\nDownloadKeep " + keepFile.getPath() + " size " + keepFile.length());
+            } else {
+                storyExtra0.append("\nMISSING? DownloadKeep " + keepFile.getPath());
+            }
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
             ((TextView) findViewById(R.id.story_hash_info)).setText("MD5: " + story.getHash());
-            if (!story.isDownloaded(StoryDetails.this)) {
+            if (!story.isDownloadedExtensiveCheck(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
                 findViewById(R.id.cover).setVisibility(View.GONE);

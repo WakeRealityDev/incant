@@ -42,7 +42,12 @@ public class GlulxStory implements GlkMain {
             this.glulx.resume(glk);
         } else {
             try {
-                this.glulx = new Glulx(story.getGlulxFile(context), glk);
+                File runFile = story.getGlulxFile(context);
+                if (runFile.exists()) {
+                    this.glulx = new Glulx(runFile, glk);
+                } else {
+                    Log.e(TAG, "RunFile missing " + runFile);
+                }
             } catch (IOException e) {
                 Log.e(TAG, "create IOException", e);
                 throw new RuntimeException(e);
@@ -113,6 +118,9 @@ public class GlulxStory implements GlkMain {
 
     @Override
     public boolean finished() {
+        if (glulx == null) {
+            return true;
+        }
         return !glulx.suspended() && thread == null;
     }
 

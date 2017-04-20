@@ -164,7 +164,7 @@ public class StoryDownload extends Activity {
                     startActivity(intent);
                 }
             };
-            if (story.isDownloaded(StoryDownload.this)) {
+            if (story.isDownloadedExtensiveCheck(StoryDownload.this)) {
                 gotoStoryDetails.run();
                 return true;
             }
@@ -193,11 +193,12 @@ public class StoryDownload extends Activity {
                         DownloadSpot.downloading.remove(storyName);
                         DownloadSpot.downloading.notifyAll();
                     }
-                    if (story.isDownloaded(StoryDownload.this)) {
+                    if (story.isDownloadedExtensiveCheck(StoryDownload.this)) {
                         progressbar.post(gotoStoryDetails);
                         DownloadSpot.storyNonListDownloadFlag = true;
                         EventBus.getDefault().post(new EventStoryNonListDownload());
                     } else {
+                        // ToDo: show error message?
                         progressbar.post(resetView);
                     }
                 }

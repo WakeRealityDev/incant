@@ -47,7 +47,11 @@ public class StoryHelper {
 
         if (simpleString.endsWith(".zblorb")) {
             return "zblorb";
+        } else if (simpleString.endsWith(".zlb")) {
+            return "zblorb";
         } else if (simpleString.endsWith(".gblorb")) {
+            return "gblorb";
+        } else if (simpleString.endsWith(".glb")) {
             return "gblorb";
         } else if (simpleString.endsWith(".ulx")) {
             return "ulx";

@@ -152,7 +152,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
 
         CharSequence outEngine = "?";
 
-        boolean isDownloaded = item.isDownloaded(context);
+        boolean isDownloaded = item.isDownloadedExtensiveCheck(context);
         boolean isDownloading = item.isDownloadingNow();
         boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
