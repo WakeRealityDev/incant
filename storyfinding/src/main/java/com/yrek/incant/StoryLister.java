@@ -3,6 +3,7 @@ package com.yrek.incant;
 import android.content.Context;
 import android.util.Log;
 
+import com.wakereality.storyfinding.EventStoryFindingAppError;
 import com.wakereality.storyfinding.R;
 import com.wakereality.storyfinding.ReadCommaSepValuesFile;
 import com.wakereality.storyfinding.StoryEntryIFDB;
@@ -11,6 +12,8 @@ import com.yrek.incant.gamelistings.IFDBScraper;
 import com.yrek.incant.gamelistings.Scraper;
 import com.yrek.incant.gamelistings.StoryHelper;
 import com.yrek.runconfig.SettingsCurrent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,22 +77,34 @@ public class StoryLister {
 
     public List<Story> filterAndSortStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
         int skipCount = 0;
-        if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
+        if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded() > 0) {
             ArrayList<Story> freshList = new ArrayList<>();
+
+            boolean desiredValue = false;
+            if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded() == 2) {
+                desiredValue = true;
+            }
+
             for (int i = 0; i < stories.size(); i++) {
                 final Story singleStroy = stories.get(i);
-                if (! singleStroy.isDownloadedExtensiveCheck(context)) {
+                if (singleStroy.isDownloadedExtensiveCheck(context) == desiredValue) {
                     freshList.add(singleStroy);
                     Log.d(TAG, "[listPopulate][foundDownloaded] NOT downloaded " + singleStroy.keepFile + " isDownloadedCachedAnswer " + singleStroy.isDownloadedCachedAnswer + " trace " + singleStroy.traceDownlaodChecked);
                 } else {
                     skipCount++;
                 }
             }
+
             stories = freshList;
         }
 
         if (sort != null) {
-            Collections.sort(stories, sort);
+            try {
+                Collections.sort(stories, sort);
+            } catch (Exception e0) {
+                Log.e(TAG, "Exception sorting", e0);
+                EventBus.getDefault().post(new EventStoryFindingAppError("SL", 1, 10, "Exception Collections.sort", ""));
+            }
         }
 
         Log.d(TAG, "[listPopulate] getStories final stories " + stories.size() + " skipCount (downloaded) " + skipCount);

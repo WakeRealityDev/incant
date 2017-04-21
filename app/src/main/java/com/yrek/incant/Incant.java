@@ -27,7 +27,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.wakereality.incant.AboutAppActivity;
@@ -615,7 +614,7 @@ public class Incant extends Activity {
                 refreshStoryList();
                 break;
             case R.id.action_storylist_not_downloaded:
-                SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
+                SettingsCurrent.advanceValueStoryListFilterOnlyNotDownloaded();
                 refreshStoryList();
                 break;
             case R.id.action_list_test:

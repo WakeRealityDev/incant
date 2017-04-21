@@ -253,11 +253,18 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             return true;
         } else if (i == R.id.action_stories_filter_downloaded) {
             mList.startAnimation(myGetMoreWobbleAnimation);
-            SettingsCurrent.flipStoryListFilterOnlyNotDownloaded();
-            if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
-                item.setTitle("Show Downloaded");
-            } else {
-                item.setTitle("Hide Downloaded");
+            SettingsCurrent.advanceValueStoryListFilterOnlyNotDownloaded();
+            // The label is going to tell you the next action, not the current
+            switch (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
+                case 0:
+                    item.setTitle("Hide Downloaded");
+                    break;
+                case 1:
+                    item.setTitle("Only Downloaded");
+                    break;
+                case 2:
+                    item.setTitle("All/Both");
+                    break;
             }
             mAdapter.setAdapterContent(getContext());
             mAdapter.notifyDataSetChanged();
