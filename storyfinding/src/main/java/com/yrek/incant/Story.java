@@ -41,7 +41,28 @@ ToDo: this might be a heavy object for using as RecyclerView listing of 5000 sto
   Maybe make a class underneith this one that is lightweight, only the minimal fields for the listing
     And expand to a higher class for download/launch/single-story detail
 
-     The CSV import already has a smallr-field object StoryEntryIFDB
+     The CSV import already has a smaller-field object StoryEntryIFDB
+
+  Having worked with this code for several months, some comments about complexity:
+    This code uses the story title, the name of the story, to construct storage path
+    and folder names / file names.  This was the legacy code and the chocie was made to stick with it.
+    However, it proves tricky because it drops the file extension for the folder it creates
+    and generically centralizes all variations into one (all z5, z6, z8 become just z basically -
+    which doesn't allow awareness of multiple available interpreters to run tricky ones like .z6).
+    This makes sharing the resulting downloads with outside apps more messy
+    Further, the name can't be changed easily - as it's a key to the system in locating
+    and listing it - so if you come up with a better name later - you have remember how the original
+    story name (folder name) as dervied from the original circumstances.  Example: In a situation of
+    pre-download vs. post-down there can be changes to the name informaton - and a better name
+    may be found post-download.
+
+    In contract, Thunderword's design is to SHA256 hash all data files and use that as an index.
+    So renaming of files, duplicate files, moving files around on storage (duplicate network paths
+      to the same file) will end up still having the same key to the same author, title, save games, history
+      of last play, etc.  This has worked well in practice - as IF data files are stable and do not have
+      any kind of lossy compression.  This design would NOT have worked well for a MP3 player where the same
+      track (song) may have 5 variations due to compression and a SHA256 hash would provide no clue that they
+      are duplicates.
  */
 public class Story implements Serializable {
     private static final long serializableVersionID = 0L;
@@ -237,8 +258,11 @@ public class Story implements Serializable {
         }
     }
 
-    private boolean isDownloadedCachedAnswer = false;
+    protected boolean isDownloadedCachedAnswer = false;
     private boolean isDownloadedCachedCheck = false;
+    private String downloadKeepFilePath = null;
+    public File keepFile;
+    public String traceDownlaodChecked = "";
 
     public boolean isDownloadedExtensiveCheck(Context context) {
         if (isDownloadedCachedCheck) {
@@ -247,14 +271,17 @@ public class Story implements Serializable {
             // First check this run of the app, slower code path, non-cached
             isDownloadedCachedCheck = true;
             if (hashSHA256A != null) {
+                traceDownlaodChecked += "A";
                 isDownloadedCachedAnswer = true;
                 return true;
             }
             if (getZcodeFile(context).exists()) {
+                traceDownlaodChecked += "B";
                 isDownloadedCachedAnswer = true;
                 return true;
             }
             if (getGlulxFile(context).exists()) {
+                traceDownlaodChecked += "C";
                 isDownloadedCachedAnswer = true;
                 return true;
             }
@@ -262,30 +289,55 @@ public class Story implements Serializable {
             // NOW check file system for non-expanded
 
             // Same logic of download copy filepath
-            final String keepFilePath = generateDownloadFilename(context);
-            File keepFile = getDownloadKeepFile(context);
+            String keepFilePath = downloadKeepFilePath;
+            if (keepFilePath == null) {
+                traceDownlaodChecked += "D";
+                keepFilePath = generateDownloadFilename(context);
+                // keepFile = getDownloadKeepFile(context);
+                keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+            } else {
+                traceDownlaodChecked += "E";
+                keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+            }
 
             if (keepFile.exists()) {
+                traceDownlaodChecked += "F";
                 if (hashSHA256A == null) {
+                    traceDownlaodChecked += "G";
                     hashSHA256A = HashFile.hashFileSHA256(keepFile);
                 }
                 isDownloadedCachedAnswer = true;
                 return true;
             }
 
+            traceDownlaodChecked += "H";
             return false;
         }
     }
 
     public File getDownloadKeepFile(Context context) {
-        final String keepFilePath = generateDownloadFilename(context);
-        File keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+        String tracePathA = "";
+        String keepFilePath = downloadKeepFilePath;
+        File keepFile;
+        if (keepFilePath == null) {
+            tracePathA += "A";
+            keepFilePath = generateDownloadFilename(context);
+            keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+        } else {
+            tracePathA += "B";
+            keepFile = new File(keepFilePath);
+        }
+
         if (! keepFile.exists()) {
+            tracePathA += "C";
             keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".gblorb"));
             if (! keepFile.exists()) {
+                tracePathA += "D";
                 keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".zblorb"));
             }
         }
+
+        Log.i(TAG, "[StoryDL_Path] " + tracePathA + " " + keepFilePath);
         return keepFile;
     }
 
@@ -463,18 +515,44 @@ public class Story implements Serializable {
     }
 
     public String generateDownloadFilename(Context context) {
-        String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
-        String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
-        String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
+        return generateDownloadFilename(context, downloadURL);
+    }
+
+    public String generateDownloadFilename(Context context, URL sourcePathOrUrl) {
+        String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(sourcePathOrUrl);
+
+        String storyNameSanitizedWithoutExtension =  "Incant__"  + getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
 
         switch (fileExtension) {
             case ".unknown":
             case ".tmp":
-                Log.w(TAG, "generateDownloadFilename undesired extension for URL: " + downloadURL + " result: " + storyNameTotal);
+            case ".zip":
+            case ".blorb":
+            case ".blb":
+                traceDownlaodChecked += "N";
+                Log.w(TAG, "[StoryDL_Path] generateDownloadFilename undesired extension for URL: " + sourcePathOrUrl);
+                if (foundKeepFilesPathsPileA == null) {
+                    traceDownlaodChecked += "O";
+                    rebuildStaticKeepFilesPathPile(context);
+                }
+
+                // First line is started with a \n to ensure pattern is total
+                final int indexOfMatch = foundKeepFilesPathsPileA.indexOf("\n" + storyNameSanitizedWithoutExtension);
+                if (indexOfMatch < 0) {
+                    traceDownlaodChecked += "P";
+                    Log.w(TAG, "[IncantHash][StoryDL_Path] foundKeepFilesPathsPileA failed to find? " + storyNameSanitizedWithoutExtension);
+                } else {
+                    traceDownlaodChecked += "Q";
+                    final int indexOfIntEnd = foundKeepFilesPathsPileA.indexOf("\n", indexOfMatch + 1 /* length of leading 'n' */);
+                    final String beyondTheMatch = foundKeepFilesPathsPileA.substring(indexOfMatch + 1 /* length of '\n' */, indexOfIntEnd);
+                    // ALog.w("[IncantHash] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch);
+                    return beyondTheMatch;
+                }
                 break;
         }
 
-        return storyNameTotal;
+        traceDownlaodChecked += "R";
+        return storyNameSanitizedWithoutExtension + fileExtension;
     }
 
 
@@ -908,6 +986,32 @@ public class Story implements Serializable {
         return engineCode;
     }
 
+    public void setLikelyDownloadFilename(String keepFilePath) {
+        downloadKeepFilePath = keepFilePath;
+        Log.i(TAG, "[StoryDL_Path] set to " + keepFilePath);
+    }
+
+    public static String foundKeepFilesPathsPileA = null;
+
+
+    private synchronized void rebuildStaticKeepFilesPathPile(Context context) {
+        long startedWhen = System.currentTimeMillis();
+        final File downloadKeepDir = Story.getDownloadKeepDir(context);
+        int foundCount = 0;
+
+        // Ok, what about doing the same! Build a pile string
+        // First line is started with a \n to ensure pattern is total
+        StringBuilder foundKeepFilesPathsPile = new StringBuilder("\n");
+        File[] downloadKeepFiles = downloadKeepDir.listFiles();
+        for (int i = 0; i < downloadKeepFiles.length; i++) {
+            foundKeepFilesPathsPile.append(downloadKeepFiles[i].getName());
+            foundKeepFilesPathsPile.append("\n");
+            foundCount++;
+        }
+
+        foundKeepFilesPathsPileA = foundKeepFilesPathsPile.toString();
+        Log.i(TAG, "[StoryDL_Path] rebuildStaticKeepFilesPathPile took " + (System.currentTimeMillis() - startedWhen) + " found " + foundCount);
+    }
 
     private class Metadata implements XMLScraper.Handler {
         String ifid;

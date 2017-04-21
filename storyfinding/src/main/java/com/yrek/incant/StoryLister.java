@@ -73,11 +73,16 @@ public class StoryLister {
     }
 
     public List<Story> filterAndSortStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
+        int skipCount = 0;
         if (SettingsCurrent.getStoryListFilterOnlyNotDownloaded()) {
             ArrayList<Story> freshList = new ArrayList<>();
             for (int i = 0; i < stories.size(); i++) {
-                if (! stories.get(i).isDownloadedExtensiveCheck(context)) {
-                    freshList.add(stories.get(i));
+                final Story singleStroy = stories.get(i);
+                if (! singleStroy.isDownloadedExtensiveCheck(context)) {
+                    freshList.add(singleStroy);
+                    Log.d(TAG, "[listPopulate][foundDownloaded] NOT downloaded " + singleStroy.keepFile + " isDownloadedCachedAnswer " + singleStroy.isDownloadedCachedAnswer + " trace " + singleStroy.traceDownlaodChecked);
+                } else {
+                    skipCount++;
                 }
             }
             stories = freshList;
@@ -87,7 +92,7 @@ public class StoryLister {
             Collections.sort(stories, sort);
         }
 
-        Log.d(TAG, "[listPopulate] getStories final stories " + stories.size());
+        Log.d(TAG, "[listPopulate] getStories final stories " + stories.size() + " skipCount (downloaded) " + skipCount);
         return stories;
     }
 
@@ -194,6 +199,7 @@ public class StoryLister {
         if (stories == null) {
             stories = new ArrayList<Story>();
         }
+        Log.d(TAG, "[listPopulate] startingList " + stories.size());
 
         try {
             // Find downloaded (expanded Incant ap format) stories

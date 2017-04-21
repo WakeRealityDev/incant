@@ -2,6 +2,7 @@ package com.yrek.incant;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -111,6 +112,7 @@ public class StoryDetails extends Activity {
                 storyExtra0.append("\nDownloadKeep " + keepFile.getPath() + " size " + keepFile.length());
             } else {
                 storyExtra0.append("\nMISSING? DownloadKeep " + keepFile.getPath());
+                storyExtra0.setBackgroundColor(Color.parseColor("#F8BBD0"));
             }
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
@@ -132,7 +134,7 @@ public class StoryDetails extends Activity {
                             DownloadSpot.downloading.add(storyName);
                             setDownloadingObserver();
                         }
-                        new Thread() {
+                        Thread downloadStory = new Thread() {
                             @Override public void run() {
                                 String error = null;
                                 try {
@@ -157,7 +159,9 @@ public class StoryDetails extends Activity {
                                 }
                                 v.post(setView);
                             }
-                        }.start();
+                        };
+                        downloadStory.setName("DownloadStory");
+                        downloadStory.start();
                     }
                 });
 
@@ -228,7 +232,14 @@ public class StoryDetails extends Activity {
 
                 // Show the storage path
                 findViewById(R.id.download_text).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.download_text)).setText(story.getDir(StoryDetails.this).toString());
+                File storyExtractedDir = story.getDir(StoryDetails.this);
+                TextView downloadText = (TextView) findViewById(R.id.download_text);
+                if (storyExtractedDir.isDirectory()) {
+                    downloadText.setText("ExtractedFolder " + storyExtractedDir.getPath());
+                } else {
+                    downloadText.setText("MISSING? ExtractedFolder " + storyExtractedDir.getPath());
+                    downloadText.setBackgroundColor(Color.parseColor("#F8BBD0"));
+                }
 
                 // Show the Engine Provider (Thunderword) status.
                 if (EchoSpot.currentEngineProvider != null) {
