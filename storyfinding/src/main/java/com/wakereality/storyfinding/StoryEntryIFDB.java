@@ -12,25 +12,29 @@ public class StoryEntryIFDB {
     public String storyAuthor = "";
     public String storyDescription = "";
     public String storyWhimsy = "";
+    public long listingWhen = 0L;
+    public int tickeBits = 0;
 
     @Override
     public String toString() {
         if (storyDescription.length() > 60) {
-            return siteIdentity + ", " + rating + ", " + storyTitle + ", " + storyAuthor + ", " + downloadLink + ", " + storyDescription.substring(0, 60) + ", " + storyWhimsy;
+            return siteIdentity + ", " + rating + ", " + storyTitle + ", " + storyAuthor + ", " + downloadLink + ", " + storyDescription.substring(0, 60) + ", " + storyWhimsy + ", " + listingWhen;
         } else {
-            return siteIdentity + ", " + rating + ", " + storyTitle + ", " + storyAuthor + ", " + downloadLink + ", " + storyDescription + ", " + storyWhimsy;
+            return siteIdentity + ", " + rating + ", " + storyTitle + ", " + storyAuthor + ", " + downloadLink + ", " + storyDescription + ", " + storyWhimsy + ", " + listingWhen;
         }
     }
 
     public String[] toStringArray() {
-        return new String[]{
+        return new String[] {
                 siteIdentity,
                 String.valueOf(rating),
                 storyTitle,
                 storyAuthor,
                 storyWhimsy,
                 downloadLink,
-                storyDescription
+                storyDescription,
+                String.valueOf(listingWhen),
+                String.valueOf(tickeBits)
         };
     }
 }

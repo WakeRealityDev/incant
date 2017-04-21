@@ -10,9 +10,12 @@ import com.opencsv.CSVWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,14 +33,20 @@ import java.util.Locale;
  *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT a.id, AVG(rating) AS AVGrating, COUNT(rating) AS COUNTrating FROM games AS a INNER JOIN reviews AS r ON a.id = r.gameid  GROUP BY id HAVING COUNTrating > 2 ORDER BY AVGrating DESC;" |  sed 's/\t/,/g' > ifdb_rating_stars_list0.csv
  *
  * Download links for Inform stories:
- *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT id, url, displayorder,fmtid,osid,compression,compressedprimary FROM games AS a INNER JOIN gamelinks AS r ON a.id = r.gameid WHERE a.system LIKE '%Inform%';" |  sed 's/\t/,/g' > ifdb_inform_downloads_list0.csv
+ *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT id, url, displayorder,fmtid,osid,compression,compressedprimary FROM games AS a INNER JOIN gamelinks AS r ON a.id = r.gameid WHERE a.system LIKE '%Inform%' ORDER BY displayorder DESC;" |  sed 's/\t/,/g' > ifdb_inform_downloads_list0.csv
  * Filter that list
- *    grep '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv > ifdb_inform_downloads_list0_filtered.csv
+ *    grep -i '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv > ifdb_inform_downloads_list0_filtered.csv
+ * Filter that list a second pass, removing live website play links
+ *    grep -i -v 'iplayif\.com\|parchment.full.html\|play-remote\.html' ifdb_inform_downloads_list0_filtered.csv > ifdb_inform_downloads_list0_filtered_A.csv
+ *
  * Do a second pass to pick up zip files that also contain desired extensions:
- *    grep '\.zip' ifdb_inform_downloads_list0.csv | grep '\.gblorb\|\.z[1-8]\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' > ifdb_inform_downloads_list0_filtered_in_zip.csv
+ *    grep -i '\.zip' ifdb_inform_downloads_list0.csv | grep '\.gblorb\|\.z[1-8]\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' > ifdb_inform_downloads_list0_filtered_in_zip.csv
  *
  * ToDo:  there needs to be a step to filter parchment links, html links, etc. Study the ones removed from various GitHub checkins to get clues of what was done incorrectly.
  * ToDo:  Right now it isn't using the index off the download to favor the newest, an example to study is curses-r12.z5
+ *
+ * desire to add from runtime:
+ *    sha256 of file, file size, engine code, artwork filename (zip download of all artwork, filename to sha256?), language, int code to quirks (special engine requirement), adult rating
  *
  */
 
@@ -51,8 +60,18 @@ public class ReadCommaSepValuesFile {
 
     public final ArrayList<StoryEntryIFDB> foundEntries = new ArrayList<>();
 
+    // example: "2017-03-11 15:22:16"
+    SimpleDateFormat dateFormatIFDB0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
     public boolean readComplexSetOfFilesCSV(Context context) {
         Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+
+        long isRecentDateWhen = System.currentTimeMillis();
+        try {
+            isRecentDateWhen = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2016-11-15").getTime();
+        } catch (ParseException e) {
+            Log.e(TAG, "[ReadCSVfile] exception recent date", e);
+        }
 
         foundEntries.clear();
 
@@ -93,7 +112,7 @@ public class ReadCommaSepValuesFile {
         }
 
         final List<String[]> downloadLinks = new ArrayList<String[]>();
-        fileSource = "csv/ifdb_inform_downloads_list0_filtered.csv";
+        fileSource = "csv/ifdb_inform_downloads_list0_filtered_A.csv";
         try {
             final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for(;;) {
@@ -130,6 +149,20 @@ public class ReadCommaSepValuesFile {
                                     // ToDo: it is likely that this logic is pulling the OLDEST, the west link, and revisions of the same story may be skipped.
                                     //   Rework, reverse sorting in the SQL SELECT ORDER BY?
                                     if (! e[0].equals(previousEntry)) {
+
+                                        /*
+25 fields
+"gf9agvi3a39ub3z6","A travers la forêt","Julien Frison","NULL","TRAVERS LA FORêT, A","FRISON, JULIEN","French,GPL,I7 source available","2013-11-20 01:00:00","1","GPL","Inform 7","fr","Fiction interactive (jeu) à l'inspiration oscillant entre Tolkien et D&D","NULL","NULL","NULL","NULL","NULL","NULL","https://github.com/jfrison/A-travers-la-foret.inform","Found on GitHub but not listed here","2017-03-06 20:46:02","7gfpmfp63105d53g","2017-03-11 15:22:16","2"
+why no date on output of this one?
+"cg4j40i7wq34ggo1","Not Just An Ordinary Ballerina","Jim Aikin","Jim Aikin {2qrzwolh24lwg44w}","NOT JUST AN ORDINARY BALLERINA","AIKIN, JIM","Xyzzy Awards 1999,adaptive hints,built-in hints,character graphics,female protagonist,guided maze,cover art,Christmas,Holiday Theme,parser,cow,milk","1999-01-01 00:00:00","1","Freeware","Inform 6","en","NULL","http://ifdb.tads.org/viewgame?coverart&id=cg4j40i7wq34ggo1","NULL","NULL","Seasonal","Nasty","490","NULL","NULL","2007-09-29 00:00:00","3wcnay8ie4ajtyrm","2015-06-19 22:45:31","6"
+                                         */
+
+                                        switch (e[0]) {
+                                            case "cg4j40i7wq34ggo1":
+                                                Log.w("ReadCSV", "[ReadCSV] case study on row " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
+                                                break;
+                                        }
+
                                         previousEntry = e[0];
                                         targetMatch++;
                                         final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
@@ -148,6 +181,36 @@ public class ReadCommaSepValuesFile {
                                         } else {
                                             storyEntry.storyWhimsy = e[16].trim();
                                         }
+                                        // The first posting date
+                                        String dateFieldA = e[21];
+                                        if (dateFieldA.isEmpty()) {
+                                            // Missing create date, try recently edited date
+                                            dateFieldA = e[23];
+                                        }
+                                        if (dateFieldA.contains("-")) {
+                                            try {
+                                                storyEntry.listingWhen = dateFormatIFDB0.parse(dateFieldA).getTime();
+                                                if (storyEntry.listingWhen >= isRecentDateWhen) {
+                                                    storyEntry.tickeBits = 1;
+                                                }
+                                                final long listingElapsed = System.currentTimeMillis() - storyEntry.listingWhen;
+                                                if (listingElapsed < (1000L * 60L * 60L * 24L * 90L)) {
+                                                    storyEntry.tickeBits += 2;
+                                                    Log.w("ReadCSV", "[ReadCSV] recent date " + dateFieldA + " elapsed " + listingElapsed);
+                                                } else {
+                                                    // Log.w("ReadCSV", "[ReadCSV] NOT recent date " + dateFieldA + " elapsed " + listingElapsed);
+                                                }
+                                            } catch (ParseException e1) {
+                                                Log.w("ReadCSV", "[ReadCSV] problem with date ", e1);
+                                            }
+                                        } else {
+                                            Log.w("ReadCSV", "[ReadCSV] problem with date, no dash? " + dateFieldA);
+                                        }
+
+                                        if (storyEntry.listingWhen == 0L) {
+                                            Log.w("ReadCSV", "[ReadCSV] why 0L listingWhen? " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
+                                        }
+
                                         foundEntries.add(storyEntry);
                                         Log.i("ReadCSV", "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
                                     }
@@ -175,7 +238,7 @@ public class ReadCommaSepValuesFile {
         });
 
         // save copy on dev system once in a white.
-        // saveCopyAsCSV(context);
+        saveCopyAsCSV(context);
 
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
