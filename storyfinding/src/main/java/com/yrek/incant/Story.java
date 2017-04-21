@@ -1004,10 +1004,12 @@ public class Story implements Serializable {
         // First line is started with a \n to ensure pattern is total
         StringBuilder foundKeepFilesPathsPile = new StringBuilder("\n");
         File[] downloadKeepFiles = downloadKeepDir.listFiles();
-        for (int i = 0; i < downloadKeepFiles.length; i++) {
-            foundKeepFilesPathsPile.append(downloadKeepFiles[i].getName());
-            foundKeepFilesPathsPile.append("\n");
-            foundCount++;
+        if (downloadKeepFiles != null) {
+            for (int i = 0; i < downloadKeepFiles.length; i++) {
+                foundKeepFilesPathsPile.append(downloadKeepFiles[i].getName());
+                foundKeepFilesPathsPile.append("\n");
+                foundCount++;
+            }
         }
 
         foundKeepFilesPathsPileA = foundKeepFilesPathsPile.toString();

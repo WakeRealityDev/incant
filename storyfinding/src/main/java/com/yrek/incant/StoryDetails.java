@@ -16,11 +16,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.recyclerplayground.adapters.StoryBrowseAdapter;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
+import com.wakereality.thunderstrike.dataexchange.EngineConst;
 import com.wakereality.thunderstrike.dataexchange.EventEngineProviderChange;
 import com.wakereality.thunderstrike.userinterfacehelper.PickEngineProviderHelper;
 
@@ -201,7 +203,11 @@ public class StoryDetails extends Activity {
 
                 pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) findViewById(R.id.external_provider_activity), (CheckBox) findViewById((R.id.external_provider_noprompt)));
 
-                int outEngine = story.isZcode(StoryDetails.this) ? R.string.play_zcode : R.string.play_glulx;
+                int outEngineStringId = story.isZcode(StoryDetails.this) ? R.string.play_zcode : R.string.play_glulx;
+                CharSequence outEngine = StoryDetails.this.getText(outEngineStringId);
+                if (story.getEngineCode() != EngineConst.ENGINE_UNKNOWN) {
+                    outEngine = "[" + StoryBrowseAdapter.engineCodeToNameCrossReference.get(story.getEngineCode()) + "]";
+                }
                 ((TextView) findViewById(R.id.play_text)).setText(outEngine);
                 if (story.getCoverImageFile(StoryDetails.this).exists()) {
                     findViewById(R.id.cover).setVisibility(View.VISIBLE);

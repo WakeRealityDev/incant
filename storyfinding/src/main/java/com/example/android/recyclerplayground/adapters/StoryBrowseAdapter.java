@@ -117,7 +117,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     
     private TextAppearanceSpan headlineStyle;
 
-    public SparseArray<String> engineCodeToNameCrossReference = new SparseArray<>();
+    public static SparseArray<String> engineCodeToNameCrossReference = new SparseArray<>();
 
     public void buildNamesForEngines() {
         engineCodeToNameCrossReference.clear();
