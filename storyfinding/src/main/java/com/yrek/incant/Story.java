@@ -593,6 +593,8 @@ public class Story implements Serializable {
             if (inputStream == null) {
                 magic = downloadTo(context, downloadURL, downloadTargetFile);
                 if (downloadTargetFile.exists()) {
+                    // Invalidate the cache
+                    isDownloadedCachedCheck = false;
                     freshHashA = getDigestMd5OfFile(downloadTargetFile.toString());
                     Log.d(TAG, "download file freshHashA " + freshHashA);
                 }
@@ -763,7 +765,7 @@ public class Story implements Serializable {
                 File keepFile = new File(getDownloadKeepDir(context), storyNameTotal);
                 boolean goodFileCopy = FileCopy.copyFile(endingRenamedTargetFile, keepFile);
                 if (!goodFileCopy) {
-                    Log.e(TAG, "[storyFileShare] file copy failed for duplicate " + downloadTargetFile);
+                    Log.e(TAG, "[storyFileShare][mediaStoreScan] file copy failed for duplicate " + downloadTargetFile);
                 } else {
                     Log.d(TAG, "[storyFileShare][mediaStoreScan] file copy for duplicate to share " + downloadTargetFile + " to " + keepFile.getPath());
                     // Notify all interested apps that there is a new file to add to their records.
@@ -792,12 +794,12 @@ public class Story implements Serializable {
                                 @Override
                                 public void onScanCompleted(String path, Uri uri)
                                 {
-                                    Log.d(TAG, "[mediaStoreScan] onScanCompleted " + path + " uri " + uri.toString());
+                                    Log.d(TAG, "[storyFileShare][mediaStoreScan] onScanCompleted " + path + " uri " + uri.toString());
                                 }
                             });
                 }
             } else {
-                Log.w(TAG, "[storyFileShare] downloaded false");
+                Log.w(TAG, "[storyFileShare][mediaStoreScan] downloaded false");
             }
 
             if (!downloaded) {
