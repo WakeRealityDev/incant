@@ -110,6 +110,7 @@ public class StoryDetails extends Activity {
             File keepFile = story.getDownloadKeepFile(StoryDetails.this);
             if (keepFile.exists()) {
                 storyExtra0.append("\nDownloadKeep " + keepFile.getPath() + " size " + keepFile.length());
+                storyExtra0.setBackgroundColor(Color.TRANSPARENT);
             } else {
                 storyExtra0.append("\nMISSING? DownloadKeep " + keepFile.getPath());
                 storyExtra0.setBackgroundColor(Color.parseColor("#F8BBD0"));
@@ -236,6 +237,7 @@ public class StoryDetails extends Activity {
                 TextView downloadText = (TextView) findViewById(R.id.download_text);
                 if (storyExtractedDir.isDirectory()) {
                     downloadText.setText("ExtractedFolder " + storyExtractedDir.getPath());
+                    downloadText.setBackgroundColor(Color.TRANSPARENT);
                 } else {
                     downloadText.setText("MISSING? ExtractedFolder " + storyExtractedDir.getPath());
                     downloadText.setBackgroundColor(Color.parseColor("#F8BBD0"));

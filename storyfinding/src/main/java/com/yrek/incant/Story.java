@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -1011,6 +1012,29 @@ public class Story implements Serializable {
 
         foundKeepFilesPathsPileA = foundKeepFilesPathsPile.toString();
         Log.i(TAG, "[StoryDL_Path] rebuildStaticKeepFilesPathPile took " + (System.currentTimeMillis() - startedWhen) + " found " + foundCount);
+    }
+
+    public boolean prepForIncantEngineLaunch(Context context) {
+        File storyExtractedDir = getDir(context);
+        if (storyExtractedDir.isDirectory()) {
+            // is extracted, good
+            return true;
+        } else {
+            if (keepFile != null) {
+                if (keepFile.exists()) {
+                    // perform a disk to disk download
+                    try {
+                        InputStream storyFileInputStream = new FileInputStream(keepFile);
+                        download(context, storyFileInputStream);
+                    } catch (IOException e) {
+                        Log.e(TAG, "keepFile exception", e);
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private class Metadata implements XMLScraper.Handler {

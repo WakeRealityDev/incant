@@ -9,6 +9,7 @@ import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
 import com.yrek.incant.GlulxStory;
 import com.yrek.incant.Story;
+import com.yrek.incant.StoryDetails;
 import com.yrek.incant.ZCodeStory;
 import com.yrek.incant.glk.GlkActivity;
 
@@ -34,13 +35,15 @@ public class StoryEngineLaunchHelper {
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventLocalStoryLaunch event) {
-        Intent intent = new Intent(event.callingActivity, GlkActivity.class);
-        if (event.story.isZcode(event.callingActivity)) {
-            intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(event.story, event.story.getName(event.callingActivity)));
-        } else {
-            intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getName(event.callingActivity)));
+        if (event.story.prepForIncantEngineLaunch(event.callingActivity)) {
+            Intent intent = new Intent(event.callingActivity, GlkActivity.class);
+            if (event.story.isZcode(event.callingActivity)) {
+                intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(event.story, event.story.getName(event.callingActivity)));
+            } else {
+                intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getName(event.callingActivity)));
+            }
+            event.callingActivity.startActivity(intent);
         }
-        event.callingActivity.startActivity(intent);
     }
 
     @SuppressWarnings("unused")
