@@ -167,6 +167,11 @@ why no date on output of this one?
                                         targetMatch++;
                                         final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
                                         storyEntry.downloadLink = l[1];
+                                        if (! l[6].equals("NULL")) {
+                                            // If the zip-inside file is populated, this is probably an undesired link.
+                                            Log.w("ReadCSV", "[ReadCSV] SKIP as likely a zip file l[1] " + l[1] + " l[6] " + l[6]);
+                                            continue;
+                                        }
                                         storyEntry.siteIdentity = e[0];
                                         storyEntry.rating = Float.valueOf(r[1]);
                                         storyEntry.storyTitle = e[1].trim();

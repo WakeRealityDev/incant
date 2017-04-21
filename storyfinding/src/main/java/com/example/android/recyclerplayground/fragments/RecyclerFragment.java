@@ -299,6 +299,11 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Story story = mAdapter.getStoryForPosition(position);
+        if (story == null) {
+            Log.e("RecyclerFragment", "RecyclerView click on position confused");
+            return;
+        }
+
         if (1==2) {
             Toast.makeText(getActivity(),
                     "Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),
@@ -332,6 +337,12 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Story story = mAdapter.getStoryForPosition(position);
+        if (story == null) {
+            Log.e("RecyclerFragment", "RecyclerView click on position confused");
+            // True indicates long-click was valid, doesn't mean the action as valid.
+            return true;
+        }
+
         if (1==2) {
             Toast.makeText(getActivity(),
                     "LONG Clicked: " + position + ", index " + mList.indexOfChild(view) + " " + story.getName(getContext()),

@@ -222,7 +222,12 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     }
 
     public Story getStoryForPosition(int position) {
-        return mItems.get(position);
+        try {
+            return mItems.get(position);
+        } catch (Exception e) {
+            Log.e(TAG, "[RVData] getStoryForPosition exception", e);
+            return null;
+        }
     }
 
 
