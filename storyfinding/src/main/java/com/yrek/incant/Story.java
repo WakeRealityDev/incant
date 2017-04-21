@@ -549,6 +549,15 @@ public class Story implements Serializable {
                     // ALog.w("[IncantHash] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch);
                     return beyondTheMatch;
                 }
+
+                /*
+                if (fileExtension.equals(".unknown")) {
+                    if (getName(context).contains("Zork")) {
+                        Log.d(TAG, "Forcing '_Zork' file extention to 'z5' zip file");
+                        fileExtension = ".z5";
+                    }
+                }
+                */
                 break;
         }
 
@@ -636,8 +645,24 @@ public class Story implements Serializable {
                         magic = unzipTo(context, downloadTargetFile, tmpEntry, zipEntry);
                         // tmpEntry.renameTo(downloadTargetFile);
                         fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(zipEntry);
+                        switch (fileExtension) {
+                            case ".unknown":
+                                // We have a case where the files pre-date naming conventions, named '.dat' inside '.zip'
+                                if (storyNameSanitized.contains("Zork")) {
+                                    Log.d(TAG, "Forcing 'Zork' file extension to 'z5' zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " from zipEntry " + zipEntry + " totalname: " + storyNameTotal);
+                                    fileExtension = ".z5";
+                                } else if (storyNameSanitized.contains("Plundered")) {
+                                    Log.d(TAG, "Forcing 'Plundered' file extension to 'z5' zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " from zipEntry " + zipEntry + " totalname: " + storyNameTotal);
+                                    fileExtension = ".z5";
+                                } else if (storyNameSanitized.contains("Bureaucracy")) {
+                                    Log.d(TAG, "Forcing 'Bureaucracy' file extension to 'z4' zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " from zipEntry " + zipEntry + " totalname: " + storyNameTotal);
+                                    fileExtension = ".z4";
+                                }
+
+                                break;
+                        }
                         storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
-                        Log.d(TAG, "zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " totalname: " + storyNameTotal);
+                        Log.d(TAG, "zip file extract target '" + downloadTargetFile + "' got extension: " + fileExtension + " from zipEntry " + zipEntry + " totalname: " + storyNameTotal);
 
                         // We no longer want the shell, the zip, but the nut inside the shell.
                         downloadTargetFile = tmpEntry;
@@ -797,6 +822,9 @@ public class Story implements Serializable {
                                     Log.d(TAG, "[storyFileShare][mediaStoreScan] onScanCompleted " + path + " uri " + uri.toString());
                                 }
                             });
+
+                    // rebuild cache of downloaded filenames
+                    rebuildStaticKeepFilesPathPile(context);
                 }
             } else {
                 Log.w(TAG, "[storyFileShare][mediaStoreScan] downloaded false");

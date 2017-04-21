@@ -128,7 +128,7 @@ class WindowTextBuffer extends Window {
         final ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(activity, onScaleGestureListener());
         ScrollView scrollView = new ScrollView(context) {
             @Override public boolean onTouchEvent(MotionEvent motionEvent) {
-                boolean _ = gestureDetector.onTouchEvent(motionEvent) || scaleGestureDetector.onTouchEvent(motionEvent);
+                boolean touchResult = gestureDetector.onTouchEvent(motionEvent) || scaleGestureDetector.onTouchEvent(motionEvent);
                 return super.onTouchEvent(motionEvent);
             }
             @Override protected void onScrollChanged(int left, int top, int oldLeft, int oldTop) {

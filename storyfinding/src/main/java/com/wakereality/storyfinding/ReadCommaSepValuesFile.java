@@ -22,7 +22,7 @@ import java.util.Locale;
 /**
  * Created by Stephen A Gutknecht on 4/1/17.
  * on Linux, this produces CSV file that has all CRLF intact and proper escaping
- *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT * FROM games WHERE system LIKE '%Inform%' OR system LIKE '%Supergl%' OR system LIKE '%ZETA%';" | awk -F'\t' '{ sep=""; for(i = 1; i <= NF; i++) { gsub(/\\t/,"\t",$i); gsub(/\\n/,"\n",$i); gsub(/\%/,"__PERCENT__",$i); gsub(/\\\\/,"\\",$i); gsub(/"/,"\"\"",$i); printf sep"\""$i"\""; sep=","; if(i==NF){printf"\n"}}}' > ifdb_inform_list0.csv
+ *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT * FROM games WHERE system LIKE '%Inform%' OR system LIKE '%Supergl%' OR system LIKE '%ZETA%' OR system = 'ZIL';" | awk -F'\t' '{ sep=""; for(i = 1; i <= NF; i++) { gsub(/\\t/,"\t",$i); gsub(/\\n/,"\n",$i); gsub(/\%/,"__PERCENT__",$i); gsub(/\\\\/,"\\",$i); gsub(/"/,"\"\"",$i); printf sep"\""$i"\""; sep=","; if(i==NF){printf"\n"}}}' > ifdb_inform_list0.csv
  * awk tip here:
  *    http://stackoverflow.com/questions/15640287/change-output-format-for-mysql-command-line-results-to-csv/17910254#17910254
  *
@@ -170,6 +170,7 @@ why no date on output of this one?
                                         if (! l[6].equals("NULL")) {
                                             // If the zip-inside file is populated, this is probably an undesired link.
                                             Log.w("ReadCSV", "[ReadCSV] SKIP as likely a zip file l[1] " + l[1] + " l[6] " + l[6]);
+                                            storyEntry.extractFilename = l[6];
                                             continue;
                                         }
                                         storyEntry.siteIdentity = e[0];
@@ -249,6 +250,9 @@ why no date on output of this one?
         return true;
     }
 
+
+   // 1. fix zork filenames from unknown
+   // 2. sha256 matchup
 
     public boolean readSimpleFileOneObjectCSV(Context context) {
         Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
