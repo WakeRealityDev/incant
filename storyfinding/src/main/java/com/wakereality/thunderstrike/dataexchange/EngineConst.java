@@ -34,6 +34,7 @@ public class EngineConst {
     public static final int ENGINE_MAGNETIC_SCROLLS = 900;
     public static final int ENGINE_ALAN2 = 1000;
     public static final int ENGINE_ALAN3 = 1001;
+    public static final int ENGINE_QUEST = 1100;
 
 
 
@@ -62,31 +63,33 @@ public class EngineConst {
         engineLibraryName.put(ENGINE_MAGNETIC_SCROLLS, "magnetic");
         engineLibraryName.put(ENGINE_ALAN2,            "alan2");
         engineLibraryName.put(ENGINE_ALAN3,            "alan3");
+        engineLibraryName.put(ENGINE_QUEST,            "geas");
     }
 
     public static final int[] engineFlatIndex = new int[] {
-        ENGINE_UNKNOWN,
-        ENGINE_GLULX_GLULXE,
-        ENGINE_GLULX_GIT,
-        ENGINE_GLULX_GLULX_TYPESCRIPT,
-        ENGINE_BLORB_UNKNOWN,
-        ENGINE_GLULX_DEFAULT,
-        ENGINE_Z_BOCFEL,
-        ENGINE_Z_FROTZ,
-        ENGINE_Z_NITFOL,
-        ENGINE_Z_DEFAULT,
-        ENGINE_TADS_ANY,
-        ENGINE_TADS2,
-        ENGINE_TADS3,
-        ENGINE_SCOTT_ADAMS,
-        ENGINE_ADVSYS,
-        ENGINE_LEVEL9,
-        ENGINE_ADRIFT,
-        ENGINE_SQUIFFY,
-        ENGINE_HUGO,
-        ENGINE_MAGNETIC_SCROLLS,
-        ENGINE_ALAN2,
-        ENGINE_ALAN3,
+            ENGINE_UNKNOWN,
+            ENGINE_GLULX_GLULXE,
+            ENGINE_GLULX_GIT,
+            ENGINE_GLULX_GLULX_TYPESCRIPT,
+            ENGINE_BLORB_UNKNOWN,
+            ENGINE_GLULX_DEFAULT,
+            ENGINE_Z_BOCFEL,
+            ENGINE_Z_FROTZ,
+            ENGINE_Z_NITFOL,
+            ENGINE_Z_DEFAULT,
+            ENGINE_TADS_ANY,
+            ENGINE_TADS2,
+            ENGINE_TADS3,
+            ENGINE_SCOTT_ADAMS,
+            ENGINE_ADVSYS,
+            ENGINE_LEVEL9,
+            ENGINE_ADRIFT,
+            ENGINE_SQUIFFY,
+            ENGINE_HUGO,
+            ENGINE_MAGNETIC_SCROLLS,
+            ENGINE_ALAN2,
+            ENGINE_ALAN3,
+            ENGINE_QUEST,
     };
 
 
@@ -95,6 +98,8 @@ public class EngineConst {
     public static final String LAUNCH_PARAM_KEY_ENGINECODE   = "enginecode";
     public static final String LAUNCH_PARAM_KEY_LAUNCHSTORY  = "launch";
     public static final String LAUNCH_PARAM_KEY_ACTIVITYCODE = "activitycode";
+    public static final String LAUNCH_PARAM_KEY_HASH_STORY   = "datapick";
+    public static final String LAUNCH_PARAM_KEY_FILE_STORY_PATH = "path";
 
     public static final int LAUNCH_PARAM_LAUNCHCODE_AUTO = 1;
     public static final int LAUNCH_PARAM_UNKNOWN_VALUE = -1;
@@ -115,6 +120,7 @@ public class EngineConst {
     public static final String ENGINE_FRIENDLYNAME_SCOTT_ADAMS = "Scott Adams";
     public static final String ENGINE_FRIENDLYNAME_ADVSYS = "AdvSys";
     public static final String ENGINE_FRIENDLYNAME_ADRIFT = "Adrift";
+    public static final String ENGINE_FRIENDLYNAME_QUEST = "Quest";
 
     public static final int PAYLOAD_TO_ENGINE_USE_GENERAL_PURPOSE = 0;
     public static final int PAYLOAD_TO_ENGINE_USE_REMGLK_INIT = 1;
@@ -139,6 +145,7 @@ public class EngineConst {
             ENGINE_MAGNETIC_SCROLLS,
             ENGINE_ALAN2,
             ENGINE_ALAN3,
+            ENGINE_QUEST,
     };
 
     public static final String[] engineTypesFlatNames = new String[] {
@@ -156,5 +163,7 @@ public class EngineConst {
             ENGINE_FRIENDLYNAME_MAGNETIC_SCROLLS,
             ENGINE_FRIENDLYNAME_ALAN2,
             ENGINE_FRIENDLYNAME_ALAN3,
+            ENGINE_FRIENDLYNAME_QUEST,
     };
+
 }

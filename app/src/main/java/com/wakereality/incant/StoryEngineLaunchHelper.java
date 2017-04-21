@@ -7,6 +7,7 @@ import android.util.Log;
 import com.wakereality.storyfinding.EventExternalEngineStoryLaunch;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.storyfinding.EventLocalStoryLaunch;
+import com.wakereality.thunderstrike.dataexchange.EngineConst;
 import com.yrek.incant.GlulxStory;
 import com.yrek.incant.Story;
 import com.yrek.incant.StoryDetails;
@@ -68,21 +69,30 @@ public class StoryEngineLaunchHelper {
         long launchWhen = System.currentTimeMillis();
         intent.putExtra("sentwhen", launchWhen);
 
-        if (story.isZcode(context)) {
-            intent.setAction("interactivefiction.engine.zmachine");
-        } else {
-            intent.setAction("interactivefiction.engine.glulx");
-        }
-        // Not all stories come in Blorb packages, check first, but if missing go for the data file.
-        File exportStoryDataFile = story.getBlorbFile(context);
-        if (! exportStoryDataFile.exists()) {
+        String launchInfo = "??";
+        if (story.isExtractedForIncantEngine(context)) {
             if (story.isZcode(context)) {
-                exportStoryDataFile = story.getZcodeFile(context);
+                intent.setAction("interactivefiction.engine.zmachine");
             } else {
-                exportStoryDataFile = story.getGlulxFile(context);
+                intent.setAction("interactivefiction.engine.glulx");
             }
+            // Not all stories come in Blorb packages, check first, but if missing go for the data file.
+            File exportStoryDataFile = story.getBlorbFile(context);
+            if (!exportStoryDataFile.exists()) {
+                if (story.isZcode(context)) {
+                    exportStoryDataFile = story.getZcodeFile(context);
+                } else {
+                    exportStoryDataFile = story.getGlulxFile(context);
+                }
+            }
+            launchInfo = EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH + " " + exportStoryDataFile.getPath();
+            intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH, exportStoryDataFile.getPath());
+        } else {
+            intent.setAction("interactivefiction.engine.automatch");
+            launchInfo = EngineConst.LAUNCH_PARAM_KEY_HASH_STORY + " " + story.getStoryHashSHA256();
+            intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_HASH_STORY, story.getStoryHashSHA256());
         }
-        intent.putExtra("path", exportStoryDataFile.getPath());
+
         int myLaunchToken = launchToken.incrementAndGet();
         // Set default value.
         int selectedLaunchActivity = event.targetActivity;
@@ -90,7 +100,7 @@ public class StoryEngineLaunchHelper {
             selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
         }
 
-        Log.i(TAG, "path " + exportStoryDataFile.getPath() + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
+        Log.i(TAG, "[engineLaunch] " + launchInfo  + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
 
         intent.putExtra("activitycode", selectedLaunchActivity);
         intent.putExtra("interrupt", event.interruptEngineIfRunning);

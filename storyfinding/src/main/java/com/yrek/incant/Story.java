@@ -1014,6 +1014,16 @@ public class Story implements Serializable {
         Log.i(TAG, "[StoryDL_Path] rebuildStaticKeepFilesPathPile took " + (System.currentTimeMillis() - startedWhen) + " found " + foundCount);
     }
 
+
+    public boolean isExtractedForIncantEngine(Context context) {
+        File storyExtractedDir = getDir(context);
+        if (storyExtractedDir.isDirectory()) {
+            // is extracted, good
+            return true;
+        }
+        return false;
+    }
+
     public boolean prepForIncantEngineLaunch(Context context) {
         File storyExtractedDir = getDir(context);
         if (storyExtractedDir.isDirectory()) {
