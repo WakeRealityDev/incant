@@ -289,7 +289,14 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
                 storyDescription.setText("");
             } else {
                 // Simple HTML can be found, the easiest way to detect is a close tag like "</b>" as that pattern isn't likely to happen in non-HTML. See ToDo: above.
+                // Performance probably isn't a huge concern, as RecyclerView is very good about only hitting the data rows that are on-screen at the time.
+                boolean useRenderingHTML = false;
                 if (storyDescriptionValue.contains("</")) {
+                    useRenderingHTML = true;
+                } else if (storyDescriptionValue.contains("&#")) {
+                    useRenderingHTML = true;
+                }
+                if (useRenderingHTML) {
                     // Going to HTML will strip whitespace behavior, so re-add newlines.  description of story "Gaucho" is a good test.
                     // Trim leading and trailing too, we only want inner newlines.
                     // ToDo: prep of CSV needs to trim. story example: "bsifhw1ik8524evd","Under the Bed"

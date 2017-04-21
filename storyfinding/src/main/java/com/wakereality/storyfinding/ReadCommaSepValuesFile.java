@@ -27,12 +27,12 @@ import java.util.Locale;
  *    cat ifdb-archive.sql | less -S
  *
  * Star ratings:
- *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT a.id, AVG(rating) AS AVGrating, COUNT(rating) AS COUNTrating FROM games AS a INNER JOIN reviews AS r ON a.id = r.gameid  GROUP BY id HAVING COUNTrating > 2 ORDER BY AVGrating DESC;" |  sed 's/\t/,/g' > ifdb_stars_list0.csv
+ *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT a.id, AVG(rating) AS AVGrating, COUNT(rating) AS COUNTrating FROM games AS a INNER JOIN reviews AS r ON a.id = r.gameid  GROUP BY id HAVING COUNTrating > 2 ORDER BY AVGrating DESC;" |  sed 's/\t/,/g' > ifdb_rating_stars_list0.csv
  *
  * Download links for Inform stories:
  *    mysql --login-path=wakedev -ss --database=ifdbarchive --batch --skip-column-names -e "SELECT id, url, displayorder,fmtid,osid,compression,compressedprimary FROM games AS a INNER JOIN gamelinks AS r ON a.id = r.gameid WHERE a.system LIKE '%Inform%';" |  sed 's/\t/,/g' > ifdb_inform_downloads_list0.csv
  * Filter that list
- *    grep '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv
+ *    grep '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv > ifdb_inform_downloads_list0_filtered.csv
  * Do a second pass to pick up zip files that also contain desired extensions:
  *    grep '\.zip' ifdb_inform_downloads_list0.csv | grep '\.gblorb\|\.z[1-8]\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' > ifdb_inform_downloads_list0_filtered_in_zip.csv
  *
@@ -42,6 +42,8 @@ import java.util.Locale;
  */
 
 public class ReadCommaSepValuesFile {
+
+    public static final String TAG = "ReadCSVFile";
 
     public static String rc(final String inString) {
         return inString.replace(",", "&");
@@ -55,10 +57,10 @@ public class ReadCommaSepValuesFile {
         foundEntries.clear();
 
         String next[] = {};
-        List<String[]> informStoriesList = new ArrayList<String[]>();
+        final List<String[]> informStoriesList = new ArrayList<String[]>();
+        String fileSource = "csv/ifdb_inform_list0.csv";
         try {
-            String fileSource = "csv/ifdb_inform_list0.csv";
-            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -68,15 +70,15 @@ public class ReadCommaSepValuesFile {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "[ReadCSVfile] exception file " + fileSource, e);
             return false;
         }
 
 
-        List<String[]> ratingsStars = new ArrayList<String[]>();
+        final List<String[]> ratingsStars = new ArrayList<String[]>();
+        fileSource = "csv/ifdb_rating_stars_list0.csv";
         try {
-            String fileSource = "csv/ifdb_rating_stars_list0.csv";
-            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -86,14 +88,14 @@ public class ReadCommaSepValuesFile {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "[ReadCSVfile] exception file " + fileSource, e);
             return false;
         }
 
-        List<String[]> downloadLinks = new ArrayList<String[]>();
+        final List<String[]> downloadLinks = new ArrayList<String[]>();
+        fileSource = "csv/ifdb_inform_downloads_list0_filtered.csv";
         try {
-            String fileSource = "csv/ifdb_inform_downloads_list0_filtered.csv";
-            CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -103,7 +105,7 @@ public class ReadCommaSepValuesFile {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "[ReadCSVfile] exception file " + fileSource, e);
             return false;
         }
 
@@ -134,17 +136,17 @@ public class ReadCommaSepValuesFile {
                                         storyEntry.downloadLink = l[1];
                                         storyEntry.siteIdentity = e[0];
                                         storyEntry.rating = Float.valueOf(r[1]);
-                                        storyEntry.storyTitle = e[1];
-                                        storyEntry.storyAuthor = e[2];
+                                        storyEntry.storyTitle = e[1].trim();
+                                        storyEntry.storyAuthor = e[2].trim();
                                         if (e[12].equals("NULL")) {
                                             storyEntry.storyDescription = "";
                                         } else {
-                                            storyEntry.storyDescription = e[12];
+                                            storyEntry.storyDescription = e[12].trim();
                                         }
                                         if (e[16].equals("NULL")) {
                                             storyEntry.storyWhimsy = "";
                                         } else {
-                                            storyEntry.storyWhimsy = e[16];
+                                            storyEntry.storyWhimsy = e[16].trim();
                                         }
                                         foundEntries.add(storyEntry);
                                         Log.i("ReadCSV", "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());

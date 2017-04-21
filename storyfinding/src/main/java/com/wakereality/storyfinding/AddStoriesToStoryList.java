@@ -14,8 +14,8 @@ public class AddStoriesToStoryList {
         if (StoryListSpot.readCommaSepValuesFile == null) {
             StoryListSpot.readCommaSepValuesFile = new ReadCommaSepValuesFile();
         }
-        // readCommaSepValuesFile.readComplexSetOfFilesCSV(getApplicationContext());
-        StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
+        StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV(appContext);
+        // StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
         System.gc();
     }
 }
