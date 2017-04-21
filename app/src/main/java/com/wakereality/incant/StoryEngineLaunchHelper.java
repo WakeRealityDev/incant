@@ -85,6 +85,8 @@ public class StoryEngineLaunchHelper {
                     exportStoryDataFile = story.getGlulxFile(context);
                 }
             }
+            // NOTE: This assumes that the database on the Engine Prover has the SHA256 to path mapping - another option
+            //   is to send path to the file instead of SHA256.
             launchInfo = EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH + " " + exportStoryDataFile.getPath();
             intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH, exportStoryDataFile.getPath());
         } else {
@@ -102,7 +104,7 @@ public class StoryEngineLaunchHelper {
 
         Log.i(TAG, "[engineLaunch] " + launchInfo  + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
 
-        intent.putExtra("activitycode", selectedLaunchActivity);
+        intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_ACTIVITYCODE, selectedLaunchActivity);
         intent.putExtra("interrupt", event.interruptEngineIfRunning);
         intent.putExtra("launchtoken", "A" + myLaunchToken);
 

@@ -117,7 +117,9 @@ public class StoryDetails extends Activity {
             }
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
-            ((TextView) findViewById(R.id.story_hash_info)).setText("MD5: " + story.getHash());
+            TextView storyHashInfo = (TextView) findViewById(R.id.story_hash_info);
+            storyHashInfo.setText("MD5: " + story.getHash() + " SHA-256: " + story.getStoryHashSHA256());
+
             if (!story.isDownloadedExtensiveCheck(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.GONE);
