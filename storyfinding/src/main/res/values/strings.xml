@@ -17,7 +17,7 @@
     <string name="engine_provider_store_link0">https://Play.Google.com/apps/testing/com.wakereality.thunderword</string>
     <string name="storylist_header_extra_thunderwordapp0">Thunderword app can be installed from Google Play at: https://Play.Google.com/apps/testing/com.wakereality.thunderword and is also on the Amazon appstore. For additional compatibility and faster performance with some fiction stories, both apps work together and extra options will appear.</string>
     <!-- The new RecyclerView list has an expandable section, so this message is shorter and only for provider absent -->
-    <string name="engine_none_detected_shorter">Thunderword or other engine provider apps not detected.</string>
+    <string name="engine_none_detected_shorter">Thunderword or other engine apps not detected</string>
 
 
     <string name="ifdb_viewgame">http://ifdb.tads.org/viewgame?ifid=%s</string>

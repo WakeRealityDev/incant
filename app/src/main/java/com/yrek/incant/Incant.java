@@ -343,7 +343,7 @@ public class Incant extends Activity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final Story story = getItem(position);
-            final String storyName = story == null ? null : story.getName(Incant.this);
+            final String storyName = story == null ? null : story.getStorageName(Incant.this);
             if (convertView == null) {
                 convertView = Incant.this.getLayoutInflater().inflate(R.layout.story, parent, false);
             }

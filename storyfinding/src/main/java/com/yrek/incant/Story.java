@@ -120,6 +120,33 @@ public class Story implements Serializable {
             Log.v(TAG, "trace Story create " + this.author + ":" + this.name + ":" + this.title);
     }
 
+
+/*
+########################################################################################################################################################
+    ## The messy section, filename generation
+*/
+
+//LEFT_WHERE: on Samsung Galxy emulator, freshly wiped
+//      Why isn't "Life on Mars" showing up twice? is CSV import not creating two?
+
+    // IFDB MysQL database conventions
+    private String languageIdentifier = "en";
+
+    /*
+    This is the start of an attempt to split the usage of
+    The story "Life on Mars?" on IFDB shows this problem of assuming two stories can't ahve the identical title
+       SHA-256 hash would say they are non-equal, which is what we want. And multiple-editions of the same story, etc.
+     */
+    public String getStorageName(Context context) {
+        if (! languageIdentifier.equals("en")) {
+            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_") + "__" + languageIdentifier;
+        } else {
+            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        }
+    }
+
     public String getName(Context context) {
         if (name.startsWith("newDL"))
         {
@@ -149,6 +176,76 @@ public class Story implements Serializable {
     public String getNamePure(Context context) {
         return name;
     }
+
+
+    public String generateDownloadFilename(Context context) {
+        return generateDownloadFilename(context, downloadURL);
+    }
+
+    public String generateDownloadFilename(Context context, URL sourcePathOrUrl) {
+        String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(sourcePathOrUrl);
+
+        String storyNameSanitizedWithoutExtension =  "Incant__"  + getStorageName(context);
+
+        switch (fileExtension) {
+            case ".unknown":
+            case ".tmp":
+            case ".zip":
+            case ".blorb":
+            case ".blb":
+                traceDownlaodChecked += "N";
+                Log.w(TAG, "[StoryDL_Path] generateDownloadFilename undesired extension for URL: " + sourcePathOrUrl);
+                if (foundKeepFilesPathsPileA == null) {
+                    traceDownlaodChecked += "O";
+                    rebuildStaticKeepFilesPathPile(context);
+                }
+
+                // First line is started with a \n to ensure pattern is total
+                final int indexOfMatch = foundKeepFilesPathsPileA.indexOf("\n" + storyNameSanitizedWithoutExtension);
+                if (indexOfMatch < 0) {
+                    traceDownlaodChecked += "P";
+                    Log.w(TAG, "[IncantHash][StoryDL_Path] foundKeepFilesPathsPileA failed to find? " + storyNameSanitizedWithoutExtension);
+                } else {
+                    traceDownlaodChecked += "Q";
+                    final int indexOfIntEnd = foundKeepFilesPathsPileA.indexOf("\n", indexOfMatch + 1 /* length of leading 'n' */);
+                    final String beyondTheMatch = foundKeepFilesPathsPileA.substring(indexOfMatch + 1 /* length of '\n' */, indexOfIntEnd);
+                    // ALog.w("[IncantHash] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch);
+                    return beyondTheMatch;
+                }
+
+                /*
+                if (fileExtension.equals(".unknown")) {
+                    if (getName(context).contains("Zork")) {
+                        Log.d(TAG, "Forcing '_Zork' file extention to 'z5' zip file");
+                        fileExtension = ".z5";
+                    }
+                }
+                */
+                break;
+        }
+
+        traceDownlaodChecked += "R";
+        return storyNameSanitizedWithoutExtension + fileExtension;
+    }
+
+
+    public void setLanguageIdentifier(String languageIdentifierString) {
+        this.languageIdentifier = languageIdentifierString;
+    }
+
+    public String getLanguageIdentifier() {
+        return this.languageIdentifier;
+    }
+
+    public File getDir(Context context) {
+        return getStoryDir(context, getStorageName(context));
+    }
+
+
+/*
+########################################################################################################################################################
+    ## END The messy section, filename generation
+*/
 
     private Metadata getMetadata(Context context) {
         if (metadata != null || !getMetadataFile(context).exists()) {
@@ -358,10 +455,6 @@ public class Story implements Serializable {
     }
 
 
-    public File getDir(Context context) {
-        return getStoryDir(context, name);
-    }
-
     public File getFile(Context context, String file) {
         return new File(getDir(context), file);
     }
@@ -371,19 +464,19 @@ public class Story implements Serializable {
     }
 
     public File getZcodeFile(Context context) {
-        return getZcodeFile(context, name);
+        return getZcodeFile(context, getStorageName(context));
     }
 
     public File getGlulxFile(Context context) {
-        return getGlulxFile(context, name);
+        return getGlulxFile(context, getStorageName(context));
     }
 
     public File getSaveFile(Context context) {
-        return getSaveFile(context, name);
+        return getSaveFile(context, getStorageName(context));
     }
 
     public File getCoverImageFile(Context context) {
-        return getCoverImageFile(context, name);
+        return getCoverImageFile(context, getStorageName(context));
     }
 
     public Bitmap getCoverImageBitmap(Context context) {
@@ -392,11 +485,11 @@ public class Story implements Serializable {
     }
 
     public File getMetadataFile(Context context) {
-        return getMetadataFile(context, name);
+        return getMetadataFile(context, getStorageName(context));
     }
 
     public File getBlorbFile(Context context) {
-        return getBlorbFile(context, name);
+        return getBlorbFile(context, getStorageName(context));
     }
 
 
@@ -515,55 +608,6 @@ public class Story implements Serializable {
         return false;
     }
 
-    public String generateDownloadFilename(Context context) {
-        return generateDownloadFilename(context, downloadURL);
-    }
-
-    public String generateDownloadFilename(Context context, URL sourcePathOrUrl) {
-        String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(sourcePathOrUrl);
-
-        String storyNameSanitizedWithoutExtension =  "Incant__"  + getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
-
-        switch (fileExtension) {
-            case ".unknown":
-            case ".tmp":
-            case ".zip":
-            case ".blorb":
-            case ".blb":
-                traceDownlaodChecked += "N";
-                Log.w(TAG, "[StoryDL_Path] generateDownloadFilename undesired extension for URL: " + sourcePathOrUrl);
-                if (foundKeepFilesPathsPileA == null) {
-                    traceDownlaodChecked += "O";
-                    rebuildStaticKeepFilesPathPile(context);
-                }
-
-                // First line is started with a \n to ensure pattern is total
-                final int indexOfMatch = foundKeepFilesPathsPileA.indexOf("\n" + storyNameSanitizedWithoutExtension);
-                if (indexOfMatch < 0) {
-                    traceDownlaodChecked += "P";
-                    Log.w(TAG, "[IncantHash][StoryDL_Path] foundKeepFilesPathsPileA failed to find? " + storyNameSanitizedWithoutExtension);
-                } else {
-                    traceDownlaodChecked += "Q";
-                    final int indexOfIntEnd = foundKeepFilesPathsPileA.indexOf("\n", indexOfMatch + 1 /* length of leading 'n' */);
-                    final String beyondTheMatch = foundKeepFilesPathsPileA.substring(indexOfMatch + 1 /* length of '\n' */, indexOfIntEnd);
-                    // ALog.w("[IncantHash] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch);
-                    return beyondTheMatch;
-                }
-
-                /*
-                if (fileExtension.equals(".unknown")) {
-                    if (getName(context).contains("Zork")) {
-                        Log.d(TAG, "Forcing '_Zork' file extention to 'z5' zip file");
-                        fileExtension = ".z5";
-                    }
-                }
-                */
-                break;
-        }
-
-        traceDownlaodChecked += "R";
-        return storyNameSanitizedWithoutExtension + fileExtension;
-    }
 
 
 
@@ -585,7 +629,7 @@ public class Story implements Serializable {
 
         // NOTE: Keep this code in sync with method: generateDownloadFilename
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
-        String storyNameSanitized = getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        String storyNameSanitized = getStorageName(context);
         String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
         File endingRenamedTargetFile = null;
         String keepFilenameTempWithoutExtension = "Incant__" + storyNameSanitized + "__";

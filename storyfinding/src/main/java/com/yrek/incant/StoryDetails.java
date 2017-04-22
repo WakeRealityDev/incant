@@ -117,6 +117,11 @@ public class StoryDetails extends Activity {
                 storyExtra0.append("\nMISSING? DownloadKeep " + keepFile.getPath());
                 storyExtra0.setBackgroundColor(Color.parseColor("#F8BBD0"));
             }
+
+            if (!story.getLanguageIdentifier().equals("en")) {
+                storyExtra0.append("\nStory language: " + story.getLanguageIdentifier());
+            }
+
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
             TextView storyHashInfo = (TextView) findViewById(R.id.story_hash_info);

@@ -26,6 +26,9 @@ public class StoryEntryIFDB {
     public int engineCode = 0;
     // can you share this to peer devices?
     public int copyRights = 0;
+    public String storyLanguage = "";
+    // This could be in many different formats, so went with a String. It's common in Inform 7 stories to see "revision 3/89000" and "revision 3/920000" where author forgot to update revision.
+    public String storyRevision = "";
 
     @Override
     public String toString() {
@@ -43,6 +46,8 @@ public class StoryEntryIFDB {
                 extractFilename,
                 fileHashSHA256,
                 descriptiveFilename,
+                storyLanguage,
+                storyRevision,
                 String.valueOf(rating),
                 storyTitle,
                 storyAuthor,

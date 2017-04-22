@@ -46,6 +46,9 @@ public class StoryLister {
     }
 
 
+    /*
+    Convert the simpler CSV StoryEntryIFDB holding objects to more complex Story objects.
+     */
     public void addStoriesCommaSepValuesFile(ArrayList<Story> stories, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) {
         if (readCommaSepValuesFile != null) {
             // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
@@ -54,7 +57,11 @@ public class StoryLister {
                 StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
 
                 if (ifdbListEntry.siteIdentity.equals("35yqdqy3ennlte69")) {
-                    Log.e(TAG, "[listPopulate] Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
+                    Log.e(TAG, "[CSV_matchup][WhereJim][listPopulate] Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
+                }
+
+                if (ifdbListEntry.storyTitle.startsWith("Life")) {
+                    Log.e(TAG, "[CSV_matchup][WhereJim][listPopulate] startsWith Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
                 }
 
                 URL downloadLink = null;
@@ -72,6 +79,17 @@ public class StoryLister {
 
                 // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
                 Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink);
+
+                switch (ifdbListEntry.storyLanguage) {
+                    case "":
+                    case "en":
+                        // do nothing, default English
+                        break;
+                    default:
+                        newStory.setLanguageIdentifier(ifdbListEntry.storyLanguage);
+                        break;
+                }
+
                 StoryHelper.addStory(context, newStory, stories, 1000);
 
                 // Scraper.writeStory();
@@ -197,6 +215,7 @@ public class StoryLister {
 
         addDownloadRunIndex++;
         for (File file : primaryDirectoryFiles) {
+// ToDo: using the filename as a direct keyname? This likely needs rework for "Life on Mars?"
             if (! Story.isDownloaded(context, file.getName())) {
                 Log.i(TAG, "[listPopulate] addDownloaded SKIP file " + file);
                 continue;

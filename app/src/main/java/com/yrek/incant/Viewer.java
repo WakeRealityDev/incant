@@ -88,7 +88,7 @@ public class Viewer extends Activity {
             if (story.download(this, gameInputStream)) {
                 intent = new Intent(this, StoryDetails.class);
                 intent.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
-                Log.d(TAG, "startActivity for story " + story.getName(this) + " title " + story.getTitle(this));
+                Log.d(TAG, "startActivity for story " + story.getName(this) + " title " + story.getTitle(this) + " getStorageName " + story.getStorageName(this));
                 startActivity(intent);
                 return;
             }

@@ -3,7 +3,10 @@ package com.yrek.incant.gamelistings;
 import android.content.Context;
 import android.util.Log;
 
+import com.wakereality.storyfinding.EventStoryFindingAppError;
 import com.yrek.incant.Story;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ import java.util.Locale;
 public class StoryHelper {
 
     public static void addStory(Context context, Story story, ArrayList<Story> stories, int category0) {
-        String name = story.getName(context);
+        String name = story.getStorageName(context);
         if (name == null || name.indexOf('/') >= 0 || name.equals(".") || name.equals("..")) {
             Log.d("StoryHelper", "FILE PATH troubles - addStory skip " + name);
             return;
@@ -23,8 +26,9 @@ public class StoryHelper {
 
         // Search if already in list
         for (Story s : stories) {
-            if (name.equals(s.getName(context))) {
+            if (name.equals(s.getStorageName(context))) {
                 Log.w("StoryHelper", "[CSV_matchup] FAIL to add, story already in system: " + name + " category0 " + category0 + " size " + stories.size());
+                EventBus.getDefault().post(new EventStoryFindingAppError("SL", 1, 19, "duplicate_story_add", name));
                 return;
             }
         }

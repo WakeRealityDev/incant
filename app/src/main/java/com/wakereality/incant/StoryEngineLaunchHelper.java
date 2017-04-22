@@ -38,10 +38,11 @@ public class StoryEngineLaunchHelper {
     public void onEventMainThread(EventLocalStoryLaunch event) {
         if (event.story.prepForIncantEngineLaunch(event.callingActivity)) {
             Intent intent = new Intent(event.callingActivity, GlkActivity.class);
+            // use getStorageName as if there are two with same name, still need to distinguish
             if (event.story.isZcode(event.callingActivity)) {
-                intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(event.story, event.story.getName(event.callingActivity)));
+                intent.putExtra(GlkActivity.GLK_MAIN, new ZCodeStory(event.story, event.story.getStorageName(event.callingActivity)));
             } else {
-                intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getName(event.callingActivity)));
+                intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getStorageName(event.callingActivity)));
             }
             event.callingActivity.startActivity(intent);
         }

@@ -245,7 +245,15 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
             text = text.toLowerCase();
             int countKept = 0;
             for (Story item: mItemsTotalList) {
-                if (item.getName(parentActivity).toLowerCase(Locale.US).contains(text) || item.getAuthor(parentActivity).toLowerCase(Locale.US).contains(text)) {
+                String storyTitle = item.getName(parentActivity);
+                if (storyTitle == null) {
+                    storyTitle = "";
+                }
+                String storyAuthor = item.getAuthor(parentActivity);
+                if (storyAuthor == null) {
+                    storyAuthor = "";
+                }
+                if (storyTitle.toLowerCase(Locale.US).contains(text) || storyAuthor.toLowerCase(Locale.US).contains(text)) {
                     mItems.add(item);
                     countKept++;
                 }

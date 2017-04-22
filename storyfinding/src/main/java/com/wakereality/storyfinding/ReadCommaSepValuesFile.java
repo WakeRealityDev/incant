@@ -171,6 +171,14 @@ why no date on output of this one?
                                         storyEntry.siteIdentity = e[0];
                                         storyEntry.rating = Float.valueOf(r[1]);
                                         storyEntry.storyTitle = e[1].trim();
+
+                                        if (storyEntry.storyTitle.startsWith("Life")) {
+                                            Log.w(TAG, "[WhereJim] CSV assembly " + storyEntry.toString() + " i " + i + " d " + d + " e9 " + e[9] + " e10 " + e[10] + " e11 " + e[11]);
+                                        }
+
+                                        if (! e[11].equals("NULL")) {
+                                            storyEntry.storyLanguage = e[11];
+                                        }
                                         storyEntry.storyAuthor = e[2].trim();
                                         if (e[12].equals("NULL")) {
                                             storyEntry.storyDescription = "";
