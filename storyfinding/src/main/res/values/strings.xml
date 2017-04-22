@@ -69,6 +69,8 @@
     <string name="action_restore_tips">Restore Tips</string>
     <string name="action_expand_options">Expand options</string>
     <string name="action_contract_options">Contract options</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search <b>title</b> or <b>author</b>…</string>
 
     <!-- RecyclerView Playground End -->
 

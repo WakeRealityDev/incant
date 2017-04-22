@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -45,6 +47,7 @@ import com.yrek.runconfig.SettingsCurrent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 
 public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
@@ -229,23 +232,44 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) rootView.findViewById(R.id.external_provider_activity), (CheckBox) rootView.findViewById(R.id.external_provider_noprompt));
     }
 
+
     protected MenuItem actionLaunchExternal;
     protected MenuItem actionExpandOptions;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.grid_options, menu);
+        inflater.inflate(R.menu.browse_stories_options, menu);
         actionLaunchExternal = menu.findItem(R.id.action_launch_external);
         actionLaunchExternal.setChecked(StoryListSpot.optionLaunchExternal);
         actionExpandOptions = menu.findItem(R.id.action_expand);
         actionExpandOptions.setChecked(StoryListSpot.showHeadingExpanded);
         actionExpandOptions.setTitle((StoryListSpot.showHeadingExpanded) ? R.string.action_contract_options : R.string.action_expand_options);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.filterListSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.filterListSearch(newText);
+                return true;
+            }
+        });
+        searchView.setQueryHint(getText(R.string.search_hint));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.action_stories_get_more) {
+
+        if (i == R.id.action_search) {
+            return true;
+        } else if (i == R.id.action_stories_get_more) {
             mList.startAnimation(myGetMoreWobbleAnimation);
             AddStoriesToStoryList.processAssetsCommaSeparatedValuesList(getContext());
             mAdapter.setAdapterContent(getContext());

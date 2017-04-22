@@ -2,6 +2,15 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_search"
+          android:title="@string/action_search"
+          app:actionViewClass="android.support.v7.widget.SearchView"
+          app:queryHint="@string/search_hint"
+          app:defaultQueryHint="@string/search_hint"
+          app:showAsAction="always"
+        />
+
     <item android:id="@+id/action_stories_get_more"
         android:title="Get More"
         app:showAsAction="ifRoom" />

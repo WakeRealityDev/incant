@@ -26,6 +26,7 @@ import com.yrek.incant.StoryListSpot;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 /*
@@ -38,6 +39,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
     public static final String TAG = "RecyclerViewAdap";
 
     private ArrayList<Story> mItems;
+    private ArrayList<Story> mItemsTotalList;
 
     private AdapterView.OnItemClickListener mOnItemClickListener;
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
@@ -47,6 +49,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
 
     public StoryBrowseAdapter(Context context, Activity launchParentActivity) {
         mItems = new ArrayList<>();
+        mItemsTotalList = new ArrayList<>();
         headlineStyle = new TextAppearanceSpan(context, R.style.story_headline);
         parentActivity = launchParentActivity;
         res = launchParentActivity.getResources();
@@ -62,18 +65,20 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
      */
     public void setAdapterContent(Context context) {
         mItems.clear();
+        mItemsTotalList.clear();
         try {
             if (StoryListSpot.storyLister != null) {
                 ArrayList<Story> stories = new ArrayList<Story>();
                 if (StoryListSpot.storyListAppAboveHandDown != null) {
                     stories.addAll(StoryListSpot.storyListAppAboveHandDown);
-                    Log.i(TAG, "[listPopulate] storyList storyListAppAboveHandDown " + stories.size());
+                    Log.i(TAG, "[listPopulate][listPopulateRV] storyList storyListAppAboveHandDown " + stories.size());
                 }
                 stories = StoryListSpot.storyLister.generateStoriesListAllSortedArrayListA(stories);
-                Log.i(TAG, "[listPopulate] storyList going to RecyclerView adapter " + stories.size());
+                Log.i(TAG, "[listPopulate][listPopulateRV] storyList going to RecyclerView adapter " + stories.size());
                 mItems.addAll(stories);
+                mItemsTotalList.addAll(stories);
             } else {
-                Log.e(TAG, "[listPopulate] storyList is null, unable to populate");
+                Log.e(TAG, "[listPopulate][listPopulateRV] storyList is null, unable to populate");
             }
         } catch (Exception e) {
             Log.e(TAG, "Exception ", e);
@@ -228,6 +233,27 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
             Log.e(TAG, "[RVData] getStoryForPosition exception", e);
             return null;
         }
+    }
+
+
+    public void filterListSearch(String text) {
+        mItems.clear();
+
+        if (text.trim().isEmpty()){
+            mItems.addAll(mItemsTotalList);
+        } else{
+            text = text.toLowerCase();
+            int countKept = 0;
+            for (Story item: mItemsTotalList) {
+                if (item.getName(parentActivity).toLowerCase(Locale.US).contains(text) || item.getAuthor(parentActivity).toLowerCase(Locale.US).contains(text)) {
+                    mItems.add(item);
+                    countKept++;
+                }
+            }
+            Log.v(TAG, "[RVfilter] countKept " + countKept + " of " + mItemsTotalList.size());
+        }
+
+        notifyDataSetChanged();
     }
 
 
