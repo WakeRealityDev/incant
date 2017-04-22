@@ -17,15 +17,22 @@ public class StoryHelper {
     public static void addStory(Context context, Story story, ArrayList<Story> stories, int category0) {
         String name = story.getName(context);
         if (name == null || name.indexOf('/') >= 0 || name.equals(".") || name.equals("..")) {
-            Log.d("StoryHelper", "addStory skip " + name);
+            Log.d("StoryHelper", "FILE PATH troubles - addStory skip " + name);
             return;
         }
+
+        // Search if already in list
         for (Story s : stories) {
             if (name.equals(s.getName(context))) {
-                Log.i("StoryHelper", "story already in system " + name);
+                Log.w("StoryHelper", "[CSV_matchup] FAIL to add, story already in system: " + name + " category0 " + category0 + " size " + stories.size());
                 return;
             }
         }
+
+        if (name.startsWith("Life")) {
+            Log.w("StoryHelper", "[CSV_matchup] Found 'Life' in title: " + name + " category0 " + category0 + " size " + stories.size());
+        }
+
         story.setListingExtras(category0);
         stories.add(story);
     }

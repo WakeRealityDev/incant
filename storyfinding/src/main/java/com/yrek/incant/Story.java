@@ -522,7 +522,7 @@ public class Story implements Serializable {
     public String generateDownloadFilename(Context context, URL sourcePathOrUrl) {
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(sourcePathOrUrl);
 
-        String storyNameSanitizedWithoutExtension =  "Incant__"  + getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        String storyNameSanitizedWithoutExtension =  "Incant__"  + getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
 
         switch (fileExtension) {
             case ".unknown":
@@ -585,7 +585,7 @@ public class Story implements Serializable {
 
         // NOTE: Keep this code in sync with method: generateDownloadFilename
         String fileExtension = "." + StoryHelper.getUsefulFileExtensionFromURL(downloadURL);
-        String storyNameSanitized = getName(context).replace(" ", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        String storyNameSanitized = getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
         String storyNameTotal = "Incant__" + storyNameSanitized + fileExtension;
         File endingRenamedTargetFile = null;
         String keepFilenameTempWithoutExtension = "Incant__" + storyNameSanitized + "__";

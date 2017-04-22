@@ -7,6 +7,7 @@ import android.util.Log;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -157,12 +158,6 @@ why no date on output of this one?
 "cg4j40i7wq34ggo1","Not Just An Ordinary Ballerina","Jim Aikin","Jim Aikin {2qrzwolh24lwg44w}","NOT JUST AN ORDINARY BALLERINA","AIKIN, JIM","Xyzzy Awards 1999,adaptive hints,built-in hints,character graphics,female protagonist,guided maze,cover art,Christmas,Holiday Theme,parser,cow,milk","1999-01-01 00:00:00","1","Freeware","Inform 6","en","NULL","http://ifdb.tads.org/viewgame?coverart&id=cg4j40i7wq34ggo1","NULL","NULL","Seasonal","Nasty","490","NULL","NULL","2007-09-29 00:00:00","3wcnay8ie4ajtyrm","2015-06-19 22:45:31","6"
                                          */
 
-                                        switch (e[0]) {
-                                            case "cg4j40i7wq34ggo1":
-                                                Log.w("ReadCSV", "[ReadCSV] case study on row " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
-                                                break;
-                                        }
-
                                         previousEntry = e[0];
                                         targetMatch++;
                                         final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
@@ -244,7 +239,7 @@ why no date on output of this one?
         });
 
         // save copy on dev system once in a white.
-        saveCopyAsCSV(context);
+        saveCopyAsCSV(context, "/sdcard/Incant_saveList.csv");
 
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
@@ -300,10 +295,13 @@ why no date on output of this one?
     // ToDo:
     // The saved copy can be read in and be a way to save RAM and CPU usage. Further, SHA-256 cross-reference and image-addition can be introduced for stories that the main image URL is missing
     //   ideally users can see images before even downloading.
-    public boolean saveCopyAsCSV(Context context) {
+    public boolean saveCopyAsCSV(Context context, String filePath) {
+        File deleteFile = new File(filePath);
+        deleteFile.delete();
+
         CSVWriter writer;
         try {
-            writer = new CSVWriter(new FileWriter("/sdcard/Incant_saveList.csv", true));
+            writer = new CSVWriter(new FileWriter(filePath, true));
         } catch (IOException e) {
             Log.e("ReadCSV", "[ReadCSV] Exception saving copy of data to CSV", e);
             return false;

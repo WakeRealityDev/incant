@@ -49,8 +49,13 @@ public class StoryLister {
     public void addStoriesCommaSepValuesFile(ArrayList<Story> stories, ReadCommaSepValuesFile readCommaSepValuesFile, Context context) {
         if (readCommaSepValuesFile != null) {
             // No Concurrency lock. If a user rotates screen in the middle of a building of this Array... crash.
-            for (int i = 0; i < readCommaSepValuesFile.foundEntries.size(); i++) {
+            final int csize = readCommaSepValuesFile.foundEntries.size();
+            for (int i = 0; i < csize; i++) {
                 StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
+
+                if (ifdbListEntry.siteIdentity.equals("35yqdqy3ennlte69")) {
+                    Log.e(TAG, "[listPopulate] Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
+                }
 
                 URL downloadLink = null;
                 try {
