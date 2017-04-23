@@ -185,13 +185,19 @@ why no date on output of this one?
                                                 case "en-GB":
                                             }
                                              */
-                                            String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
-                                            if (e[11].trim().isEmpty()) {
-                                                // do nothing, leave at default
+                                            // Updated IFDB on 2014-04-23 to try and fix the source on some of these
+                                            if (e[11].trim().toLowerCase(Locale.US).equals("english")) {
+                                                storyEntry.storyLanguage = "en";
                                             } else {
-                                                storyEntry.storyLanguage = outLanguage;
+                                                String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
+                                                if (e[11].trim().isEmpty()) {
+                                                    // do nothing, leave at default
+                                                } else {
+                                                    storyEntry.storyLanguage = outLanguage;
+                                                }
                                             }
                                         }
+
                                         storyEntry.storyAuthor = e[2].trim();
                                         if (e[12].equals("NULL")) {
                                             storyEntry.storyDescription = "";
@@ -260,7 +266,7 @@ why no date on output of this one?
         });
 
         // save copy on dev system once in a white.
-        saveCopyAsCSV(context, "/sdcard/Incant_saveList.csv");
+        saveCopyAsCSV(context, "/sdcard/Incant_saveList_bigA.csv");
 
         Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
