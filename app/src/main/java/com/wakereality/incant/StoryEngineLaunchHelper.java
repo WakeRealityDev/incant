@@ -48,7 +48,10 @@ public class StoryEngineLaunchHelper {
                 intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getStorageName(event.callingActivity)));
             }
             // need to switch to main thread?
+            Log.d(TAG, "[playClick] startActivity for launch. Story: " + event.story.getName(event.callingActivity));
             event.callingActivity.startActivity(intent);
+        } else {
+            Log.e(TAG, "[playClick] fail to prepare for launch. Story: " + event.story.getName(event.callingActivity));
         }
     }
 

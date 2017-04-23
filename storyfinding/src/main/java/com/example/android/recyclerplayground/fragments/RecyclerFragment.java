@@ -396,9 +396,14 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     public void onResume() {
         super.onResume();
         if (! EventBus.getDefault().isRegistered(this)) {
-            Log.i("RVfrag", "[storyDownload] EventBus register");
+            Log.i("RVfrag", "[storyDownload][RVadaptNotify] EventBus register");
             EventBus.getDefault().register(this);
+
+            /*
+            It's possible the activity was paused, EventBus unregstered, while another activity altered the RecyclerView contents. Check for flag.
+             */
             if (DownloadSpot.storyNonListDownloadFlag) {
+                Log.i("RVFrag", "[RVadaptNotify] found storyNonListDownloadFlag");
                 // convention is to clear flag vars immediate
                 DownloadSpot.storyNonListDownloadFlag = false;
                 storyNonListDownload();
@@ -413,7 +418,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     public void onPause() {
         super.onPause();
         if (EventBus.getDefault().isRegistered(this)) {
-            Log.i("RVfrag", "[storyDownload] EventBus unRegister");
+            Log.i("RVfrag", "[storyDownload][RVadaptNotify] EventBus unRegister");
             EventBus.getDefault().unregister(this);
         }
     }
@@ -425,8 +430,10 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
      */
     public void storyNonListDownload() {
         if (mAdapter != null) {
-            Log.i("RVfrag", "[storyDownload] storyNonListDownload notifyDataSetChanged");
+            Log.i("RVfrag", "[storyDownload][RVadaptNotify] storyNonListDownload notifyDataSetChanged");
             mAdapter.notifyDataSetChanged();
+        } else {
+            Log.w("RVfrag", "[storyDownload][RVadaptNotify] storyNonListDownload notifyDataSetChanged SKIP, mAdapter is null");
         }
     }
 
@@ -436,7 +443,7 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(EventStoryNonListDownload event) {
-        Log.i("RVfrag", "[storyDownload] EventStoryNonListDownload");
+        Log.i("RVfrag", "[storyDownload][RVadaptNotify] EventStoryNonListDownload");
         storyNonListDownload();
     }
 

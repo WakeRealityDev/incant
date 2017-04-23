@@ -8,7 +8,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.util.Locale;
 import java.util.zip.ZipFile;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,6 +30,7 @@ import com.wakereality.apphelpersadupe.fileutils.HashFile;
 import com.wakereality.storyfinding.DebugControl;
 import com.wakereality.storyfinding.EventStoryFindingAppError;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
+import com.wakereality.storyfinding.EventStoryNonListDownload;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
 import com.wakereality.thunderstrike.dataexchange.EngineConst;
@@ -813,6 +812,7 @@ public class Story implements Serializable {
                         if (md.ifid != null)
                         {
                             Log.i(TAG, "story metadata ifid " + md.ifid);
+                            // ToDo: -- so, the CSV file ifid vs. XML ifid may differ?
                         }
                         if (md.title != null)
                         {
@@ -843,8 +843,14 @@ public class Story implements Serializable {
                             }
                             break;
                         case Blorb.Pict:
+                            // ToDo: for non-Incant apps, it would be nice to have this code split out so that cover images can be extracted from Gblorb files wihtout the double storage space consumption of extacting the entire blorb to just browse stories. Maybe even a background thread to scan blorbs for cover images.
                             if (res.getNumber() == coverImage && (chunk.getId() == Blorb.PNG || chunk.getId() == Blorb.JPEG)) {
                                 writeBlorbChunk(context, chunk, getCoverImageFile(context));
+                                Log.i(TAG, "[RVadaptNotify] downloaded cover image, posting EventStoryNonListDownload");
+                                // Timing problem. Right now the EventBus unregisters when change to StoryDetail and the Adapter relies on the activity to be registered.
+                                // Solution is to also have a flag variable.
+                                DownloadSpot.storyNonListDownloadFlag = true;
+                                EventBus.getDefault().post(new EventStoryNonListDownload());
                             }
                             break;
                         default:
@@ -937,13 +943,8 @@ public class Story implements Serializable {
         }
 
         if (downloaded) {
-            try {
-                if (imageURL != null && !getCoverImageFile(context).exists()) {
-                    downloadTo(context, imageURL, getCoverImageFile(context));
-                }
-            } catch (Exception e) {
-                Log.wtf(TAG,e);
-            }
+            downloadCoverImage(context);
+
             try {
                 if (! getMetadataFile(context).exists()) {
                     Log.d(TAG, "no metadatafile, writing " + getMetadataFile(context));
@@ -953,8 +954,35 @@ public class Story implements Serializable {
                 Log.wtf(TAG,e);
             }
         }
+
         return downloaded;
     }
+
+
+
+    protected boolean downloadCoverImage(Context context) {
+        try {
+            // Question: if the imageURL is bad or Exception, does it keep retrying this download every time you scroll the menu?
+            // Or, this logic only runs once after download.
+            File coverImageFile = getCoverImageFile(context);
+            if (imageURL != null && ! coverImageFile.exists()) {
+                int filemagic = downloadTo(context, imageURL, coverImageFile);
+                if (coverImageFile.exists()) {
+                    // Right now, this event will trigger the RecyclerView to notify invalid listings on the current screen.
+                    Log.i(TAG, "[RVadaptNotify] downloaded cover image, posting EventStoryNonListDownload");
+                    // Timing problem. Right now the EventBus unregisters when change to StoryDetail and the Adapter relies on the activity to be registered.
+                    // Solution is to also have a flag variable.
+                    DownloadSpot.storyNonListDownloadFlag = true;
+                    EventBus.getDefault().post(new EventStoryNonListDownload());
+                }
+                return true;
+            }
+        } catch (Exception e) {
+            Log.wtf(TAG,e);
+        }
+        return false;
+    }
+
 
     protected int unzipTo(Context context, File zipFile, File file, String zipPayloadDesiredFilename) throws IOException {
         InputStream in = null;
@@ -1140,11 +1168,15 @@ public class Story implements Serializable {
                         InputStream storyFileInputStream = new FileInputStream(keepFile);
                         download(context, storyFileInputStream);
                     } catch (IOException e) {
-                        Log.e(TAG, "keepFile exception", e);
+                        Log.e(TAG, "[playClick] keepFile exception", e);
                         return false;
                     }
                     return true;
+                } else {
+                    Log.e(TAG, "[playClick] keepFile does not exist " + keepFile.getPath());
                 }
+            } else {
+                Log.e(TAG, "[playClick] keepFile null");
             }
         }
         return false;

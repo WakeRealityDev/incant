@@ -201,7 +201,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
-                        Log.d(TAG, "[playClick");
+                        Log.d(TAG, "[playClick] EventLocalStoryLaunch");
                         EventBus.getDefault().post(new EventLocalStoryLaunch(StoryDetails.this, story));
                     }
                 });
@@ -209,7 +209,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play_via_external_engine_provider).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
-                        Log.d(TAG, "[playClick");
+                        Log.d(TAG, "[playClick] EventExternalEngineStoryLaunch");
                         EventBus.getDefault().post(new EventExternalEngineStoryLaunch(StoryDetails.this, story, StoryListSpot.optionLaunchExternalActivityCode, StoryListSpot.optionaLaunchInterruptEngine));
                     }
                 });
@@ -237,6 +237,10 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.download_delete).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
                         story.delete(StoryDetails.this);
+                        // Right now, this event will trigger the RecyclerView to notify invalid listings on the current screen. Cover image removed.
+                        Log.i(TAG, "[RVadaptNotify] delete download, posting EventStoryNonListDownload");
+                        DownloadSpot.storyNonListDownloadFlag = true;
+                        EventBus.getDefault().post(new EventStoryNonListDownload());
                         finish();
                     }
                 });
