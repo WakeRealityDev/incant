@@ -176,6 +176,7 @@ why no date on output of this one?
                                             Log.w(TAG, "[WhereJim] CSV assembly " + storyEntry.toString() + " i " + i + " d " + d + " e9 " + e[9] + " e10 " + e[10] + " e11 " + e[11]);
                                         }
 
+                                        // Default in new object is 'en'
                                         if (! e[11].equals("NULL")) {
                                             /*
                                             Don't do this, I guess en-US and en-GB could be two variations of same story title.
@@ -185,8 +186,11 @@ why no date on output of this one?
                                             }
                                              */
                                             String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
-
-                                            storyEntry.storyLanguage = outLanguage;
+                                            if (e[11].trim().isEmpty()) {
+                                                // do nothing, leave at default
+                                            } else {
+                                                storyEntry.storyLanguage = outLanguage;
+                                            }
                                         }
                                         storyEntry.storyAuthor = e[2].trim();
                                         if (e[12].equals("NULL")) {
@@ -274,7 +278,7 @@ why no date on output of this one?
         String next[] = {};
         List<String[]> informStoriesList = new ArrayList<String[]>();
         try {
-            String fileSource = "csv/Incant_saveList.csv";
+            String fileSource = "csv/Incant_saveList_withhash0.csv";
             CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
             for ( ; ; ) {
                 next = reader.readNext();
@@ -295,12 +299,22 @@ why no date on output of this one?
 
             final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
             storyEntry.siteIdentity = e[0];
-            storyEntry.rating = Float.valueOf(e[1]);
-            storyEntry.storyTitle = e[2];
-            storyEntry.storyAuthor = e[3];
-            storyEntry.storyWhimsy = e[4];
-            storyEntry.downloadLink = e[5];
-            storyEntry.storyDescription = e[6];
+            storyEntry.downloadLink = e[1];
+            storyEntry.extractFilename = e[2];
+            storyEntry.fileHashSHA256 = e[3];
+            storyEntry.descriptiveFilename = e[4];
+            storyEntry.storyLanguage = e[5];
+            storyEntry.storyRevision = e[6];
+            storyEntry.rating = Float.valueOf(e[7]);
+            storyEntry.storyTitle = e[8];
+            storyEntry.storyAuthor = e[9];
+            storyEntry.storyWhimsy = e[10];
+            storyEntry.listingWhen = Long.valueOf(e[11]);
+            storyEntry.tickeBits = Integer.valueOf(e[12]);
+            storyEntry.maturitySet = Integer.valueOf(e[13]);
+            storyEntry.engineCode = Integer.valueOf(e[14]);
+            storyEntry.copyRights = Integer.valueOf(e[15]);
+            storyEntry.storyDescription = e[16];
             foundEntries.add(storyEntry);
         }
 

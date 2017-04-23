@@ -222,11 +222,14 @@ public class StoryDetails extends Activity {
                     outEngine = "[" + StoryBrowseAdapter.engineCodeToNameCrossReference.get(story.getEngineCode()) + "]";
                 }
                 ((TextView) findViewById(R.id.play_text)).setText(outEngine);
-                if (story.getCoverImageFile(StoryDetails.this).exists()) {
+                File coverImageFile = story.getCoverImageFile(StoryDetails.this);
+                if (coverImageFile.exists()) {
                     findViewById(R.id.cover).setVisibility(View.VISIBLE);
                     ((ImageView) findViewById(R.id.cover)).setImageBitmap(story.getCoverImageBitmap(StoryDetails.this));
+                    storyExtra0.append("\nCoverImage " + coverImageFile.getPath());
                 } else {
                     findViewById(R.id.cover).setVisibility(View.GONE);
+                    storyExtra0.append("\nCoverImage (missing) " + coverImageFile.getPath());
                 }
                 findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
                 ((Button) findViewById(R.id.download_delete)).setText(R.string.delete_story);

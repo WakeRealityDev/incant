@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.zip.ZipFile;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,6 +29,8 @@ import org.xmlpull.v1.XmlSerializer;
 // renamed package to avoid conflict
 import com.wakereality.apphelpersadupe.fileutils.FileCopy;
 import com.wakereality.apphelpersadupe.fileutils.HashFile;
+import com.wakereality.storyfinding.DebugControl;
+import com.wakereality.storyfinding.EventStoryFindingAppError;
 import com.wakereality.storyfinding.EventStoryListDownloadResult;
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.EchoSpot;
@@ -126,10 +129,6 @@ public class Story implements Serializable {
     ## The messy section, filename generation
 */
 
-//LEFT_WHERE: on Samsung Galxy emulator, freshly wiped
-//      Why isn't "Life on Mars" showing up twice? is CSV import not creating two?
-// Life on Mars. Why is the english one not getting image. How exactly is a .z5 file getting images anyway?
-
     // IFDB MysQL database conventions
     private String languageIdentifier = "en";
 
@@ -137,14 +136,17 @@ public class Story implements Serializable {
     This is the start of an attempt to split the usage of
     The story "Life on Mars?" on IFDB shows this problem of assuming two stories can't ahve the identical title
        SHA-256 hash would say they are non-equal, which is what we want. And multiple-editions of the same story, etc.
+
+       These rules of filenames are pretty lax. Allowing ">", "?" , "@" and quotes in a filename. Linux seems to allow it. "+" probably doesn't even need to be replaced if that lax.
+       From a readable language perspective, a story title like "Who... are you?" would drop the dots due to file extension concerns.
      */
     public String getStorageName(Context context) {
         if (! languageIdentifier.equals("en")) {
-            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
-            return getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_") + "__" + languageIdentifier;
+            // ToDo: Eventually replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return getName(context).trim().replace("  ", " ").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_") + "__" + languageIdentifier;
         } else {
-            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
-            return getName(context).replace(" ", "_").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+            // ToDo: Eventually replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return getName(context).trim().replace("  ", " ").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
         }
     }
 
@@ -202,15 +204,21 @@ public class Story implements Serializable {
                 }
 
                 // First line is started with a \n to ensure pattern is total
-                final int indexOfMatch = foundKeepFilesPathsPileA.indexOf("\n" + storyNameSanitizedWithoutExtension);
+                // This logic assumes that all files have at least a . as extension, and that no dots exist except the final
+                // Convention in pile assembly is that there is a newline before extension and a newline at the end of extension.
+                final String searchTarget= "\n" + storyNameSanitizedWithoutExtension + "\n";
+                final int indexOfMatch = foundKeepFilesPathsPileA.indexOf(searchTarget);
                 if (indexOfMatch < 0) {
                     traceDownlaodChecked += "P";
                     Log.w(TAG, "[IncantHash][StoryDL_Path] foundKeepFilesPathsPileA failed to find? " + storyNameSanitizedWithoutExtension);
+                    EventBus.getDefault().post(new EventStoryFindingAppError("SZ", 1, 19, "filename_pattern_A", storyNameSanitizedWithoutExtension + ":::" + fileExtension));
                 } else {
                     traceDownlaodChecked += "Q";
-                    final int indexOfIntEnd = foundKeepFilesPathsPileA.indexOf("\n", indexOfMatch + 1 /* length of leading 'n' */);
-                    final String beyondTheMatch = foundKeepFilesPathsPileA.substring(indexOfMatch + 1 /* length of '\n' */, indexOfIntEnd);
-                    // ALog.w("[IncantHash] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch);
+                    /* search for the '\n' at the end of extension */
+                    final int indexOfIntEnd = foundKeepFilesPathsPileA.indexOf("\n", indexOfMatch + searchTarget.length());
+                    // Strip out the embedded \n before extension.
+                    final String beyondTheMatch = foundKeepFilesPathsPileA.substring(indexOfMatch + 1, indexOfIntEnd).replace("\n", "");
+                    Log.w(TAG, "[IncantHash][StoryDL_Path][DEBUG_PATH_PILE] foundKeepFilesPathsPileA FOUND? " + storyNameSanitizedWithoutExtension + " EXTENSION: " + beyondTheMatch + " indexOfMatch " + indexOfMatch + " indexOfIntEnd " + indexOfIntEnd);
                     return beyondTheMatch;
                 }
 
@@ -243,6 +251,50 @@ public class Story implements Serializable {
     }
 
 
+    public static String foundKeepFilesPathsPileA = null;
+
+
+    private synchronized void rebuildStaticKeepFilesPathPile(Context context) {
+        long startedWhen = System.currentTimeMillis();
+        final File downloadKeepDir = Story.getDownloadKeepDir(context);
+        int foundCount = 0;
+
+        // Ok, what about doing the same! Build a pile string
+        // First line is started with a \n to ensure pattern is total
+        StringBuilder foundKeepFilesPathsPile = new StringBuilder("\n");
+        File[] downloadKeepFiles = downloadKeepDir.listFiles();
+        if (downloadKeepFiles != null) {
+            for (int i = 0; i < downloadKeepFiles.length; i++) {
+                final String filenameRaw = downloadKeepFiles[i].getName();
+                final int lastDot = filenameRaw.lastIndexOf('.');
+                String filenameOut = filenameRaw;
+                // This logic ensures that only the final dot is treated as an extension - and that every filename has two newlines.
+                if (lastDot >= 0) {
+                    filenameOut = filenameRaw.substring(0, lastDot) + "\n" + filenameRaw.substring(lastDot);
+                } else {
+                    filenameOut = filenameRaw + "\n";
+                }
+                foundKeepFilesPathsPile.append(filenameOut);
+                foundKeepFilesPathsPile.append("\n");
+                foundCount++;
+            }
+        }
+
+        foundKeepFilesPathsPileA = foundKeepFilesPathsPile.toString();
+        Log.i(TAG, "[StoryDL_Path] rebuildStaticKeepFilesPathPile took " + (System.currentTimeMillis() - startedWhen) + " found " + foundCount);
+        // Log.i(TAG, "[DEBUG_PATH_PILE] " + foundKeepFilesPathsPileA.replace("\n", "~").substring(0, 200));
+    }
+
+
+    public boolean isExtractedForIncantEngine(Context context) {
+        File storyExtractedDir = getDir(context);
+        if (storyExtractedDir.isDirectory()) {
+            // is extracted, good
+            return true;
+        }
+        return false;
+    }
+
 /*
 ########################################################################################################################################################
     ## END The messy section, filename generation. On to routine messy code.
@@ -257,7 +309,9 @@ public class Story implements Serializable {
         try {
             new XMLScraper(m).scrape(getMetadataFile(context));
             metadata = m;
-            Log.d(TAG, "[xmlScrape] just got new metadata author " + m.author + " title " + m.title);
+            if (DebugControl.storyXmlScrape) {
+                Log.d(TAG, "[xmlScrape] just got new metadata author " + m.author + " title " + m.title);
+            }
         } catch (Exception e) {
             Log.e(TAG ,"Exception on scrape metadata", e);
         }
@@ -272,7 +326,9 @@ public class Story implements Serializable {
     public String getAuthor(Context context) {
         Metadata m = getMetadata(context);
         if (m != null) {
-            Log.d(TAG, "[xmlScrape][metaData] got null metadata, getAuthor " + author + " m.author " + m.author);
+            if (DebugControl.storyXmlScrape) {
+                Log.d(TAG, "[xmlScrape][metaData] got null metadata, getAuthor " + author + " m.author " + m.author);
+            }
             return m.author;
         }
         else
@@ -1070,39 +1126,6 @@ public class Story implements Serializable {
         Log.i(TAG, "[StoryDL_Path] set to " + keepFilePath);
     }
 
-    public static String foundKeepFilesPathsPileA = null;
-
-
-    private synchronized void rebuildStaticKeepFilesPathPile(Context context) {
-        long startedWhen = System.currentTimeMillis();
-        final File downloadKeepDir = Story.getDownloadKeepDir(context);
-        int foundCount = 0;
-
-        // Ok, what about doing the same! Build a pile string
-        // First line is started with a \n to ensure pattern is total
-        StringBuilder foundKeepFilesPathsPile = new StringBuilder("\n");
-        File[] downloadKeepFiles = downloadKeepDir.listFiles();
-        if (downloadKeepFiles != null) {
-            for (int i = 0; i < downloadKeepFiles.length; i++) {
-                foundKeepFilesPathsPile.append(downloadKeepFiles[i].getName());
-                foundKeepFilesPathsPile.append("\n");
-                foundCount++;
-            }
-        }
-
-        foundKeepFilesPathsPileA = foundKeepFilesPathsPile.toString();
-        Log.i(TAG, "[StoryDL_Path] rebuildStaticKeepFilesPathPile took " + (System.currentTimeMillis() - startedWhen) + " found " + foundCount);
-    }
-
-
-    public boolean isExtractedForIncantEngine(Context context) {
-        File storyExtractedDir = getDir(context);
-        if (storyExtractedDir.isDirectory()) {
-            // is extracted, good
-            return true;
-        }
-        return false;
-    }
 
     public boolean prepForIncantEngineLaunch(Context context) {
         File storyExtractedDir = getDir(context);
@@ -1164,8 +1187,10 @@ public class Story implements Serializable {
                 // Log.w(TAG, "[xmlScrape] unmatched path " + path);
             }
 
-            if (path.equals("ifindex")) {
-                Log.v(TAG, "[xmlScrape] so-far " + toCollected());
+            if (DebugControl.storyXmlScrape) {
+                if (path.equals("ifindex")) {
+                    Log.v(TAG, "[xmlScrape] so-far " + toCollected());
+                }
             }
         }
 

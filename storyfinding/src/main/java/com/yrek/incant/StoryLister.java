@@ -24,6 +24,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/*
+Design issue:
+  1. Secondary listing source, CSV, brought in optionally
+  2. Previous session may have downloaded from that list. But now it has disappeared on new session
+  3. Design reads from storage and builds directory name
+  4. Design reads from CSV and builds directory name
+  5. If directory names differ in their generation - it will be treated as two different listings
+ */
 public class StoryLister {
     private static final String TAG = StoryLister.class.getSimpleName();
 

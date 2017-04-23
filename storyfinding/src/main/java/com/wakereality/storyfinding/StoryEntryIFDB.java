@@ -26,7 +26,7 @@ public class StoryEntryIFDB {
     public int engineCode = 0;
     // can you share this to peer devices?
     public int copyRights = 0;
-    public String storyLanguage = "";
+    public String storyLanguage = "en";
     // This could be in many different formats, so went with a String. It's common in Inform 7 stories to see "revision 3/89000" and "revision 3/920000" where author forgot to update revision.
     public String storyRevision = "";
 
@@ -59,5 +59,15 @@ public class StoryEntryIFDB {
                 String.valueOf(copyRights),
                 storyDescription,
         };
+    }
+
+    public String generateFilenameA() {
+        if (! storyLanguage.equals("en")) {
+            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return storyTitle.trim().replace("  ", " ").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_") + "__" + storyLanguage;
+        } else {
+            // ToDo: Eventualy replace this with SHA256 and not break any "DisplayName" usage on-screen
+            return storyTitle.trim().replace("  ", " ").replace("\t", "_").replace(".", "_").replace("/", "_").replace("\\", "_").replace("+", "_");
+        }
     }
 }

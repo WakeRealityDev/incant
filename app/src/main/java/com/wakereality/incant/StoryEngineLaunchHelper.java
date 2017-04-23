@@ -33,8 +33,11 @@ public class StoryEngineLaunchHelper {
         EventBus.getDefault().register(this);
     }
 
+    /*
+    This is on BACKGROUND thread for possibly downloading of cover art
+     */
     @SuppressWarnings("unused")
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onEventMainThread(EventLocalStoryLaunch event) {
         if (event.story.prepForIncantEngineLaunch(event.callingActivity)) {
             Intent intent = new Intent(event.callingActivity, GlkActivity.class);
@@ -44,6 +47,7 @@ public class StoryEngineLaunchHelper {
             } else {
                 intent.putExtra(GlkActivity.GLK_MAIN, new GlulxStory(event.story, event.story.getStorageName(event.callingActivity)));
             }
+            // need to switch to main thread?
             event.callingActivity.startActivity(intent);
         }
     }
