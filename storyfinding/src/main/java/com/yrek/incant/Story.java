@@ -128,6 +128,7 @@ public class Story implements Serializable {
 
 //LEFT_WHERE: on Samsung Galxy emulator, freshly wiped
 //      Why isn't "Life on Mars" showing up twice? is CSV import not creating two?
+// Life on Mars. Why is the english one not getting image. How exactly is a .z5 file getting images anyway?
 
     // IFDB MysQL database conventions
     private String languageIdentifier = "en";
@@ -244,7 +245,7 @@ public class Story implements Serializable {
 
 /*
 ########################################################################################################################################################
-    ## END The messy section, filename generation
+    ## END The messy section, filename generation. On to routine messy code.
 */
 
     private Metadata getMetadata(Context context) {
@@ -1004,6 +1005,9 @@ public class Story implements Serializable {
         }
     }
 
+    /*
+    Deletes a tree one-directory deep?
+     */
     public void delete(Context context) {
         File dir = getDir(context);
         File[] files = dir.listFiles();

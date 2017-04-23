@@ -177,7 +177,16 @@ why no date on output of this one?
                                         }
 
                                         if (! e[11].equals("NULL")) {
-                                            storyEntry.storyLanguage = e[11];
+                                            /*
+                                            Don't do this, I guess en-US and en-GB could be two variations of same story title.
+                                            switch (e[11]) {
+                                                case "en-US":
+                                                case "en-GB":
+                                            }
+                                             */
+                                            String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
+
+                                            storyEntry.storyLanguage = outLanguage;
                                         }
                                         storyEntry.storyAuthor = e[2].trim();
                                         if (e[12].equals("NULL")) {

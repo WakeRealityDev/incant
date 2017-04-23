@@ -152,7 +152,7 @@ public class StoryDetails extends Activity {
                                         error = StoryDetails.this.getString(R.string.download_invalid, story.getName(StoryDetails.this));
                                     }
                                 } catch (Exception e) {
-                                    Log.wtf(TAG,e);
+                                    Log.wtf(TAG, "download_delete Exception", e);
                                     error = StoryDetails.this.getString(R.string.download_failed, story.getName(StoryDetails.this));
                                 }
                                 synchronized (DownloadSpot.downloading) {
@@ -161,6 +161,7 @@ public class StoryDetails extends Activity {
                                 }
                                 if (error != null) {
                                     final String msg = error;
+                                    Log.w(TAG, "download_delete error: " + error);
                                     v.post(new Runnable() {
                                         @Override public void run() {
                                             Toast.makeText(StoryDetails.this, msg, Toast.LENGTH_SHORT).show();
@@ -174,6 +175,11 @@ public class StoryDetails extends Activity {
                         downloadStory.start();
                     }
                 });
+
+                if (story.getDownloadURL(StoryDetails.this) == null) {
+                    Log.e(TAG, "donloadURL is null");
+                    return;
+                }
 
                 String downloadText = story.getDownloadURL(StoryDetails.this).toString();
                 String zipEntry = story.getZipEntry(StoryDetails.this);
@@ -195,6 +201,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
+                        Log.d(TAG, "[playClick");
                         EventBus.getDefault().post(new EventLocalStoryLaunch(StoryDetails.this, story));
                     }
                 });
@@ -202,6 +209,7 @@ public class StoryDetails extends Activity {
                 findViewById(R.id.play_via_external_engine_provider_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.play_via_external_engine_provider).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
+                        Log.d(TAG, "[playClick");
                         EventBus.getDefault().post(new EventExternalEngineStoryLaunch(StoryDetails.this, story, StoryListSpot.optionLaunchExternalActivityCode, StoryListSpot.optionaLaunchInterruptEngine));
                     }
                 });

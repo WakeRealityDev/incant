@@ -193,7 +193,22 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
 
         itemHolder.setStoryDescription(item.getDescription(context));
 
-        itemHolder.setStoryEngine(outEngine);
+        /*
+        Testing reveals: The lesson from testing is that after files are downloaded, there is a loss of information.
+        From CSV, before download, the language is known from CSV source. But,a fter download, the file system is used as the directory
+        Basis to generate a listing... and extra fields populated from the CSV are lost.  It's encoded in the filename, but not really
+        available as it was before the download.
+        Similar example: SHA256 hash is lost. The original Incant app didn't store such extras.
+         */
+        if (! item.getLanguageIdentifier().equals("en")) {
+            SpannableStringBuilder outEngineSB = new SpannableStringBuilder(outEngine);
+            outEngineSB.append("/");
+            outEngineSB.append(item.getLanguageIdentifier());
+            itemHolder.setStoryEngine(outEngineSB);
+            Log.v(TAG, "[outLanguage] here " + sb.toString());
+        } else {
+            itemHolder.setStoryEngine(outEngine);
+        }
     }
 
 
