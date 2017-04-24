@@ -78,11 +78,12 @@ public class StoryEngineLaunchHelper {
         intent.putExtra("sentwhen", launchWhen);
 
         String launchInfo = "??";
+        String setAction;
         if (story.isExtractedForIncantEngine(context)) {
             if (story.isZcode(context)) {
-                intent.setAction("interactivefiction.engine.zmachine");
+                setAction = "interactivefiction.engine.zmachine";
             } else {
-                intent.setAction("interactivefiction.engine.glulx");
+                setAction = "interactivefiction.engine.glulx";
             }
             // Not all stories come in Blorb packages, check first, but if missing go for the data file.
             File exportStoryDataFile = story.getBlorbFile(context);
@@ -98,10 +99,13 @@ public class StoryEngineLaunchHelper {
             launchInfo = EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH + " " + exportStoryDataFile.getPath();
             intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_FILE_STORY_PATH, exportStoryDataFile.getPath());
         } else {
-            intent.setAction("interactivefiction.engine.automatch");
-            launchInfo = EngineConst.LAUNCH_PARAM_KEY_HASH_STORY + " " + story.getStoryHashSHA256();
-            intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_HASH_STORY, story.getStoryHashSHA256());
+            setAction = "interactivefiction.engine.automatch";
+            String storyHashSHA256 = story.getStoryHashSHA256(context);
+            launchInfo = EngineConst.LAUNCH_PARAM_KEY_HASH_STORY + " " + storyHashSHA256;
+            intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_HASH_STORY, storyHashSHA256);
         }
+
+        intent.setAction(setAction);
 
         int myLaunchToken = launchToken.incrementAndGet();
         // Set default value.
@@ -110,7 +114,7 @@ public class StoryEngineLaunchHelper {
             selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
         }
 
-        Log.i(TAG, "[engineLaunch] " + launchInfo  + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
+        Log.i(TAG, "[engineLaunch] " + launchInfo  + " setAction " + setAction + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
 
         intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_ACTIVITYCODE, selectedLaunchActivity);
         intent.putExtra("interrupt", event.interruptEngineIfRunning);

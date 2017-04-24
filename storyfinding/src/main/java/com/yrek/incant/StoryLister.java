@@ -120,7 +120,7 @@ public class StoryLister {
                 final Story singleStroy = stories.get(i);
                 if (singleStroy.isDownloadedExtensiveCheck(context) == desiredValue) {
                     freshList.add(singleStroy);
-                    Log.d(TAG, "[listPopulate][foundDownloaded] NOT downloaded " + singleStroy.keepFile + " isDownloadedCachedAnswer " + singleStroy.isDownloadedCachedAnswer + " trace " + singleStroy.traceDownlaodChecked);
+                    Log.d(TAG, "[listPopulate][foundDownloaded] NOT downloaded " + singleStroy.downloadKeepFile + " isDownloadedCachedAnswer " + singleStroy.isDownloadedCachedAnswer + " trace " + singleStroy.traceDownlaodChecked);
                 } else {
                     skipCount++;
                 }

@@ -125,7 +125,7 @@ public class StoryDetails extends Activity {
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
             TextView storyHashInfo = (TextView) findViewById(R.id.story_hash_info);
-            storyHashInfo.setText("MD5: " + story.getHash() + " SHA-256: " + story.getStoryHashSHA256());
+            storyHashInfo.setText("MD5: " + story.getHash() + " SHA-256: " + story.getStoryHashSHA256(getApplicationContext()));
 
             if (!story.isDownloadedExtensiveCheck(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);
@@ -231,8 +231,11 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.cover).setVisibility(View.GONE);
                     storyExtra0.append("\nCoverImage (missing) " + coverImageFile.getPath());
                 }
+
                 findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-                ((Button) findViewById(R.id.download_delete)).setText(R.string.delete_story);
+
+                Button download_delete = (Button) findViewById(R.id.download_delete);
+                download_delete.setText(R.string.delete_story);
                 findViewById(R.id.download_delete).setVisibility(View.VISIBLE);
                 findViewById(R.id.download_delete).setOnClickListener(new View.OnClickListener() {
                     @Override public void onClick(View v) {
@@ -244,8 +247,16 @@ public class StoryDetails extends Activity {
                         finish();
                     }
                 });
-                ((TextView) findViewById(R.id.download_delete_text)).setText(Story.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, story.getStoryFile(StoryDetails.this).lastModified()));
-                Log.d(TAG, "[storyDetail] lastModified " + story.getStoryFile(StoryDetails.this).lastModified() + " file " + story.getStoryFile(StoryDetails.this).getPath());
+
+                TextView download_delete_text = (TextView) findViewById(R.id.download_delete_text);
+                long storyLastModified = story.getStoryFile(StoryDetails.this).lastModified();
+                if (storyLastModified == 0L) {
+                    download_delete_text.setText("date missing, no file");
+                } else {
+                    download_delete_text.setText(Story.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, storyLastModified));
+                }
+                Log.d(TAG, "[storyDetail] lastModified " + storyLastModified + " file " + story.getStoryFile(StoryDetails.this).getPath());
+
                 if (!story.getSaveFile(StoryDetails.this).exists()) {
                     findViewById(R.id.save_container).setVisibility(View.GONE);
                 } else {
@@ -269,6 +280,13 @@ public class StoryDetails extends Activity {
                 } else {
                     downloadText.setText("MISSING? ExtractedFolder " + storyExtractedDir.getPath());
                     downloadText.setBackgroundColor(Color.parseColor("#F8BBD0"));
+
+                    // Rework the delete button
+                    download_delete.setText(R.string.delete_story_keepfile);
+                    if (keepFile.exists()) {
+                        // Logic here is that the extracted is MISSING and the keepFile exists
+                        download_delete_text.setText("KeepFile " + Story.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, keepFile.lastModified()));
+                    }
                 }
 
                 // Show the Engine Provider (Thunderword) status.
@@ -283,6 +301,7 @@ public class StoryDetails extends Activity {
                     findViewById(R.id.engine_provider_suggestion).setVisibility(View.VISIBLE);
                 }
             }
+
             final String ifid = story.getIFID(StoryDetails.this);
             if (ifid == null) {
                 findViewById(R.id.ifdb_container).setVisibility(View.GONE);

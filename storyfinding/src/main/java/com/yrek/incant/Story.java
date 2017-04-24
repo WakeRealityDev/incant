@@ -66,6 +66,25 @@ ToDo: this might be a heavy object for using as RecyclerView listing of 5000 sto
       any kind of lossy compression.  This design would NOT have worked well for a MP3 player where the same
       track (song) may have 5 variations due to compression and a SHA256 hash would provide no clue that they
       are duplicates.
+
+    Subtle difference in behavior:
+       1. Download both Life on Mars stories
+       2. Exit app
+       3. Open app
+       4. DO NOT load "Get More" list, CSV list
+       5. Delete "Life on Mars?" (English) edition
+       6. Play, which populates from the previously download - but cover image and other info missing
+       I suppose this makes sense, as it's a .z5 and not a .zblorb - no IFID available. Without the CSV being loaded.
+       7. Now load CSV
+       8. Delete files / Play again
+       9. Still no cover
+
+       So loading CSV later in the sequence seems to behave different than if CSV was loaded before delete.
+
+
+   Two things to add:
+      [Delete story] should have a second press to delete the DownloadKeep
+      Play from DownloadKeep file should follow full path of download/gblorb extract/cover download - not one it is on
  */
 public class Story implements Serializable {
     private static final long serializableVersionID = 0L;
@@ -294,6 +313,118 @@ public class Story implements Serializable {
         return false;
     }
 
+
+    protected boolean isDownloadedCachedAnswer = false;
+    private boolean isDownloadedCachedCheck = false;
+    private String downloadKeepFilePath = null;
+    public File downloadKeepFile;
+    public String traceDownlaodChecked = "";
+
+    /*
+    Extensive check checks for local-engine expanded (folder) ZCode / Glulx and then checks for Download duplicate file.
+     */
+    public boolean isDownloadedExtensiveCheck(Context context) {
+        if (isDownloadedCachedCheck) {
+            return isDownloadedCachedAnswer;
+        } else {
+            // First check this run of the app, slower code path, non-cached
+            isDownloadedCachedCheck = true;
+            if (hashSHA256A != null) {
+                traceDownlaodChecked += "A";
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+            if (getZcodeFile(context).exists()) {
+                traceDownlaodChecked += "B";
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+            if (getGlulxFile(context).exists()) {
+                traceDownlaodChecked += "C";
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+
+            // NOW check file system for non-expanded
+
+            // Same logic of download copy filepath
+            String keepFilePath = downloadKeepFilePath;
+            File keepFileTemp;
+            if (keepFilePath == null) {
+                traceDownlaodChecked += "D";
+                keepFilePath = generateDownloadFilename(context);
+                // downloadKeepFile = getDownloadKeepFile(context);
+            } else {
+                traceDownlaodChecked += "E";
+            }
+
+            keepFileTemp = new File(getDownloadKeepDir(context), keepFilePath);
+            if (keepFileTemp.exists()) {
+                traceDownlaodChecked += "F";
+                if (hashSHA256A == null) {
+                    traceDownlaodChecked += "G";
+                    hashSHA256A = HashFile.hashFileSHA256(downloadKeepFile);
+                }
+                downloadKeepFile = keepFileTemp;
+                isDownloadedCachedAnswer = true;
+                return true;
+            }
+
+            traceDownlaodChecked += "H";
+            return false;
+        }
+    }
+
+
+    public File getDownloadKeepFile(Context context) {
+        String tracePathA = "";
+        File keepFile = null;
+        String keepFilePath;
+
+        if (downloadKeepFile != null)
+        {
+            if (downloadKeepFile.exists()) {
+                keepFile = downloadKeepFile;
+                keepFilePath = keepFile.getPath();
+            }
+        }
+
+        if (keepFile == null) {
+            // Try to salvage from string version?
+            keepFilePath = downloadKeepFilePath;
+            if (keepFilePath == null) {
+                tracePathA += "A";
+                keepFilePath = generateDownloadFilename(context);
+                keepFile = new File(getDownloadKeepDir(context), keepFilePath);
+            } else {
+                tracePathA += "B";
+                keepFile = new File(keepFilePath);
+            }
+        }
+
+        keepFilePath = keepFile.getPath();
+
+        if (! keepFile.exists()) {
+            tracePathA += "C";
+            keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".gblorb"));
+            if (! keepFile.exists()) {
+                tracePathA += "D";
+                keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".zblorb"));
+            }
+        }
+
+        Log.i(TAG, "[StoryDL_Path] " + tracePathA + " " + keepFilePath);
+        return keepFile;
+    }
+
+    /*
+    From CSV file, prior to creation?
+     */
+    public void setLikelyDownloadFilename(String keepFilePath) {
+        downloadKeepFilePath = keepFilePath;
+        Log.i(TAG, "[StoryDL_Path] set to " + keepFilePath);
+    }
+
 /*
 ########################################################################################################################################################
     ## END The messy section, filename generation. On to routine messy code.
@@ -412,88 +543,7 @@ public class Story implements Serializable {
         }
     }
 
-    protected boolean isDownloadedCachedAnswer = false;
-    private boolean isDownloadedCachedCheck = false;
-    private String downloadKeepFilePath = null;
-    public File keepFile;
-    public String traceDownlaodChecked = "";
 
-    public boolean isDownloadedExtensiveCheck(Context context) {
-        if (isDownloadedCachedCheck) {
-            return isDownloadedCachedAnswer;
-        } else {
-            // First check this run of the app, slower code path, non-cached
-            isDownloadedCachedCheck = true;
-            if (hashSHA256A != null) {
-                traceDownlaodChecked += "A";
-                isDownloadedCachedAnswer = true;
-                return true;
-            }
-            if (getZcodeFile(context).exists()) {
-                traceDownlaodChecked += "B";
-                isDownloadedCachedAnswer = true;
-                return true;
-            }
-            if (getGlulxFile(context).exists()) {
-                traceDownlaodChecked += "C";
-                isDownloadedCachedAnswer = true;
-                return true;
-            }
-
-            // NOW check file system for non-expanded
-
-            // Same logic of download copy filepath
-            String keepFilePath = downloadKeepFilePath;
-            if (keepFilePath == null) {
-                traceDownlaodChecked += "D";
-                keepFilePath = generateDownloadFilename(context);
-                // keepFile = getDownloadKeepFile(context);
-                keepFile = new File(getDownloadKeepDir(context), keepFilePath);
-            } else {
-                traceDownlaodChecked += "E";
-                keepFile = new File(getDownloadKeepDir(context), keepFilePath);
-            }
-
-            if (keepFile.exists()) {
-                traceDownlaodChecked += "F";
-                if (hashSHA256A == null) {
-                    traceDownlaodChecked += "G";
-                    hashSHA256A = HashFile.hashFileSHA256(keepFile);
-                }
-                isDownloadedCachedAnswer = true;
-                return true;
-            }
-
-            traceDownlaodChecked += "H";
-            return false;
-        }
-    }
-
-    public File getDownloadKeepFile(Context context) {
-        String tracePathA = "";
-        String keepFilePath = downloadKeepFilePath;
-        File keepFile;
-        if (keepFilePath == null) {
-            tracePathA += "A";
-            keepFilePath = generateDownloadFilename(context);
-            keepFile = new File(getDownloadKeepDir(context), keepFilePath);
-        } else {
-            tracePathA += "B";
-            keepFile = new File(keepFilePath);
-        }
-
-        if (! keepFile.exists()) {
-            tracePathA += "C";
-            keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".gblorb"));
-            if (! keepFile.exists()) {
-                tracePathA += "D";
-                keepFile = new File(getDownloadKeepDir(context), keepFilePath.replace(".blorb", ".zblorb"));
-            }
-        }
-
-        Log.i(TAG, "[StoryDL_Path] " + tracePathA + " " + keepFilePath);
-        return keepFile;
-    }
 
     /*
     Incant legacy code which doesn't assume object is created.
@@ -937,7 +987,7 @@ public class Story implements Serializable {
                 Log.w(TAG, "[storyFileShare][mediaStoreScan] downloaded false");
             }
 
-            if (!downloaded) {
+            if (! downloaded) {
                 delete(context);
             }
         }
@@ -1101,6 +1151,8 @@ public class Story implements Serializable {
             }
         }
         dir.delete();
+        // rebuild cache of downloaded filenames
+        rebuildStaticKeepFilesPathPile(context);
     }
 
     public void setListingExtras(int category0) {
@@ -1141,17 +1193,24 @@ public class Story implements Serializable {
         return (hashSHA256A != null);
     }
 
-    public String getStoryHashSHA256() {
+    public String getStoryHashSHA256(Context context) {
+        if (hashSHA256A != null) {
+            return hashSHA256A;
+        } else {
+            File keepFile = getDownloadKeepFile(context);
+            if (keepFile != null) {
+                if (keepFile.exists()) {
+                    hashSHA256A = HashFile.hashFileSHA256(keepFile);
+                    return hashSHA256A;
+                }
+            }
+        }
+
         return hashSHA256A;
     }
 
     public int getEngineCode() {
         return engineCode;
-    }
-
-    public void setLikelyDownloadFilename(String keepFilePath) {
-        downloadKeepFilePath = keepFilePath;
-        Log.i(TAG, "[StoryDL_Path] set to " + keepFilePath);
     }
 
 
@@ -1161,22 +1220,31 @@ public class Story implements Serializable {
             // is extracted, good
             return true;
         } else {
-            if (keepFile != null) {
-                if (keepFile.exists()) {
+            // Trigger possible population of downloadKeepFile variable.
+            isDownloadedExtensiveCheck(context);
+            if (downloadKeepFile == null) {
+                File tempDownloadKeepFile = getDownloadKeepFile(context);
+                if (tempDownloadKeepFile.exists()) {
+                    downloadKeepFile = tempDownloadKeepFile;
+                }
+            }
+
+            if (downloadKeepFile != null) {
+                if (downloadKeepFile.exists()) {
                     // perform a disk to disk download
                     try {
-                        InputStream storyFileInputStream = new FileInputStream(keepFile);
+                        InputStream storyFileInputStream = new FileInputStream(downloadKeepFile);
                         download(context, storyFileInputStream);
                     } catch (IOException e) {
-                        Log.e(TAG, "[playClick] keepFile exception", e);
+                        Log.e(TAG, "[playClick] downloadKeepFile exception", e);
                         return false;
                     }
                     return true;
                 } else {
-                    Log.e(TAG, "[playClick] keepFile does not exist " + keepFile.getPath());
+                    Log.e(TAG, "[playClick] downloadKeepFile does not exist " + downloadKeepFile.getPath());
                 }
             } else {
-                Log.e(TAG, "[playClick] keepFile null");
+                Log.e(TAG, "[playClick] downloadKeepFile null");
             }
         }
         return false;

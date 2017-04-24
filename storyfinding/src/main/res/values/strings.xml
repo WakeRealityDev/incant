@@ -9,7 +9,9 @@
     <string name="play_via_external_engine_provider">Via Thunderword</string>
     <string name="play_zcode">[Z-code]</string>
     <string name="play_glulx">[Glulx]</string>
+
     <string name="delete_story">Delete story</string>
+    <string name="delete_story_keepfile">Delete KeepFile</string>
 
     <string name="external_provider_noprompt">Interrupt story</string>
     <string name="external_provider_activity_label">Activity</string>
