@@ -102,6 +102,9 @@ public class StoryDetails extends Activity {
 
         @Override
         public void run() {
+            // This is the StoryDetails page, this is NOT the RecyclerView where scrolling is at blazing speed.
+            story.invalidateAllStorageCache(getApplicationContext());
+
             final String storyName = story.getName(StoryDetails.this);
             ((TextView) findViewById(R.id.name)).setText(makeName());
             ((TextView) findViewById(R.id.author)).setText(makeAuthor());
@@ -109,7 +112,7 @@ public class StoryDetails extends Activity {
 
             TextView storyExtra0 = (TextView) findViewById(R.id.storyextra0);
             storyExtra0.setText("Category " + story.getStoryCategory());
-            File keepFile = story.getDownloadKeepFile(StoryDetails.this);
+            final File keepFile = story.getDownloadKeepFile(StoryDetails.this);
             if (keepFile.exists()) {
                 storyExtra0.append("\nDownloadKeep " + keepFile.getPath() + " size " + keepFile.length());
                 storyExtra0.setBackgroundColor(Color.TRANSPARENT);
@@ -169,6 +172,11 @@ public class StoryDetails extends Activity {
                                     });
                                 }
                                 v.post(setView);
+                                story.invalidateAllStorageCache(getApplicationContext());
+                                // Right now, this event will trigger the RecyclerView to notify invalid listings on the current screen. Cover image removed.
+                                Log.i(TAG, "[RVadaptNotify] story download, posting EventStoryNonListDownload");
+                                DownloadSpot.storyNonListDownloadFlag = true;
+                                EventBus.getDefault().post(new EventStoryNonListDownload());
                             }
                         };
                         downloadStory.setName("DownloadStory");
@@ -286,6 +294,18 @@ public class StoryDetails extends Activity {
                     if (keepFile.exists()) {
                         // Logic here is that the extracted is MISSING and the keepFile exists
                         download_delete_text.setText("KeepFile " + Story.getTimeString(StoryDetails.this, R.string.downloaded_recently, R.string.downloaded_at, keepFile.lastModified()));
+
+                        findViewById(R.id.download_delete).setOnClickListener(new View.OnClickListener() {
+                            @Override public void onClick(View v) {
+                                keepFile.delete();
+                                story.invalidateAllStorageCache(getApplicationContext());
+                                // Right now, this event will trigger the RecyclerView to notify invalid listings on the current screen. Cover image removed.
+                                Log.i(TAG, "[RVadaptNotify] delete KeepFile, posting EventStoryNonListDownload");
+                                DownloadSpot.storyNonListDownloadFlag = true;
+                                EventBus.getDefault().post(new EventStoryNonListDownload());
+                                finish();
+                            }
+                        });
                     }
                 }
 

@@ -85,6 +85,8 @@ ToDo: this might be a heavy object for using as RecyclerView listing of 5000 sto
    Two things to add:
       [Delete story] should have a second press to delete the DownloadKeep
       Play from DownloadKeep file should follow full path of download/gblorb extract/cover download - not one it is on
+
+   Yes, yes, this is really starting to feel like a a week of "bailing wire and chewing gum" to deal with the context of "is a story downloaded/deleted/resurected from KeepFile".
  */
 public class Story implements Serializable {
     private static final long serializableVersionID = 0L;
@@ -272,7 +274,7 @@ public class Story implements Serializable {
     public static String foundKeepFilesPathsPileA = null;
 
 
-    private synchronized void rebuildStaticKeepFilesPathPile(Context context) {
+    public synchronized void rebuildStaticKeepFilesPathPile(Context context) {
         long startedWhen = System.currentTimeMillis();
         final File downloadKeepDir = Story.getDownloadKeepDir(context);
         int foundCount = 0;
@@ -319,6 +321,14 @@ public class Story implements Serializable {
     private String downloadKeepFilePath = null;
     public File downloadKeepFile;
     public String traceDownlaodChecked = "";
+
+    public void invalidateAllStorageCache(Context context) {
+        isDownloadedCachedCheck = false;
+        rebuildStaticKeepFilesPathPile(context);
+        hashSHA256A = null;
+        downloadKeepFilePath = null;
+        downloadKeepFile = null;
+    }
 
     /*
     Extensive check checks for local-engine expanded (folder) ZCode / Glulx and then checks for Download duplicate file.
@@ -1070,6 +1080,10 @@ public class Story implements Serializable {
     }
 
     protected int downloadTo(Context context, URL url, File file) throws IOException {
+        if (url == null) {
+            Log.e(TAG, "downloadTo [downloadURL] NULL url");
+            return 0;
+        }
         Log.d(TAG, "downloadTo [downloadURL] " + file + " " + url);
         InputStream in = null;
         try {

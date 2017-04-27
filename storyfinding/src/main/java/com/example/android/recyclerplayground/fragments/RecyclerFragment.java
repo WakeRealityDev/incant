@@ -406,12 +406,29 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
                 Log.i("RVFrag", "[RVadaptNotify] found storyNonListDownloadFlag");
                 // convention is to clear flag vars immediate
                 DownloadSpot.storyNonListDownloadFlag = false;
-                storyNonListDownload();
             }
             // EventBus could have been unregistered while user installed Thunderword app and now chane in Thunderword status needs to be reflected in this app.
             boolean goodRedraw = pickEngineProviderHelper.redrawEngineProvider((TextView) getView().findViewById(R.id.engine_provider_status), null /* Clear */);
             headerSectionSetup(getView());
         }
+
+        // After spending 3 days in hell trying to grasp all these reactionary events, delete expanded, delete KeepFile, ressurect, non-CSV or csv
+        // how often is onResume happening? Is the jitter of OnResume an issue except in multi-window Android 7? (which is a legit issue)
+        // Damn it: Hit hard, refresh
+        storyNonListDownload();
+        // RESTING RESULT:  STILL not enough.
+        /*
+        Test failure:
+        1. Cold start app
+        2. Get More
+        3. Search: Life
+        4. Text Bon* - detai page (Long-press)
+        5. Delete
+        6. Delete Keep
+        7. RecyclerView (4 items) shows PLAY, when it was deleted twice (both expanded folder and KeepFile).
+
+        Hammer it home: Restart ap, search "Life", shows correct "Download" on RecyclerView instead of "Play".
+         */
     }
 
     @Override
