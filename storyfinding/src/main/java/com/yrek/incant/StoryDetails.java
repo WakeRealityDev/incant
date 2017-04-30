@@ -39,7 +39,7 @@ This works except in this sequence
 3. Open StoryDetails, Delete Incant structure
 4. Open StoryDetails, Delete Keep file
 5. ReyclerView now correctly shows [Download] link
-6. FAILURE: Open StoyrDetails, return to RecyclerView - shows play
+6. FAILURE: Open StoryDetails, return to RecyclerView - shows play
  */
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
@@ -54,7 +54,7 @@ public class StoryDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.story_details);
 
-        // Two ways of passing in story
+        // Two ways of passing in story from caller
         if (getIntent().hasExtra(ParamConst.CREATE_INDEX_KEY_STORY)) {
             int createIndexKeyShouldBe = getIntent().getIntExtra(ParamConst.CREATE_INDEX_KEY_STORY, -1);
             if (StoryListSpot.storyDetailStory0 != null) {
@@ -63,6 +63,7 @@ public class StoryDetails extends Activity {
                 }
             }
         } else {
+            // Note, this creates a clone, a deep-copy of the object. Changes will not be seen on the RecyclerView
             story = (Story) getIntent().getSerializableExtra(ParamConst.SERIALIZE_KEY_STORY);
         }
 
