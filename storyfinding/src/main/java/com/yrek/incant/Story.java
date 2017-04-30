@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipFile;
 
 import org.greenrobot.eventbus.EventBus;
@@ -107,8 +108,11 @@ public class Story implements Serializable {
     private String gameid;
     // 0 = unknown
     private int storyCategory = 0;
+    public static AtomicInteger createIndexAtomicInteger = new AtomicInteger(0);
+    private final int createIndex;
 
     public Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL) {
+        createIndex = createIndexAtomicInteger.getAndIncrement();
         this.name = name;
         this.author = author;
         this.headline = headline;
@@ -126,6 +130,7 @@ public class Story implements Serializable {
     }
 
     public Story(String name, String author, String headline, String description, String storyHashSHA256, URL imageURL, int storyEngineCode) {
+        createIndex = createIndexAtomicInteger.getAndIncrement();
         this.name = name;
         this.author = author;
         this.headline = headline;
@@ -319,13 +324,15 @@ public class Story implements Serializable {
     protected boolean isDownloadedCachedAnswer = false;
     private boolean isDownloadedCachedCheck = false;
     private String downloadKeepFilePath = null;
-    public File downloadKeepFile;
+    public File downloadKeepFile = null;
     public String traceDownlaodChecked = "";
 
     public void invalidateAllStorageCache(Context context) {
         isDownloadedCachedCheck = false;
+        isDownloadedCachedAnswer = false;
         rebuildStaticKeepFilesPathPile(context);
         hashSHA256A = null;
+        hashA = null;
         downloadKeepFilePath = null;
         downloadKeepFile = null;
     }
@@ -1262,6 +1269,14 @@ public class Story implements Serializable {
             }
         }
         return false;
+    }
+
+    /*
+    Returns a unique index (for this application run) of the Story objects, should be a way to do a sanity
+    check that an object is of the same origins, not a newly created one.
+     */
+    public int getCreateIndex() {
+        return createIndex;
     }
 
     private class Metadata implements XMLScraper.Handler {

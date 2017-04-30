@@ -15,7 +15,9 @@ import java.util.ArrayList;
 public class StoryListSpot {
     public static StoryLister storyLister;
     public static ReadCommaSepValuesFile readCommaSepValuesFile;
-    public static LruCache<String,Bitmap> coverImageCache;
+    public static LruCache<String, Bitmap> coverImageCache;
+
+    public static Story storyDetailStory0 = null;
 
     public static boolean optionLaunchExternal = false;
     public static int optionLaunchExternalActivityCode = 0;

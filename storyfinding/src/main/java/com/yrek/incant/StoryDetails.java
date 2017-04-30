@@ -32,11 +32,19 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
-
+/*
+This works except in this sequence
+1. Start with RecyclerView
+2. Download
+3. Open StoryDetails, Delete Incant structure
+4. Open StoryDetails, Delete Keep file
+5. ReyclerView now correctly shows [Download] link
+6. FAILURE: Open StoyrDetails, return to RecyclerView - shows play
+ */
 public class StoryDetails extends Activity {
     private static final String TAG = StoryDetails.class.getSimpleName();
 
-    private Story story;
+    private Story story = null;
     private TextAppearanceSpan titleStyle;
     private TextAppearanceSpan authorStyle;
     private TextAppearanceSpan headlineStyle;
@@ -45,12 +53,30 @@ public class StoryDetails extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.story_details);
-        story = (Story) getIntent().getSerializableExtra(ParamConst.SERIALIZE_KEY_STORY);
+
+        // Two ways of passing in story
+        if (getIntent().hasExtra(ParamConst.CREATE_INDEX_KEY_STORY)) {
+            int createIndexKeyShouldBe = getIntent().getIntExtra(ParamConst.CREATE_INDEX_KEY_STORY, -1);
+            if (StoryListSpot.storyDetailStory0 != null) {
+                if (StoryListSpot.storyDetailStory0.getCreateIndex() == createIndexKeyShouldBe) {
+                    story = StoryListSpot.storyDetailStory0;
+                }
+            }
+        } else {
+            story = (Story) getIntent().getSerializableExtra(ParamConst.SERIALIZE_KEY_STORY);
+        }
+
         titleStyle = new TextAppearanceSpan(this, R.style.story_details_title);
         authorStyle = new TextAppearanceSpan(this, R.style.story_details_author);
         headlineStyle = new TextAppearanceSpan(this, R.style.story_details_headline);
 
         ((SubactivityView) findViewById(R.id.subactivity_view)).setActivity(this);
+
+        if (story == null) {
+            Log.e(TAG, "Error finding Story SD-A00");
+            Toast.makeText(this, "Error finding Story SD-A00", Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override

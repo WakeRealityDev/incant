@@ -384,7 +384,10 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
         if (activity != null) {
             // Intent startStoryDetails = new Intent(activity, TestStoryDetailsActivity.class);
             Intent startStoryDetails = new Intent(activity, StoryDetails.class);
-            startStoryDetails.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
+            StoryListSpot.storyDetailStory0 = story;
+            // Instead of passing story, pass index to validate object on static var is good.
+            startStoryDetails.putExtra(ParamConst.CREATE_INDEX_KEY_STORY, story.getCreateIndex());
+            // startStoryDetails.putExtra(ParamConst.SERIALIZE_KEY_STORY, story);
             activity.startActivity(startStoryDetails);
         }
 
