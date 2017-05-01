@@ -6,6 +6,10 @@ import android.util.Log;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.wakereality.apphelpersadupe.fileutils.HashFile;
+import com.wakereality.thunderstrike.dataexchange.EngineConst;
+import com.yrek.incant.Story;
+import com.yrek.incant.StoryLister;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,6 +23,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.FileHandler;
 
 /**
  * Created by Stephen A Gutknecht on 4/1/17.
@@ -65,7 +70,7 @@ public class ReadCommaSepValuesFile {
     SimpleDateFormat dateFormatIFDB0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     public boolean readComplexSetOfFilesCSV(Context context) {
-        Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+        Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
 
         long isRecentDateWhen = System.currentTimeMillis();
         try {
@@ -131,7 +136,7 @@ public class ReadCommaSepValuesFile {
 
         int targetMatch = 0;
         String previousEntry = "never_match";
-        Log.i("ReadCSV", "[ReadCSV] got " + informStoriesList.size());
+        Log.i(TAG, "[ReadCSV] got " + informStoriesList.size());
         for (int i = 0; i < informStoriesList.size(); i++) {
             final String[] e = informStoriesList.get(i);
 
@@ -164,7 +169,7 @@ why no date on output of this one?
                                         storyEntry.downloadLink = l[1];
                                         if (! l[6].equals("NULL")) {
                                             // If the zip-inside file is populated, this is probably an undesired link.
-                                            Log.w("ReadCSV", "[ReadCSV] SKIP as likely a zip file l[1] " + l[1] + " l[6] " + l[6]);
+                                            Log.w(TAG, "[ReadCSV] SKIP as likely a zip or other container file l[1] " + l[1] + " l[6] " + l[6]);
                                             storyEntry.extractFilename = l[6];
                                             continue;
                                         }
@@ -224,23 +229,23 @@ why no date on output of this one?
                                                 final long listingElapsed = System.currentTimeMillis() - storyEntry.listingWhen;
                                                 if (listingElapsed < (1000L * 60L * 60L * 24L * 90L)) {
                                                     storyEntry.tickeBits += 2;
-                                                    Log.w("ReadCSV", "[ReadCSV] recent date " + dateFieldA + " elapsed " + listingElapsed);
+                                                    Log.w(TAG, "[ReadCSV] recent date " + dateFieldA + " elapsed " + listingElapsed);
                                                 } else {
-                                                    // Log.w("ReadCSV", "[ReadCSV] NOT recent date " + dateFieldA + " elapsed " + listingElapsed);
+                                                    // Log.w(TAG, "[ReadCSV] NOT recent date " + dateFieldA + " elapsed " + listingElapsed);
                                                 }
                                             } catch (ParseException e1) {
-                                                Log.w("ReadCSV", "[ReadCSV] problem with date ", e1);
+                                                Log.w(TAG, "[ReadCSV] problem with date ", e1);
                                             }
                                         } else {
-                                            Log.w("ReadCSV", "[ReadCSV] problem with date, no dash? " + dateFieldA);
+                                            Log.w(TAG, "[ReadCSV] problem with date, no dash? " + dateFieldA);
                                         }
 
                                         if (storyEntry.listingWhen == 0L) {
-                                            Log.w("ReadCSV", "[ReadCSV] why 0L listingWhen? " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
+                                            Log.w(TAG, "[ReadCSV] why 0L listingWhen? " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
                                         }
 
                                         foundEntries.add(storyEntry);
-                                        Log.i("ReadCSV", "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
+                                        Log.i(TAG, "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
                                     }
 
                                 }
@@ -252,7 +257,7 @@ why no date on output of this one?
             }
 
             if (i % 100 == 0) {
-                Log.v("ReadCSV", "[ReadCSV] # " + i + ": " + rc(e[1]) + ", " + rc(e[2]));
+                Log.v(TAG, "[ReadCSV] # " + i + ": " + rc(e[1]) + ", " + rc(e[2]));
             }
         }
 
@@ -266,9 +271,10 @@ why no date on output of this one?
         });
 
         // save copy on dev system once in a white.
+        // Incant_saveList_withhash0.csv
         saveCopyAsCSV(context, "/sdcard/Incant_saveList_bigA.csv");
 
-        Log.i("ReadCSV", "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
+        Log.i(TAG, "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
     }
 
@@ -277,7 +283,7 @@ why no date on output of this one?
    // 2. sha256 matchup
 
     public boolean readSimpleFileOneObjectCSV(Context context) {
-        Log.i("ReadCSV", "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+        Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
 
         foundEntries.clear();
 
@@ -295,11 +301,11 @@ why no date on output of this one?
                 }
             }
         } catch (IOException e) {
-            Log.e("ReadCSV", "[ReadCSV] IOException", e);
+            Log.e(TAG, "[ReadCSV] IOException", e);
             return false;
         }
 
-        Log.i("ReadCSV", "[ReadCSV] got " + informStoriesList.size());
+        Log.i(TAG, "[ReadCSV] got " + informStoriesList.size());
         for (int i = 0; i < informStoriesList.size(); i++) {
             final String[] e = informStoriesList.get(i);
 
@@ -324,7 +330,7 @@ why no date on output of this one?
             foundEntries.add(storyEntry);
         }
 
-        Log.i("ReadCSV", "[ReadCSV] foundEntries " + foundEntries.size() + " totalMemory " + Runtime.getRuntime().totalMemory());
+        Log.i(TAG, "[ReadCSV] foundEntries " + foundEntries.size() + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
     }
 
@@ -340,19 +346,60 @@ why no date on output of this one?
         try {
             writer = new CSVWriter(new FileWriter(filePath, true));
         } catch (IOException e) {
-            Log.e("ReadCSV", "[ReadCSV] Exception saving copy of data to CSV", e);
+            Log.e(TAG, "[ReadCSV][SaveCSV] Exception saving copy of data to CSV", e);
             return false;
         }
 
+        int engineUnknownCount = 0;
+        int engineNoHashCount = 0;
+        int engineUnknownRevisedCount = 0;
         for (int i = 0; i < foundEntries.size(); i++) {
             StoryEntryIFDB ifdbListEntry = foundEntries.get(i);
+            if (ifdbListEntry.engineCode == EngineConst.ENGINE_UNKNOWN) {
+                engineUnknownCount++;
+                Story newStory = StoryLister.createStoryForStoryEntryIFDB(context, ifdbListEntry);
+                // Important to set language, as paths may change - story "Life on Mars" on IFDB has two entries, different language
+                newStory.setLanguageIdentifier(ifdbListEntry.storyLanguage);
+                if (newStory.isZcode(context)) {
+                    ifdbListEntry.engineCode = EngineConst.ENGINE_Z_DEFAULT;
+                    engineUnknownRevisedCount++;
+                } else if (newStory.isGlulx(context)) {
+                    ifdbListEntry.engineCode = EngineConst.ENGINE_GLULX_DEFAULT;
+                    engineUnknownRevisedCount++;
+                } else {
+                    // internal healing may take place inside the Story object.
+                    newStory.isDownloadedExtensiveCheck(context);
+
+                    File extractFileDirectory = newStory.getStoryFile(context);
+                    String outExtraA = " ***root missing*** " + extractFileDirectory.getPath();
+                    if (extractFileDirectory.exists()) {
+                        outExtraA = " root: " + extractFileDirectory.getPath();
+                    }
+                    Log.v(TAG, "[ReadCSV][SaveCSV] unable to determine engine for story: " + ifdbListEntry.storyTitle + " " + ifdbListEntry.fileHashSHA256 + " " + ifdbListEntry.downloadLink + " storyLanguage " + ifdbListEntry.storyLanguage + " descriptiveFilename " + ifdbListEntry.descriptiveFilename
+                        + outExtraA
+                    );
+                }
+
+                // KeepFile is the download file, the entire 'story' (In situation of ZBlorb or GBlorb, all the contents and not just .ulx or .z? code)
+                File keepFile = newStory.getDownloadKeepFile(context);
+                if (keepFile.exists()) {
+                    String freshHashSHA256 = HashFile.hashFileSHA256(keepFile);
+                    ifdbListEntry.fileHashSHA256 = freshHashSHA256;
+                } else {
+                    engineNoHashCount++;
+                    Log.v(TAG, "[ReadCSV][SaveCSV] KeepFIle missing, no Hash SHA-256: " + ifdbListEntry.storyTitle + " " + ifdbListEntry.fileHashSHA256 + " " + ifdbListEntry.downloadLink + " storyLanguage " + ifdbListEntry.storyLanguage + " keepFile " + keepFile.getPath());
+                }
+            }
             writer.writeNext(ifdbListEntry.toStringArray());
         }
         try {
             writer.close();
+
+            Log.d(TAG, "[ReadCSV][SaveCSV] wrote to CSV file " + filePath + " engineNoHashCount: " + engineNoHashCount + " engineUnknownCount: " + engineUnknownCount + " revised " + engineUnknownRevisedCount + " of " + foundEntries.size());
+
             return true;
         } catch (IOException e) {
-            Log.e("ReadCSV", "[ReadCSV] IOException", e);
+            Log.e(TAG, "[ReadCSV][SaveCSV] IOException", e);
             return false;
         }
     }

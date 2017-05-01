@@ -54,6 +54,27 @@ public class StoryLister {
     }
 
 
+    public static Story createStoryForStoryEntryIFDB(Context context, StoryEntryIFDB ifdbListEntry) {
+        URL downloadLink = null;
+        try {
+            downloadLink = new URL(ifdbListEntry.downloadLink);
+        } catch (MalformedURLException e) {
+            Log.w(TAG, "Bad URL on CSV list generation ", e);
+        }
+        URL imageLink = null;
+        try {
+            imageLink = new URL(context.getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
+        } catch (MalformedURLException e) {
+            Log.w(TAG, "Bad URL for Image on CSV list generation ", e);
+        }
+
+        // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
+        // Story(String name, String author, String headline, String description, String storyHashSHA256, URL imageURL, int storyEngineCode) {
+        Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink, ifdbListEntry.fileHashSHA256, ifdbListEntry.engineCode);
+        return newStory;
+    }
+
+
     /*
     Convert the simpler CSV StoryEntryIFDB holding objects to more complex Story objects.
      */
@@ -72,21 +93,7 @@ public class StoryLister {
                     Log.d(TAG, "[CSV_matchup][WhereJim][listPopulate] startsWith Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
                 }
 
-                URL downloadLink = null;
-                try {
-                    downloadLink = new URL(ifdbListEntry.downloadLink);
-                } catch (MalformedURLException e) {
-                    Log.w(TAG, "Bad URL on CSV list generation ", e);
-                }
-                URL imageLink = null;
-                try {
-                    imageLink = new URL(context.getString(R.string.ifdb_cover_image_url, ifdbListEntry.siteIdentity));
-                } catch (MalformedURLException e) {
-                    Log.w(TAG, "Bad URL for Image on CSV list generation ", e);
-                }
-
-                // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
-                Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink);
+                Story newStory = createStoryForStoryEntryIFDB(context, ifdbListEntry);
 
                 switch (ifdbListEntry.storyLanguage) {
                     case "":

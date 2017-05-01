@@ -135,7 +135,35 @@ public class StoryDetails extends Activity {
             final String storyName = story.getName(StoryDetails.this);
             ((TextView) findViewById(R.id.name)).setText(makeName());
             ((TextView) findViewById(R.id.author)).setText(makeAuthor());
-            ((TextView) findViewById(R.id.description)).setText(story.getDescription(StoryDetails.this));
+            String storyDescription = story.getDescription(StoryDetails.this);
+            CharSequence outDescription = storyDescription;
+
+            if (storyDescription != null) {
+                // Simple HTML can be found, the easiest way to detect is a close tag like "</b>" as that pattern isn't likely to happen in non-HTML. See ToDo: above.
+                // Performance probably isn't a huge concern, as RecyclerView is very good about only hitting the data rows that are on-screen at the time.
+                boolean useRenderingHTML = false;
+                if (storyDescription.contains("</")) {
+                    useRenderingHTML = true;
+                } else if (storyDescription.contains("&#")) {
+                    useRenderingHTML = true;
+                }
+
+                if (useRenderingHTML) {
+                    // Going to HTML will strip whitespace behavior, so re-add newlines.  description of story "Gaucho" is a good test.
+                    // Trim leading and trailing too, we only want inner newlines.
+                    // ToDo: prep of CSV needs to trim. story example: "bsifhw1ik8524evd","Under the Bed"
+                    String outReworkedHTML = storyDescription.trim().replace("<p>", "\n").replace("\n\n", "\n").replace("\n", "<br />");
+                    Log.d(TAG, "[RVdescHTML] '" + outReworkedHTML + "'");
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        outDescription = android.text.Html.fromHtml(outReworkedHTML, android.text.Html.FROM_HTML_MODE_LEGACY);
+                    } else {
+                        outDescription = android.text.Html.fromHtml(outReworkedHTML);
+                    }
+                }
+            }
+
+
+            ((TextView) findViewById(R.id.description)).setText(outDescription);
 
             TextView storyExtra0 = (TextView) findViewById(R.id.storyextra0);
             storyExtra0.setText("Category " + story.getStoryCategory());
@@ -155,7 +183,23 @@ public class StoryDetails extends Activity {
             // Using append allows one thing multiple textviews do not, word-wrapping.
 
             TextView storyHashInfo = (TextView) findViewById(R.id.story_hash_info);
-            storyHashInfo.setText("MD5: " + story.getHash() + " SHA-256: " + story.getStoryHashSHA256(getApplicationContext()));
+            storyHashInfo.setText("MD5: " + story.getHash());
+            String storyCalculatedHashSHA256 = story.getStoryHashSHA256(getApplicationContext());
+            if (storyCalculatedHashSHA256 != null) {
+                storyHashInfo.append(" SHA-256: " + storyCalculatedHashSHA256);
+            }
+            String storyExpectedHashSHA256 = story.getDownloadExpectedHashSHA256();
+            if (storyExpectedHashSHA256 != null) {
+                if (storyCalculatedHashSHA256 != null) {
+                    if (storyCalculatedHashSHA256.equals(storyExpectedHashSHA256)) {
+                        storyHashInfo.append(" [match]");
+                    } else {
+                        storyHashInfo.append(" mismatch for Expected SHA-256: " + storyExpectedHashSHA256);
+                    }
+                } else {
+                    storyHashInfo.append(" SHA-256 (Expected): " + storyExpectedHashSHA256);
+                }
+            }
 
             if (!story.isDownloadedExtensiveCheck(StoryDetails.this)) {
                 findViewById(R.id.play_container).setVisibility(View.GONE);

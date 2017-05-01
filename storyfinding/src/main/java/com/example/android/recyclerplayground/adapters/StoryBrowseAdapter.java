@@ -163,17 +163,20 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
         boolean isDownloading = item.isDownloadingNow();
         boolean isDownloadError = item.getDownloadError();
         Bitmap image = null;
-        if (isDownloaded) {
-            final int engineCode = item.getEngineCode();
-            if (engineCode == EngineConst.ENGINE_UNKNOWN) {
-                // Legacy Incant app, prep Thunderword integration.
+
+        final int engineCode = item.getEngineCode();
+        if (engineCode == EngineConst.ENGINE_UNKNOWN) {
+            // Legacy Incant app, prep Thunderword integration.
+            if (item.isZcode(context)) {
                 outEngine = res.getText(R.string.storylist_entry_engine_zmachine);
-                if (item.isGlulx(context)) {
-                    outEngine = res.getText(R.string.storylist_entry_engine_glulx);
-                }
-            } else {
-                outEngine = engineCodeToNameCrossReference.get(engineCode);
-            }
+            } else if (item.isGlulx(context)) {
+                outEngine = res.getText(R.string.storylist_entry_engine_glulx);
+            } // if no match, will fall to "?" default set earlier.
+        } else {
+            outEngine = engineCodeToNameCrossReference.get(engineCode);
+        }
+
+        if (isDownloaded) {
             final File coverImage = item.getCoverImageFile(context);
             if (coverImage.exists()) {
                 image = StoryListSpot.coverImageCache.get(storyName);

@@ -104,6 +104,7 @@ public class Story implements Serializable {
     private transient Metadata metadata;
     private String hashA;
     private String hashSHA256A = null;
+    private String preDownloadHashSHA256A = null;
     private int engineCode = EngineConst.ENGINE_UNKNOWN;
     private String gameid;
     // 0 = unknown
@@ -111,7 +112,8 @@ public class Story implements Serializable {
     public static AtomicInteger createIndexAtomicInteger = new AtomicInteger(0);
     private final int createIndex;
 
-    public Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL) {
+    // ToDo: lacking clarity that the hash is indeed pre-download, but the usage is such currently, so the asumption is made
+    public Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL, String storyHashSHA256, int storyEngineCode) {
         createIndex = createIndexAtomicInteger.getAndIncrement();
         this.name = name;
         this.author = author;
@@ -124,9 +126,19 @@ public class Story implements Serializable {
         this.title = "";
         this.hashA = "";
         this.gameid = "";
+        this.engineCode = storyEngineCode;
+        if (storyHashSHA256 != null) {
+            if (! storyHashSHA256.isEmpty()) {
+                this.preDownloadHashSHA256A = storyHashSHA256;
+            }
+        }
 
         if (SettingsCurrent.debugLogStoryCreate)
             Log.v(TAG, "trace Story create " + this.author + ":" + this.name + ":" + this.title);
+    }
+
+    public Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL) {
+        this(name, author, headline, description, downloadURL, zipEntry, imageURL, null, EngineConst.ENGINE_UNKNOWN);
     }
 
     public Story(String name, String author, String headline, String description, String storyHashSHA256, URL imageURL, int storyEngineCode) {
@@ -380,7 +392,7 @@ public class Story implements Serializable {
                 traceDownlaodChecked += "F";
                 if (hashSHA256A == null) {
                     traceDownlaodChecked += "G";
-                    hashSHA256A = HashFile.hashFileSHA256(downloadKeepFile);
+                    hashSHA256A = HashFile.hashFileSHA256(keepFileTemp);
                 }
                 downloadKeepFile = keepFileTemp;
                 isDownloadedCachedAnswer = true;
@@ -1228,6 +1240,10 @@ public class Story implements Serializable {
         }
 
         return hashSHA256A;
+    }
+
+    public String getDownloadExpectedHashSHA256() {
+        return preDownloadHashSHA256A;
     }
 
     public int getEngineCode() {
