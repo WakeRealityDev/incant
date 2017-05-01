@@ -69,6 +69,7 @@ public class ReadCommaSepValuesFile {
     // example: "2017-03-11 15:22:16"
     SimpleDateFormat dateFormatIFDB0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
+
     public boolean readComplexSetOfFilesCSV(Context context) {
         Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
 

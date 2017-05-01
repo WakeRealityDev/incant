@@ -15,8 +15,9 @@ public class AddStoriesToStoryList {
             StoryListSpot.readCommaSepValuesFile = new ReadCommaSepValuesFile();
         }
 
-        StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV(appContext);
-        // StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
+        // Build CSV file from multiple sources - or use consolidated one?
+        // StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV(appContext);
+        StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
         System.gc();
     }
 }
