@@ -247,20 +247,24 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mAdapter.filterListSearch(query);
-                return true;
-            }
+        if (searchView != null) {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    mAdapter.filterListSearch(query);
+                    return true;
+                }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mAdapter.filterListSearch(newText);
-                return true;
-            }
-        });
-        searchView.setQueryHint(getText(R.string.search_hint));
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    mAdapter.filterListSearch(newText);
+                    return true;
+                }
+            });
+            searchView.setQueryHint(getText(R.string.search_hint));
+        } else {
+            Log.e("RVFrag", "searchView object null");
+        }
     }
 
     @Override

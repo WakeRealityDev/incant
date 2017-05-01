@@ -28,3 +28,6 @@
 -dontwarn com.opencsv.**
 -dontwarn org.apache.commons.beanutils.**
 -dontwarn org.apache.commons.collections.**
+
+# bug in SearchView? http://stackoverflow.com/questions/27968537/search-widget-is-not-working-in-release-apk
+-keep class android.support.v7.widget.SearchView { *; }

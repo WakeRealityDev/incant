@@ -65,11 +65,11 @@ public class StoryLister {
                 StoryEntryIFDB ifdbListEntry = readCommaSepValuesFile.foundEntries.get(i);
 
                 if (ifdbListEntry.siteIdentity.equals("35yqdqy3ennlte69")) {
-                    Log.e(TAG, "[CSV_matchup][WhereJim][listPopulate] Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
+                    Log.d(TAG, "[CSV_matchup][WhereJim][listPopulate] Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
                 }
 
                 if (ifdbListEntry.storyTitle.startsWith("Life")) {
-                    Log.e(TAG, "[CSV_matchup][WhereJim][listPopulate] startsWith Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
+                    Log.d(TAG, "[CSV_matchup][WhereJim][listPopulate] startsWith Life on Mars? Index " + i + " title: " + ifdbListEntry.storyTitle);
                 }
 
                 URL downloadLink = null;
