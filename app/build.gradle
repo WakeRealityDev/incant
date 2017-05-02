@@ -18,8 +18,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
 
-        versionCode 33
-        versionName "0.5.13"
+        versionCode 34
+        versionName "0.5.14"
 
         signingConfig signingConfigs.WakeReality_androidB
     }

@@ -198,10 +198,14 @@ public class Story implements Serializable {
             else
             {
                 Log.w(TAG, "[storyName] Story getName notitle: " + name);
-                Metadata m = getMetadata(context);
-                if (m != null) {
-                    Log.d(TAG, "[storyName] getName " + name + " m.title " + m.title);
-                    return m.title;
+                if (metadata == null) {
+                    // FIXME: this ends up calling getName() to determien folder name, creating a stack overflow. This wasw caused by a folder being named /sdcard/Incant_Stories/setA/newDL_32 from testing viewer?
+                    // Reproduce: download 'Fish Bowl' story on Android 7 device, open with Viewer?
+                    // metadata = getMetadata(context);
+                }
+                if (metadata != null) {
+                    Log.d(TAG, "[storyName] getName " + name + " metadata.title " + metadata.title);
+                    return metadata.title;
                 }
                 else
                 {
