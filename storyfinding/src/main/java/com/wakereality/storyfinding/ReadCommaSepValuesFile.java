@@ -1,8 +1,8 @@
 package com.wakereality.storyfinding;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
-
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -20,10 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.FileHandler;
 
 /**
  * Created by Stephen A Gutknecht on 4/1/17.
@@ -69,24 +67,30 @@ public class ReadCommaSepValuesFile {
     // example: "2017-03-11 15:22:16"
     SimpleDateFormat dateFormatIFDB0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
+    public float filterRating = 3.0f;
 
-    public boolean readComplexSetOfFilesCSV(Context context) {
-        Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
 
-        long isRecentDateWhen = System.currentTimeMillis();
-        try {
-            isRecentDateWhen = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2016-11-15").getTime();
-        } catch (ParseException e) {
-            Log.e(TAG, "[ReadCSVfile] exception recent date", e);
+    public void setFilterParameters(int filterSet) {
+        switch (filterSet) {
+            case 0:
+                filterRating = 3.0f;
+                break;
         }
+    }
 
-        foundEntries.clear();
+
+    protected final List<String[]> informStoriesList = new ArrayList<String[]>();
+    protected final List<String[]> ratingsStars = new ArrayList<String[]>();
+    protected final List<String[]> downloadLinks = new ArrayList<String[]>();
+    protected long isRecentDateWhen = System.currentTimeMillis();
+
+    public boolean prepComplexSetOfFilesCSV(Context context) {
+        AssetManager assets = context.getAssets();
 
         String next[] = {};
-        final List<String[]> informStoriesList = new ArrayList<String[]>();
         String fileSource = "csv/ifdb_inform_list0.csv";
         try {
-            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(assets.open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -101,10 +105,9 @@ public class ReadCommaSepValuesFile {
         }
 
 
-        final List<String[]> ratingsStars = new ArrayList<String[]>();
         fileSource = "csv/ifdb_rating_stars_list0.csv";
         try {
-            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(assets.open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -118,10 +121,10 @@ public class ReadCommaSepValuesFile {
             return false;
         }
 
-        final List<String[]> downloadLinks = new ArrayList<String[]>();
+
         fileSource = "csv/ifdb_inform_downloads_list0_filtered_A.csv";
         try {
-            final CSVReader reader = new CSVReader(new InputStreamReader(context.getAssets().open(fileSource)));
+            final CSVReader reader = new CSVReader(new InputStreamReader(assets.open(fileSource)));
             for(;;) {
                 next = reader.readNext();
                 if (next != null) {
@@ -135,16 +138,126 @@ public class ReadCommaSepValuesFile {
             return false;
         }
 
+        return true;
+    }
+
+
+
+    /*
+    manyInform = wide inform list, any with valid download link
+     */
+    public boolean readComplexSetOfFilesCSV_manyInform(Context context) {
+        Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+
+        isRecentDateWhen = System.currentTimeMillis();
+        try {
+            isRecentDateWhen = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2016-11-15").getTime();
+        } catch (ParseException e) {
+            Log.e(TAG, "[ReadCSVfile] exception recent date", e);
+            return false;
+        }
+
+        foundEntries.clear();
+
+        if (! prepComplexSetOfFilesCSV(context)) {
+            return false;
+        }
+
+
         int targetMatch = 0;
         String previousEntry = "never_match";
-        Log.i(TAG, "[ReadCSV] got " + informStoriesList.size());
+        Log.i(TAG, "[ReadCSV] got stories: " + informStoriesList.size());
+
         for (int i = 0; i < informStoriesList.size(); i++) {
             final String[] e = informStoriesList.get(i);
 
+            for (int d = 0; d < downloadLinks.size(); d++) {
+                final String[] l = downloadLinks.get(d);
+                if (l[0].equals(e[0])) {
+
+
+                    // search for ratings if available, but it is not required
+                    // Default to an empty item match, -1.0 rating (invalid range), 0 ratings counted
+                    String[] r = new String[] { "", "-1.0", "0" };
+                    for (int s = 0; s < ratingsStars.size(); s++) {
+                        String[] tempR = ratingsStars.get(s);
+                        if (tempR[0].equals(e[0])) {
+                            r = tempR;
+                        }
+                    }
+
+                    // For now, filter out zip, there is another csv if we want to delve deeper into embedded files.
+                    // Using contains instead of endswith as sometimes there are URL parameters.
+                    if (! l[1].toLowerCase(Locale.US).contains(".zip")) {
+                        // Multiple download links for the same story
+                        // ToDo: it is likely that this logic is pulling the OLDEST, the west link, and revisions of the same story may be skipped.
+                        //   Rework, reverse sorting in the SQL SELECT ORDER BY?
+                        if (! e[0].equals(previousEntry)) {
+
+                            previousEntry = e[0];
+                            targetMatch++;
+
+                            populateStoryEntryFromSourceA(e, d, l, r, i);
+                        }
+
+                    }
+                }
+            }
+
+
+            if (i % 100 == 0) {
+                Log.v(TAG, "[ReadCSV] # " + i + ": " + rc(e[1]) + ", " + rc(e[2]));
+            }
+        }
+
+        // Sort by title
+        Collections.sort(foundEntries, new Comparator<StoryEntryIFDB>() {
+            @Override
+            public int compare(StoryEntryIFDB story1, StoryEntryIFDB story2)
+            {
+                return story1.storyTitle.toLowerCase(Locale.US).compareTo(story2.storyTitle.toLowerCase(Locale.US));
+            }
+        });
+
+        // save copy on dev system once in a white.
+        // Incant_saveList_withhash0.csv
+        saveCopyAsCSV(context, "/sdcard/Incant_saveList_big_norateA.csv");
+
+        Log.i(TAG, "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
+        return true;
+    }
+
+
+    public boolean readComplexSetOfFilesCSV(Context context) {
+        Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
+
+        isRecentDateWhen = System.currentTimeMillis();
+        try {
+            isRecentDateWhen = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2016-11-15").getTime();
+        } catch (ParseException e) {
+            Log.e(TAG, "[ReadCSVfile] exception recent date", e);
+            return false;
+        }
+
+        foundEntries.clear();
+
+        if (! prepComplexSetOfFilesCSV(context)) {
+            return false;
+        }
+
+
+        int targetMatch = 0;
+        String previousEntry = "never_match";
+        Log.i(TAG, "[ReadCSV] got stories: " + informStoriesList.size());
+
+        for (int i = 0; i < informStoriesList.size(); i++) {
+            final String[] e = informStoriesList.get(i);
+
+            // This logic assumes that a rating record exists for each story; if a story is unrated it will not be included.
             for (int s = 0; s < ratingsStars.size(); s++) {
                 final String[] r = ratingsStars.get(s);
                 if (r[0].equals(e[0])) {
-                    if (Float.valueOf(r[1]) > 3.0f) {
+                    if (Float.valueOf(r[1]) > filterRating) {
 
                         for (int d = 0; d < downloadLinks.size(); d++) {
                             final String[] l = downloadLinks.get(d);
@@ -166,87 +279,8 @@ why no date on output of this one?
 
                                         previousEntry = e[0];
                                         targetMatch++;
-                                        final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
-                                        storyEntry.downloadLink = l[1];
-                                        if (! l[6].equals("NULL")) {
-                                            // If the zip-inside file is populated, this is probably an undesired link.
-                                            Log.w(TAG, "[ReadCSV] SKIP as likely a zip or other container file l[1] " + l[1] + " l[6] " + l[6]);
-                                            storyEntry.extractFilename = l[6];
-                                            continue;
-                                        }
-                                        storyEntry.siteIdentity = e[0];
-                                        storyEntry.rating = Float.valueOf(r[1]);
-                                        storyEntry.storyTitle = e[1].trim();
 
-                                        if (storyEntry.storyTitle.startsWith("Life")) {
-                                            Log.w(TAG, "[WhereJim] CSV assembly " + storyEntry.toString() + " i " + i + " d " + d + " e9 " + e[9] + " e10 " + e[10] + " e11 " + e[11]);
-                                        }
-
-                                        // Default in new object is 'en'
-                                        if (! e[11].equals("NULL")) {
-                                            /*
-                                            Don't do this, I guess en-US and en-GB could be two variations of same story title.
-                                            switch (e[11]) {
-                                                case "en-US":
-                                                case "en-GB":
-                                            }
-                                             */
-                                            // Updated IFDB on 2014-04-23 to try and fix the source on some of these
-                                            if (e[11].trim().toLowerCase(Locale.US).equals("english")) {
-                                                storyEntry.storyLanguage = "en";
-                                            } else {
-                                                String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
-                                                if (e[11].trim().isEmpty()) {
-                                                    // do nothing, leave at default
-                                                } else {
-                                                    storyEntry.storyLanguage = outLanguage;
-                                                }
-                                            }
-                                        }
-
-                                        storyEntry.storyAuthor = e[2].trim();
-                                        if (e[12].equals("NULL")) {
-                                            storyEntry.storyDescription = "";
-                                        } else {
-                                            storyEntry.storyDescription = e[12].trim();
-                                        }
-                                        if (e[16].equals("NULL")) {
-                                            storyEntry.storyWhimsy = "";
-                                        } else {
-                                            storyEntry.storyWhimsy = e[16].trim();
-                                        }
-                                        // The first posting date
-                                        String dateFieldA = e[21];
-                                        if (dateFieldA.isEmpty()) {
-                                            // Missing create date, try recently edited date
-                                            dateFieldA = e[23];
-                                        }
-                                        if (dateFieldA.contains("-")) {
-                                            try {
-                                                storyEntry.listingWhen = dateFormatIFDB0.parse(dateFieldA).getTime();
-                                                if (storyEntry.listingWhen >= isRecentDateWhen) {
-                                                    storyEntry.tickeBits = 1;
-                                                }
-                                                final long listingElapsed = System.currentTimeMillis() - storyEntry.listingWhen;
-                                                if (listingElapsed < (1000L * 60L * 60L * 24L * 90L)) {
-                                                    storyEntry.tickeBits += 2;
-                                                    Log.w(TAG, "[ReadCSV] recent date " + dateFieldA + " elapsed " + listingElapsed);
-                                                } else {
-                                                    // Log.w(TAG, "[ReadCSV] NOT recent date " + dateFieldA + " elapsed " + listingElapsed);
-                                                }
-                                            } catch (ParseException e1) {
-                                                Log.w(TAG, "[ReadCSV] problem with date ", e1);
-                                            }
-                                        } else {
-                                            Log.w(TAG, "[ReadCSV] problem with date, no dash? " + dateFieldA);
-                                        }
-
-                                        if (storyEntry.listingWhen == 0L) {
-                                            Log.w(TAG, "[ReadCSV] why 0L listingWhen? " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
-                                        }
-
-                                        foundEntries.add(storyEntry);
-                                        Log.i(TAG, "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
+                                        populateStoryEntryFromSourceA(e, d, l, r, i);
                                     }
 
                                 }
@@ -277,6 +311,91 @@ why no date on output of this one?
 
         Log.i(TAG, "[ReadCSV] targetMatch " + targetMatch + " totalMemory " + Runtime.getRuntime().totalMemory());
         return true;
+    }
+
+
+    public void populateStoryEntryFromSourceA(String[] e, int d, String[] l, String[] r, int i) {
+        final StoryEntryIFDB storyEntry = new StoryEntryIFDB();
+        storyEntry.downloadLink = l[1];
+        if (! l[6].equals("NULL")) {
+            // If the zip-inside file is populated, this is probably an undesired link.
+            Log.w(TAG, "[ReadCSV] SKIP as likely a zip or other container file l[1] " + l[1] + " l[6] " + l[6]);
+            storyEntry.extractFilename = l[6];
+            return;
+        }
+        storyEntry.siteIdentity = e[0];
+        storyEntry.rating = Float.valueOf(r[1]);
+        storyEntry.storyTitle = e[1].trim();
+
+        if (storyEntry.storyTitle.startsWith("Life")) {
+            Log.w(TAG, "[WhereJim] CSV assembly " + storyEntry.toString() + " i " + i + " d " + d + " e9 " + e[9] + " e10 " + e[10] + " e11 " + e[11]);
+        }
+
+        // Default in new object is 'en'
+        if (! e[11].equals("NULL")) {
+            /*
+            Don't do this, I suppose en-US and en-GB could be two variations of same story title (Harry Potter novels come to mind).
+            switch (e[11]) {
+                case "en-US":
+                case "en-GB":
+            }
+             */
+            // Updated IFDB on 2014-04-23 to try and fix the source on some of these
+            if (e[11].trim().toLowerCase(Locale.US).equals("english")) {
+                storyEntry.storyLanguage = "en";
+            } else {
+                String outLanguage = e[11].trim().replace("&", "_").replace(" ", "_").replace(";", "_");
+                if (e[11].trim().isEmpty()) {
+                    // do nothing, leave at default
+                } else {
+                    storyEntry.storyLanguage = outLanguage;
+                }
+            }
+        }
+
+        storyEntry.storyAuthor = e[2].trim();
+        if (e[12].equals("NULL")) {
+            storyEntry.storyDescription = "";
+        } else {
+            storyEntry.storyDescription = e[12].trim();
+        }
+        if (e[16].equals("NULL")) {
+            storyEntry.storyWhimsy = "";
+        } else {
+            storyEntry.storyWhimsy = e[16].trim();
+        }
+        // The first posting date
+        String dateFieldA = e[21];
+        if (dateFieldA.isEmpty()) {
+            // Missing create date, try recently edited date
+            dateFieldA = e[23];
+        }
+        if (dateFieldA.contains("-")) {
+            try {
+                storyEntry.listingWhen = dateFormatIFDB0.parse(dateFieldA).getTime();
+                if (storyEntry.listingWhen >= isRecentDateWhen) {
+                    storyEntry.tickeBits = 1;
+                }
+                final long listingElapsed = System.currentTimeMillis() - storyEntry.listingWhen;
+                if (listingElapsed < (1000L * 60L * 60L * 24L * 90L)) {
+                    storyEntry.tickeBits += 2;
+                    Log.w(TAG, "[ReadCSV] recent date " + dateFieldA + " elapsed " + listingElapsed);
+                } else {
+                    // Log.w(TAG, "[ReadCSV] NOT recent date " + dateFieldA + " elapsed " + listingElapsed);
+                }
+            } catch (ParseException e1) {
+                Log.w(TAG, "[ReadCSV] problem with date ", e1);
+            }
+        } else {
+            Log.w(TAG, "[ReadCSV] problem with date, no dash? " + dateFieldA);
+        }
+
+        if (storyEntry.listingWhen == 0L) {
+            Log.w(TAG, "[ReadCSV] why 0L listingWhen? " + e[0] + ", no dash? " + e[21] + ", " + e[23]);
+        }
+
+        foundEntries.add(storyEntry);
+        Log.i(TAG, "[ReadCSV] RATING (" + r[1] + "/" + r[2] + ") # " + i + ": " + storyEntry.toString());
     }
 
 
@@ -388,7 +507,7 @@ why no date on output of this one?
                     ifdbListEntry.fileHashSHA256 = freshHashSHA256;
                 } else {
                     engineNoHashCount++;
-                    Log.v(TAG, "[ReadCSV][SaveCSV] KeepFIle missing, no Hash SHA-256: " + ifdbListEntry.storyTitle + " " + ifdbListEntry.fileHashSHA256 + " " + ifdbListEntry.downloadLink + " storyLanguage " + ifdbListEntry.storyLanguage + " keepFile " + keepFile.getPath());
+                    Log.v(TAG, "[ReadCSV][SaveCSV] KeepFile missing, no Hash SHA-256: " + ifdbListEntry.storyTitle + " " + ifdbListEntry.fileHashSHA256 + " " + ifdbListEntry.downloadLink + " storyLanguage " + ifdbListEntry.storyLanguage + " keepFile " + keepFile.getPath());
                 }
             }
             writer.writeNext(ifdbListEntry.toStringArray());
