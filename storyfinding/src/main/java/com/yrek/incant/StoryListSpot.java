@@ -41,4 +41,6 @@ public class StoryListSpot {
     public static ArrayList<Story> storyListAppAboveHandDown = null;
 
     public static Animation launchStoryLocalAnimation = null;
+
+    public static int storyListTotalCount = 0;
 }

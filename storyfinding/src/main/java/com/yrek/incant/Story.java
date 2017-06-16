@@ -111,6 +111,8 @@ public class Story implements Serializable {
     private int storyCategory = 0;
     public static AtomicInteger createIndexAtomicInteger = new AtomicInteger(0);
     private final int createIndex;
+    // -1 indicates no value, unrated
+    private float ratingIFDB = -1.0f;
 
     // ToDo: lacking clarity that the hash is indeed pre-download, but the usage is such currently, so the asumption is made
     public Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL, String storyHashSHA256, int storyEngineCode) {
@@ -1297,6 +1299,14 @@ public class Story implements Serializable {
      */
     public int getCreateIndex() {
         return createIndex;
+    }
+
+    public void setRatingIFDB(float ratingIFDB) {
+        this.ratingIFDB = ratingIFDB;
+    }
+
+    public float getRatingIFDB() {
+        return ratingIFDB;
     }
 
     private class Metadata implements XMLScraper.Handler {

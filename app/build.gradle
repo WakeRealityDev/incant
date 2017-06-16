@@ -9,6 +9,11 @@ if (project.hasProperty("WakeReality_androidB.signing")
 }
 
 
+/*
+ToDo:
+1.  restore dropbox links, use format like  https://www.dropbox.com/s/dv2nlq4pdljhpmi/DialerWatch.zip?dl=1 that direct downloads?
+ */
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -18,8 +23,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
 
-        versionCode 34
-        versionName "0.5.14"
+        versionCode 35
+        versionName "0.5.15"
 
         signingConfig signingConfigs.WakeReality_androidB
     }

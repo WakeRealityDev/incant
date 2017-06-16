@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.Locale;
 
 /*
 This works except in this sequence
@@ -167,6 +168,12 @@ public class StoryDetails extends Activity {
 
             TextView storyExtra0 = (TextView) findViewById(R.id.storyextra0);
             storyExtra0.setText("Category " + story.getStoryCategory());
+            if (story.getRatingIFDB() >= 0.0f) {
+                storyExtra0.append(". IFDB rating: " + String.format(Locale.US, "%.1f", story.getRatingIFDB()) + " of 5.0");
+            } else {
+                storyExtra0.append(". IFDB rating unknown.");
+            }
+
             final File keepFile = story.getDownloadKeepFile(StoryDetails.this);
             if (keepFile.exists()) {
                 storyExtra0.append("\nDownloadKeep " + keepFile.getPath() + " size " + keepFile.length());

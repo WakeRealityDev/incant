@@ -71,6 +71,7 @@ public class StoryLister {
         // Story(String name, String author, String headline, String description, URL downloadURL, String zipEntry, URL imageURL)
         // Story(String name, String author, String headline, String description, String storyHashSHA256, URL imageURL, int storyEngineCode) {
         Story newStory = new Story(ifdbListEntry.storyTitle, ifdbListEntry.storyAuthor, ifdbListEntry.storyWhimsy, ifdbListEntry.storyDescription, downloadLink, null /* not zip */, imageLink, ifdbListEntry.fileHashSHA256, ifdbListEntry.engineCode);
+        newStory.setRatingIFDB(ifdbListEntry.rating);
         return newStory;
     }
 
@@ -112,6 +113,7 @@ public class StoryLister {
             }
         }
     }
+
 
     public List<Story> filterAndSortStories(ArrayList<Story> stories, Comparator<Story> sort, Context context) throws IOException {
         int skipCount = 0;

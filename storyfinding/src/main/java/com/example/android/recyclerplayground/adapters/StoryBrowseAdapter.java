@@ -77,6 +77,7 @@ public class StoryBrowseAdapter extends RecyclerView.Adapter<StoryBrowseAdapter.
                 Log.i(TAG, "[listPopulate][listPopulateRV] storyList going to RecyclerView adapter " + stories.size());
                 mItems.addAll(stories);
                 mItemsTotalList.addAll(stories);
+                StoryListSpot.storyListTotalCount = stories.size();
             } else {
                 Log.e(TAG, "[listPopulate][listPopulateRV] storyList is null, unable to populate");
             }

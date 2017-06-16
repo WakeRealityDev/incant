@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.wakereality.storyfinding.R;
 import com.wakereality.thunderstrike.dataexchange.EngineConst;
+import com.yrek.incant.StoryListSpot;
 
 public class StoriesSourceFragment extends android.support.v4.app.Fragment {
 
@@ -90,6 +91,14 @@ public class StoriesSourceFragment extends android.support.v4.app.Fragment {
         TextView exportMyDatabaseB = new TextView(viewContext);
         exportMyDatabaseB.setText("2. Export my Database to Andriod clipboard");
         rootViewGroup.addView(exportMyDatabaseB);
+
+        TextView storyListInfo0 = new TextView(viewContext);
+        storyListInfo0.setText("StoryList info.");
+        if (StoryListSpot.storyListAppAboveHandDown != null) {
+            storyListInfo0.append(" AppAboveHandDown count: " + StoryListSpot.storyListAppAboveHandDown.size());
+        }
+        storyListInfo0.append(" total count: " + StoryListSpot.storyListTotalCount);
+        rootViewGroup.addView(storyListInfo0);
     }
 
     @Override
