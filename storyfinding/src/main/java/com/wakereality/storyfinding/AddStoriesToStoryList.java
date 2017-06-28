@@ -10,18 +10,23 @@ import com.yrek.incant.StoryListSpot;
 
 public class AddStoriesToStoryList {
 
+    public static boolean doOnce = false;
+
     public static void processAssetsCommaSeparatedValuesList(Context appContext) {
         if (StoryListSpot.readCommaSepValuesFile == null) {
             StoryListSpot.readCommaSepValuesFile = new ReadCommaSepValuesFile();
         }
 
-        // Build CSV file from multiple sources - or use consolidated one?
-        // NOTE: the current project structure doesn't have storyfinding module aware of flavors, so source files go into app level assets.
-        // StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV(appContext);
-        StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV_manyInform(appContext);
+        if (!doOnce) {
+            doOnce = true;
+            // Build CSV file from multiple sources - or use consolidated one?
+            // NOTE: the current project structure doesn't have storyfinding module aware of flavors, so source files go into app level assets.
+            // StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV(appContext);
+            StoryListSpot.readCommaSepValuesFile.readComplexSetOfFilesCSV_manyInform(appContext);
 
-        // StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
+            // StoryListSpot.readCommaSepValuesFile.readSimpleFileOneObjectCSV(appContext);
 
-        System.gc();
+            System.gc();
+        }
     }
 }

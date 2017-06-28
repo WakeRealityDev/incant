@@ -727,7 +727,7 @@ public class Story implements Serializable {
                     }
 
                     if (error != null) {
-                        Log.w(TAG, "[storyDownload] download error " + error);
+                        Log.w(TAG, "[storyDownload] download error " + error + " URL " + downloadURL);
                         // EventBus to fragment holding story list
                         downloadError = true;
                         downloadErrorDetail = error;

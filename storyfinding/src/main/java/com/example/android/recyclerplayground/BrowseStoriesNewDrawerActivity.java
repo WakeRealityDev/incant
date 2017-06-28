@@ -113,6 +113,8 @@ public class BrowseStoriesNewDrawerActivity extends AppCompatActivity {
         if (!mUserLearnedDrawer) {
             mDrawer.openDrawer(nvDrawer);
         }
+
+        StoryListSpot.startStoryParentActivity = this;
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {

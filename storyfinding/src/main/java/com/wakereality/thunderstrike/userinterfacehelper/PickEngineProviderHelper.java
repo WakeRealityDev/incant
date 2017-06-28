@@ -1,6 +1,7 @@
 package com.wakereality.thunderstrike.userinterfacehelper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Log;
@@ -23,6 +24,12 @@ import java.util.Map;
  */
 
 public class PickEngineProviderHelper {
+
+    protected SharedPreferences prefs;
+
+    public PickEngineProviderHelper(Context appContext) {
+        prefs = appContext.getSharedPreferences("findstories", Context.MODE_PRIVATE);
+    }
 
     public static void animateClickedView(final View view) {
         // Poor man's animation to show visual feedback of click.
@@ -119,13 +126,16 @@ public class PickEngineProviderHelper {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StoryListSpot.optionLaunchExternalActivityCode = selectedActivityValues.getInt(position, -1);
+                prefs.edit().putInt("TWactivityPos", position).commit();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 StoryListSpot.optionLaunchExternalActivityCode = 0;
+                prefs.edit().putInt("TWactivityPos", 0).commit();
             }
         });
+        spinnerView.setSelection(prefs.getInt("TWactivityPos", 0), false /* Do not animate, avoid triggering Listner */);
 
         checkboxView.setOnClickListener(new View.OnClickListener() {
             @Override

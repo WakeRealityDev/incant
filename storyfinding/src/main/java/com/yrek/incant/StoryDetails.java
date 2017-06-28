@@ -55,6 +55,8 @@ public class StoryDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.story_details);
 
+        pickEngineProviderHelper = new PickEngineProviderHelper(getApplicationContext());
+
         // Two ways of passing in story from caller
         if (getIntent().hasExtra(ParamConst.CREATE_INDEX_KEY_STORY)) {
             int createIndexKeyShouldBe = getIntent().getIntExtra(ParamConst.CREATE_INDEX_KEY_STORY, -1);
@@ -415,7 +417,7 @@ public class StoryDetails extends Activity {
     };
 
 
-    PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
+    protected PickEngineProviderHelper pickEngineProviderHelper;
 
     private SpannableStringBuilder makeName() {
         SpannableStringBuilder sb = new SpannableStringBuilder();

@@ -1,5 +1,7 @@
 package com.yrek.incant;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 import android.view.animation.Animation;
@@ -43,4 +45,6 @@ public class StoryListSpot {
     public static Animation launchStoryLocalAnimation = null;
 
     public static int storyListTotalCount = 0;
+
+    public static Activity startStoryParentActivity = null;
 }

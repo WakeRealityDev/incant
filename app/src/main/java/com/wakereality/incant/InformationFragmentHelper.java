@@ -186,6 +186,14 @@ public class InformationFragmentHelper {
             rootViewGroup.addView(incantAudioPermission);
         }
 
+        TextView storyListDiagInfo0 = new TextView(viewContext);
+        int handDownSize = 0;
+        if (StoryListSpot.storyListAppAboveHandDown != null) {
+            handDownSize = StoryListSpot.storyListAppAboveHandDown.size();
+        }
+        storyListDiagInfo0.setText("\nList size, hand down: " + handDownSize + " total: " + StoryListSpot.storyListTotalCount);
+        rootViewGroup.addView(storyListDiagInfo0);
+
         // ToDo: add Thunderword spinner from other fragments for picking Activity?
 
         populateThunderwordInformation(rootViewGroup);

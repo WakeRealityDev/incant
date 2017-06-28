@@ -48,6 +48,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+
 
 public abstract class RecyclerFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
@@ -70,12 +72,13 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
     protected CheckBox launchDefaultTopPanelCheckbox;
     protected TextView listHeaderExtraNoThunderwordDetected;
 
-    protected PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
+    protected PickEngineProviderHelper pickEngineProviderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        pickEngineProviderHelper = new PickEngineProviderHelper(getContext().getApplicationContext());
     }
 
     @Override
@@ -350,10 +353,30 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             if (StoryListSpot.optionLaunchExternal) {
                 // There is a visual delay, nothing seems to happen, on Launching to Thunderword - so animate.
                 view.startAnimation(myTouchWobbleAnimation);
-                EventBus.getDefault().post(new EventExternalEngineStoryLaunch(getActivity(), story, StoryListSpot.optionLaunchExternalActivityCode,  StoryListSpot.optionaLaunchInterruptEngine));
+                switch (3) {
+                    case 1:
+                        //Intent intentStartStory = new Intent(StoryListSpot.startStoryParentActivity, StoryTwoWindowsActivity.class);
+                        //StoryListSpot.startStoryParentActivity.startActivity(intentStartStory);
+                        break;
+                    case 2:
+                        File storyFile0 = new File("/sdcard/Incant_Stories/DownloadKeepA/Incant__Aotearoa.gblorb");
+                        // InterpreterEngineStoryLaunchHelper.engineLaunchA(StoryListSpot.startStoryParentActivity, storyFile0);
+                        break;
+                    case 3:
+                        if (EchoSpot.backButtonHackStoryStartFlag == 0) {
+                            Log.w("RecyclerFragment", "[traceStartActivityA] ::::CLICK:::: RecyclerView click backButtonHackStoryStartFlag set to 1");
+                            EchoSpot.backButtonHackStoryStartFlag = 1;
+                        }
+                        EventBus.getDefault().post(new EventExternalEngineStoryLaunch(getActivity(), story, StoryListSpot.optionLaunchExternalActivityCode,  StoryListSpot.optionaLaunchInterruptEngine));
+                        break;
+                }
             } else {
                 if (StoryListSpot.launchStoryLocalAnimation != null) {
                     view.startAnimation(StoryListSpot.launchStoryLocalAnimation);
+                }
+                if (EchoSpot.backButtonHackStoryStartFlag == 0) {
+                    Log.w("RecyclerFragment", "[traceStartActivityA] ::::CLICK:::: RecyclerView click backButtonHackStoryStartFlag set to 1");
+                    EchoSpot.backButtonHackStoryStartFlag = 1;
                 }
                 EventBus.getDefault().post(new EventLocalStoryLaunch(getActivity(), story));
             }

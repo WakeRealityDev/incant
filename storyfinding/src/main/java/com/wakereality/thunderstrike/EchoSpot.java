@@ -16,4 +16,8 @@ public class EchoSpot {
 
     // The app can tell the library which app ID to use on broadcast sending to Thunderword / Engine Providers.
     public static String sending_APPLICATION_ID = "";
+
+    // BUG hack workaround: 1) start story Activity from storyList. 2) back button returns to WRONG place, to mainactivity, 3) start story again, returns to correct place.
+    // The consequence to this workaround is that this sequence fails: 1) Start app, 2) Browse stories, 3)
+    public static int backButtonHackStoryStartFlag = 0;
 }

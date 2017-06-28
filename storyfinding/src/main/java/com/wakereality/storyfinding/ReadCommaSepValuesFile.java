@@ -41,7 +41,7 @@ import java.util.Locale;
  * Filter that list
  *    grep -i '\.gblorb\|\.z[1-8],\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' ifdb_inform_downloads_list0.csv > ifdb_inform_downloads_list0_filtered.csv
  * Filter that list a second pass, removing live website play links
- *    grep -i -v 'iplayif\.com\|parchment.full.html\|play-remote\.html' ifdb_inform_downloads_list0_filtered.csv > ifdb_inform_downloads_list0_filtered_A.csv
+ *    grep -i -v 'iplayif\.com\|parchment.full.html\|play-remote\parchment.html|.html' ifdb_inform_downloads_list0_filtered.csv > ifdb_inform_downloads_list0_filtered_A.csv
  *
  * Do a second pass to pick up zip files that also contain desired extensions:
  *    grep -i '\.zip' ifdb_inform_downloads_list0.csv | grep '\.gblorb\|\.z[1-8]\|\.zblorb\|\.blb\|\.zlb\|\.glb\|\.ulx\|\.blorb' > ifdb_inform_downloads_list0_filtered_in_zip.csv
@@ -145,6 +145,7 @@ public class ReadCommaSepValuesFile {
 
     /*
     manyInform = wide inform list, any with valid download link
+    Does not consider ratings.
      */
     public boolean readComplexSetOfFilesCSV_manyInform(Context context) {
         Log.i(TAG, "[ReadCSV] start totalMemory " + Runtime.getRuntime().totalMemory());
