@@ -2,6 +2,7 @@ package com.yrek.incant;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -302,7 +303,8 @@ public class StoryDetails extends Activity {
                     }
                 });
 
-                pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) findViewById(R.id.external_provider_activity), (CheckBox) findViewById((R.id.external_provider_noprompt)));
+                TypedArray selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
+                pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) findViewById(R.id.external_provider_activity), (CheckBox) findViewById((R.id.external_provider_noprompt)), 4 /* TwoWindow Activity default */, selectedActivityValues, "TWactivityPos");
 
                 int outEngineStringId = story.isZcode(StoryDetails.this) ? R.string.play_zcode : R.string.play_glulx;
                 CharSequence outEngine = StoryDetails.this.getText(outEngineStringId);

@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 /**
  * Created by Stephen A. Gutknecht on 2/28/17.
+ * NOTE: There are two variations of EchoSpot, one in ThunderEcho and one in ThunderStrike
  */
 
 public class EchoSpot {

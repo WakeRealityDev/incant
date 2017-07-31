@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.example.android.recyclerplayground.BrowseStoriesActivity;
 import com.example.android.recyclerplayground.BrowseStoriesNewDrawerActivity;
 import com.example.android.recyclerplayground.EventInformationFragmentPopulate;
 import com.wakereality.storyfinding.CommonAppSetup;
@@ -37,7 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class InformationFragmentHelper {
     public static final String TAG = "IncantApp";
 
-    protected PickEngineProviderHelper pickEngineProviderHelper = new PickEngineProviderHelper();
+    protected PickEngineProviderHelper pickEngineProviderHelper;
     protected Context activityContext;
 
 
@@ -48,10 +47,10 @@ public class InformationFragmentHelper {
         }
 
         CommonAppSetup.prepareList(appContext);
+        pickEngineProviderHelper = new PickEngineProviderHelper(appContext);
 
         activityContext = activityContextForResources;
     }
-
 
 
 

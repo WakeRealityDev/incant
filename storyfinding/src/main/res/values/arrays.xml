@@ -22,5 +22,30 @@
         <item>7</item>
         <item>8</item>
     </string-array>
+    <string-array name="thunderword_activity_enables">
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </string-array>
 
+
+    <!-- Shares the same values list -->
+    <string-array name="thunderword_activity_shortlist_names">
+        <item>Bi-directional scrolling</item>
+        <item>Scrolling</item>
+        <item>Two-Window classic</item>
+        <item>Text Fiction Thunderword</item>
+    </string-array>
+
+    <string-array name="thunderword_activity_shortlist_values">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

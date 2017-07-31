@@ -118,30 +118,32 @@ public class PickEngineProviderHelper {
         return true;
     }
 
-    public void spinnerForThunderwordActivity(Spinner spinnerView, CheckBox checkboxView) {
+    public void spinnerForThunderwordActivity(Spinner spinnerView, CheckBox checkboxView, int defaultPickValue, final TypedArray selectedActivityValues, final String prefsKey) {
         Context context = spinnerView.getContext();
-        final TypedArray selectedActivityValues = context.getResources().obtainTypedArray(R.array.thunderword_activity_values);
+        // final TypedArray selectedActivityValues = context.getResources().obtainTypedArray(R.array.thunderword_activity_values);
 
         spinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StoryListSpot.optionLaunchExternalActivityCode = selectedActivityValues.getInt(position, -1);
-                prefs.edit().putInt("TWactivityPos", position).commit();
+                prefs.edit().putInt(prefsKey, position).commit();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 StoryListSpot.optionLaunchExternalActivityCode = 0;
-                prefs.edit().putInt("TWactivityPos", 0).commit();
+                prefs.edit().putInt(prefsKey, 0).commit();
             }
         });
-        spinnerView.setSelection(prefs.getInt("TWactivityPos", 0), false /* Do not animate, avoid triggering Listner */);
+        spinnerView.setSelection(prefs.getInt(prefsKey, defaultPickValue - 1), false /* Do not animate, avoid triggering Listener */);
 
-        checkboxView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StoryListSpot.optionaLaunchInterruptEngine = ((CheckBox) v).isChecked();
-            }
-        });
+        if (checkboxView != null) {
+            checkboxView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StoryListSpot.optionaLaunchInterruptEngine = ((CheckBox) v).isChecked();
+                }
+            });
+        }
     }
 }

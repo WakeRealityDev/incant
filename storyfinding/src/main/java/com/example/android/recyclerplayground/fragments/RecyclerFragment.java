@@ -2,6 +2,7 @@ package com.example.android.recyclerplayground.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -232,7 +233,8 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             expandableHolder.setVisibility(View.GONE);
         }
 
-        pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) rootView.findViewById(R.id.external_provider_activity), (CheckBox) rootView.findViewById(R.id.external_provider_noprompt));
+        TypedArray selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
+        pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) rootView.findViewById(R.id.external_provider_activity), (CheckBox) rootView.findViewById(R.id.external_provider_noprompt), 4 /* TwoWindow Activity default */, selectedActivityValues, "TWactivityPos");
     }
 
 
