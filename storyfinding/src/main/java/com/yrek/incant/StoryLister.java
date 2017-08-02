@@ -183,16 +183,16 @@ public class StoryLister {
                 }
 
                 // Stories with save files go highest, most recent saved first.
-                // ToDo: last played needs to be trackec on it's own, for Thunderword integration. iFrotz has nice logic to resume in-progress game.
-                if (story1.getSaveFile(context).exists()) {
-                    if (!story2.getSaveFile(context).exists()) {
+                // ToDo: last played needs to be tracked on it's own, for Thunderword integration. iFrotz has nice logic to resume in-progress game.
+                if (story1.getRestoreFile(context).exists()) {
+                    if (!story2.getRestoreFile(context).exists()) {
                         //Log.v(TAG, "[sortName] saveA " + storyName1);
                         return -1;
                     } else {
                         //Log.v(TAG, "[sortName] saveB " + storyName1);
-                        return - (int) (story1.getSaveFile(context).lastModified() - story2.getSaveFile(context).lastModified());
+                        return - (int) (story1.getRestoreFile(context).lastModified() - story2.getRestoreFile(context).lastModified());
                     }
-                } else if (story2.getSaveFile(context).exists()) {
+                } else if (story2.getRestoreFile(context).exists()) {
                     //Log.v(TAG, "[sortName] saveC " + storyName1);
                     return 1;
                 }

@@ -757,7 +757,20 @@ public class GlkActivity extends Activity {
         @Override
         public GlkFile fileCreateByPrompt(int usage, int mode, int rock) throws IOException {
             if (usage == GlkFile.UsageSavedGame) {
-                return glkDispatch.add(new FileRef(main.getSaveFile(GlkActivity.this), usage, mode, rock));
+                File targetFile;
+                if (mode == 2) {
+                    targetFile = main.getRestoreFile(GlkActivity.this);
+                    post(new Runnable() {
+                        @Override public void run() {
+                            Toast.makeText(GlkActivity.this, main.getRestoreFileMessage(), Toast.LENGTH_LONG).show();
+                            // Toast.makeText(GlkActivity.this, "Profile " + String.valueOf(dt), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    targetFile = main.getSaveFile(GlkActivity.this);
+                }
+                Log.d(TAG, "GSF call getSaveFile C usage " + usage + " mode " + mode + " targetFile " + targetFile.getPath());
+                return glkDispatch.add(new FileRef(targetFile, usage, mode, rock));
             }
             throw new RuntimeException("unimplemented");
         }

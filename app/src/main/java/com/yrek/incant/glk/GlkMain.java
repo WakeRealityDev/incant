@@ -18,6 +18,8 @@ public interface GlkMain extends Serializable {
     public boolean finished();
     public Blorb getBlorb(Context context);
     public File getSaveFile(Context context);
+    public File getRestoreFile(Context context);
+    public String getRestoreFileMessage();
     public File getDir(Context context);
 
     public int getGlkLayout();
@@ -36,4 +38,5 @@ public interface GlkMain extends Serializable {
     public Integer getStyleBackgroundColor(int style);
 
     public int getHolderLayout();
+
 }

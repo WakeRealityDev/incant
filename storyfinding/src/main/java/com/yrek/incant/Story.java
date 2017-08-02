@@ -8,12 +8,14 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -551,8 +553,59 @@ public class Story implements Serializable {
         return new File(getStoryDir(context, name), "glulx");
     }
 
+    public static boolean useMultiSave = true;
+
     public static File getSaveFile(Context context, String name) {
-        return new File(getStoryDir(context, name), "save");
+        Log.d(TAG, "GSF getSaveFile A");
+        if (!useMultiSave) {
+            return new File(getStoryDir(context, name), "save");
+        }
+        return new File(getStoryDir(context, name), "save_" + System.currentTimeMillis());
+    }
+
+
+    protected static String restoreFileMessage = "";
+    public static String getRestoreFileMessage() {
+        return restoreFileMessage;
+    }
+
+    /*
+    Will search all previous save files and return the most recent one.
+     */
+    public static File getRestoreFile(Context context, String name) {
+        Log.d(TAG, "GSF getRestoreFile A");
+
+        if (!useMultiSave) {
+            return new File(getStoryDir(context, name), "save");
+        }
+
+        File dir = getStoryDir(context, name);
+        File[] files = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File acceptDir, String acceptName) {
+                return acceptName.startsWith("save_");
+            }
+        });
+
+        long foundNameTimestamp = 0L;
+        File foundFile = new File(getStoryDir(context, name), "save_" + System.currentTimeMillis() + "_neverFind");
+        restoreFileMessage = "";
+        for (File singleFile : files) {
+            String[] splitName = singleFile.getName().split("_");
+            Log.d(TAG, "GSF restore split " + splitName[0] + " " + splitName[1]);
+            long singleFileWhen = Long.valueOf(splitName[1]);
+            if (singleFileWhen >= foundNameTimestamp) {
+                foundNameTimestamp = singleFileWhen;
+                foundFile = singleFile;
+            }
+        }
+
+        if (files.length > 1) {
+            Log.d(TAG, "GSF Restoring newest file of " + files.length + " found. foundNameTimestamp " + foundNameTimestamp + " " + foundFile.getPath());
+            restoreFileMessage = "Restoring newest file of " + files.length + " found.";
+        }
+
+        return foundFile;
     }
 
     public static File getCoverImageFile(Context context, String name) {
@@ -613,7 +666,13 @@ public class Story implements Serializable {
     }
 
     public File getSaveFile(Context context) {
+        Log.d(TAG, "GSF getSaveFile B");
         return getSaveFile(context, getStorageName(context));
+    }
+
+    public File getRestoreFile(Context context) {
+        Log.d(TAG, "GSF getRestoreFile B");
+        return getRestoreFile(context, getStorageName(context));
     }
 
     public File getCoverImageFile(Context context) {

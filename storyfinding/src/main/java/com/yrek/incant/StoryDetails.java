@@ -347,17 +347,17 @@ public class StoryDetails extends Activity {
                 }
                 Log.d(TAG, "[storyDetail] lastModified " + storyLastModified + " file " + story.getStoryFile(StoryDetails.this).getPath());
 
-                if (!story.getSaveFile(StoryDetails.this).exists()) {
+                if (!story.getRestoreFile(StoryDetails.this).exists()) {
                     findViewById(R.id.save_container).setVisibility(View.GONE);
                 } else {
                     findViewById(R.id.save_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.delete_save).setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
-                            story.getSaveFile(StoryDetails.this).delete();
+                            story.getRestoreFile(StoryDetails.this).delete();
                             setView.run();
                         }
                     });
-                    ((TextView) findViewById(R.id.save_text)).setText(Story.getTimeString(StoryDetails.this, R.string.saved_recently, R.string.saved_at, story.getSaveFile(StoryDetails.this).lastModified()));
+                    ((TextView) findViewById(R.id.save_text)).setText(Story.getTimeString(StoryDetails.this, R.string.saved_recently, R.string.saved_at, story.getRestoreFile(StoryDetails.this).lastModified()));
                 }
 
                 // Show the storage path

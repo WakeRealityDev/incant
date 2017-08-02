@@ -239,7 +239,8 @@ public class Incant extends Activity {
     private SpannableStringBuilder makeDescription(Story story) {
         SpannableStringBuilder sb = new SpannableStringBuilder();
         String description = story.getDescription(this);
-        File saveFile = story.getSaveFile(this);
+        // Use getRestoreFile instead of saveFile - as the focus here is showing information about previous saves (to be restored).
+        File saveFile = story.getRestoreFile(this);
         File storyFile = story.getStoryFile(this);
         int start = sb.length();
         if (saveFile.exists()) {

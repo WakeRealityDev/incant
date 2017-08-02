@@ -129,6 +129,16 @@ public class ZCodeStory implements GlkMain {
     }
 
     @Override
+    public File getRestoreFile(Context context) {
+        return story.getRestoreFile(context);
+    }
+
+    @Override
+    public String getRestoreFileMessage() {
+        return story.getRestoreFileMessage();
+    }
+
+    @Override
     public File getSaveFile(Context context) {
         return story.getSaveFile(context);
     }
