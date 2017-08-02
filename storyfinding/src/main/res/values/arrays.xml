@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Value 0 means headless, and we aren't going to give the user that choice in this app's GUI. -->
+    <!-- Value 0 means headless non-specific (general purpose), and we aren't going to give the user that choice in this app's GUI. -->
     <string-array name="thunderword_activity_names">
         <item>Bi-directional scrolling</item>
         <item>Scrolling</item>

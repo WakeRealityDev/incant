@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -233,8 +234,18 @@ public abstract class RecyclerFragment extends Fragment implements AdapterView.O
             expandableHolder.setVisibility(View.GONE);
         }
 
-        TypedArray selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
-        pickEngineProviderHelper.spinnerForThunderwordActivity((Spinner) rootView.findViewById(R.id.external_provider_activity), (CheckBox) rootView.findViewById(R.id.external_provider_noprompt), 4 /* TwoWindow Activity default */, selectedActivityValues, "TWactivityPos");
+        Spinner selectedActivitySpinner = (Spinner) rootView.findViewById(R.id.external_provider_activity);
+        int spinnerDefault =  4 /* TwoWindow Activity default */;
+        TypedArray selectedActivityValues;
+        if (StoryListSpot.pickThunderwordActivityValuesResource != null) {
+            selectedActivityValues = getResources().obtainTypedArray(StoryListSpot.pickThunderwordActivityValuesResource);
+            ArrayAdapter<String> pickActivitySpinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(StoryListSpot.pickThunderwordActivityListResource));
+            selectedActivitySpinner.setAdapter(pickActivitySpinnerArrayAdapter);
+            spinnerDefault = StoryListSpot.pickThunderwordActivityDefault;
+        } else {
+            selectedActivityValues = getResources().obtainTypedArray(R.array.thunderword_activity_values);
+        }
+        pickEngineProviderHelper.spinnerForThunderwordActivity(selectedActivitySpinner, (CheckBox) rootView.findViewById(R.id.external_provider_noprompt), spinnerDefault, selectedActivityValues, "TWactivityPos");
     }
 
 

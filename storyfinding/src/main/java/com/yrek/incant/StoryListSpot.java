@@ -47,4 +47,12 @@ public class StoryListSpot {
     public static int storyListTotalCount = 0;
 
     public static Activity startStoryParentActivity = null;
+
+    /*
+    These values are palced at this Spot so that multiple high-level apps can control a low-level included library.
+     */
+    public static Integer pickThunderwordActivityValuesResource = null;
+    public static Integer pickThunderwordActivityListResource = null;
+    public static int pickThunderwordActivityDefault = 3;
+    public static boolean pickThunderwordActivityTextFictionCheck = false;
 }

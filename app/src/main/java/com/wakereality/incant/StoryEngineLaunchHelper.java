@@ -114,9 +114,17 @@ public class StoryEngineLaunchHelper {
             selectedLaunchActivity = 1;   /* Bidirectional Scrolling Activity */
         }
 
+        if (selectedLaunchActivity == 5) {
+            // NOTE: This naming assumes there is only ONE instance of TextFiction for Thunderword app: not Experiential and Standard installed at same time.
+            // ToDo: Getting file not found on Text Fiction side, generate a SHA-256 hash here always?
+            intent.setAction("interactivefiction.userinterface.textfictionremotedata");
+            intent.setPackage(null);
+        } else {
+            intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_ACTIVITYCODE, selectedLaunchActivity);
+        }
+
         Log.i(TAG, "[engineLaunch] " + launchInfo  + " setAction " + setAction + " sender " + EchoSpot.sending_APPLICATION_ID + " launchToken " + myLaunchToken + " selectedLaunchActivity " + selectedLaunchActivity + " when " + launchWhen + " target " + targetPackage);
 
-        intent.putExtra(EngineConst.LAUNCH_PARAM_KEY_ACTIVITYCODE, selectedLaunchActivity);
         intent.putExtra("interrupt", event.interruptEngineIfRunning);
         intent.putExtra("launchtoken", "A" + myLaunchToken);
 
